@@ -7,12 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserType {
-  TEACHER
-  STUDENT
-  PEDAGOGUE
-}
-
 model User {
   id                String  @id @default(uuid())
   name              String
@@ -24,7 +18,7 @@ model User {
   Teacher   Teacher?
   Student   Student?
 
-  ocurrence         Occurrence[]        @relation("Occurrence_attendee")
+  occurrences       Occurrence[]        @relation("Occurrence_attendee")
   occurrenceHistory OccurrenceHistory[]
 
   @@map("users")
@@ -37,10 +31,10 @@ enum PedagogueRole {
 
 model Pedagogue {
   id     String        @id @default(uuid())
-  Role   PedagogueRole
+  role   PedagogueRole
   userId String        @map("user_id")
 
-  user        User         @relation(fields: [userId], references: [id])
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   occurrences Occurrence[]
 
   @@unique([userId])
@@ -99,8 +93,8 @@ model OccurrenceHistory {
   createdAt     DateTime @default(now()) @map("created_at")
   changedFields String[] @map("changed_fields")
 
-  ocurrence Occurrence @relation(fields: [occurrenceId], references: [id])
-  editor    User       @relation(fields: [editorId], references: [id])
+  occurrence Occurrence @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
+  editor     User       @relation(fields: [editorId], references: [id])
 
   @@index([editorId])
   @@index([occurrenceId])
@@ -115,10 +109,10 @@ model Student {
   responsiblePhone String
   responsibleEmail String @unique
 
-  ocurrences Occurrence[] @relation("Occurrence_students")
+  occurrences Occurrence[] @relation("Occurrence_students")
 
   group Group @relation(fields: [groupId], references: [id])
-  user  User  @relation(fields: [userId], references: [id])
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([groupId])
@@ -135,7 +129,7 @@ model Teacher {
   userId String        @map("user_id")
   status TeacherStatus
 
-  user        User         @relation(fields: [userId], references: [id])
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   occurrences Occurrence[]
 
   @@unique([userId])
@@ -149,7 +143,7 @@ model Attachment {
   url          String
   occurrenceId String @map("Occurrence_id")
 
-  occurrence Occurrence @relation(fields: [occurrenceId], references: [id])
+  occurrence Occurrence @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
 
   @@index([occurrenceId])
   @@map("attachments")
