@@ -14,7 +14,5 @@ import { envSchema } from './env'
     }),
     AuthModule,
   ],
-  controllers: [CreateAccountController, AuthenticateController],
-  providers: [PrismaService],
 })
 export class AppModule {}

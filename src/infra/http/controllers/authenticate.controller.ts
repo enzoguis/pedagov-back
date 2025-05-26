@@ -1,6 +1,6 @@
 import { Body, Controller, Post, UsePipes } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import { ZodValidationPipe } from '@/infra/pipes/zod-validation-pipe'
+import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { z } from 'zod'
 
 const authenticateBodySchema = z.object({
