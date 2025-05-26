@@ -23,7 +23,7 @@ describe('Create Group Use Case', () => {
     })
 
     expect(result.isRight).toBeTruthy()
-    expect(inMemoryGroupsRepository.items[0].shift).toBe('afternoon')
+    expect(inMemoryGroupsRepository.items[0].shift).toBe('AFTERNOON')
   })
 
   it('should be able to create a group with student', async () => {

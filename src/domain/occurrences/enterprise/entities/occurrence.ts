@@ -7,10 +7,10 @@ import { OccurrenceHistory } from './occurrence-history'
 import { OccurrenceAttachmentsList } from './occurrence-attachments-list'
 
 export enum OccurrenceTypeEnum {
-  DISCIPLINE = 'discipline',
-  UNIFORM = 'uniform',
-  ABSENCES = 'absences',
-  TARDINESS = 'tardiness',
+  DISCIPLINE = 'DISCIPLINE',
+  UNIFORM = 'UNIFORM',
+  ABSENCES = 'ABSENCES',
+  TARDINESS = 'TARDINESS',
 }
 
 export type OccurrenceTypes = keyof typeof OccurrenceTypeEnum

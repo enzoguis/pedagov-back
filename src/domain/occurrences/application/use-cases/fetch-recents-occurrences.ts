@@ -1,8 +1,5 @@
 import { Either, right } from '@/core/either'
-import {
-  Occurrence,
-  OccurrenceTypes,
-} from '@/domain/occurrences/enterprise/entities/occurrence'
+import { Occurrence } from '@/domain/occurrences/enterprise/entities/occurrence'
 import { OccurrencesRepository } from '../repositories/occurrences-repository'
 
 interface FetchRecentsOccurrencesUseCaseRequest {

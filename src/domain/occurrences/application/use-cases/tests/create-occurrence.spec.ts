@@ -76,7 +76,7 @@ describe('Create Occurrence Use Case', () => {
 
     expect(result.isRight).toBeTruthy()
     expect(inMemoryOccurrencesRepository.items).toHaveLength(1)
-    expect(inMemoryOccurrencesRepository.items[0].type).toBe('absences')
+    expect(inMemoryOccurrencesRepository.items[0].type).toBe('ABSENCES')
     expect(fakeEmailSender.sentMessages).toHaveLength(2)
     expect(fakeEmailSender.sentMessages[0].recipientEmail).toBe(
       'responsible@example.com'
@@ -114,7 +114,7 @@ describe('Create Occurrence Use Case', () => {
 
     expect(result.isRight).toBeTruthy()
     expect(inMemoryOccurrencesRepository.items).toHaveLength(1)
-    expect(inMemoryOccurrencesRepository.items[0].type).toBe('absences')
+    expect(inMemoryOccurrencesRepository.items[0].type).toBe('ABSENCES')
     expect(fakeEmailSender.sentMessages).toHaveLength(0)
     expect(inMemoryOccurrenceAttendeesRepository.items).toHaveLength(2)
     expect(inMemoryOccurrenceStudentsRepository.items).toHaveLength(2)

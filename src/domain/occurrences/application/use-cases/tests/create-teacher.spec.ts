@@ -17,6 +17,6 @@ describe('Create Teacher Use Case', () => {
 
     expect(result.isRight).toBeTruthy()
     expect(inMemoryTeachersRepository.items).toHaveLength(1)
-    expect(inMemoryTeachersRepository.items[0].status).toBe('active')
+    expect(inMemoryTeachersRepository.items[0].status).toBe('ACTIVE')
   })
 })

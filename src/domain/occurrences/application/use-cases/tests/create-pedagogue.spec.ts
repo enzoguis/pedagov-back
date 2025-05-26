@@ -13,9 +13,11 @@ describe('Create Pedagogue Use Case', () => {
   it('should be able to create a new pedagogue', async () => {
     const result = await sut.execute({
       name: 'pedagogue',
+      role: 'COMMON',
     })
 
     expect(result.isRight).toBeTruthy()
     expect(inMemoryPedagoguesRepository.items).toHaveLength(1)
+    expect(inMemoryPedagoguesRepository.items[0].role).toBe('COMMON')
   })
 })

@@ -2,8 +2,8 @@ import { Entity } from '@/core/entities/entitity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
 export enum TeacherStatusEnum {
-  ACTIVE = 'active',
-  INACTIVED = 'inactived',
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
 }
 
 export type TeacherStatusType = keyof typeof TeacherStatusEnum
