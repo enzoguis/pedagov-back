@@ -3,6 +3,7 @@ import { Either, left, right } from '@/core/either'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { CPF } from '@/domain/occurrences/enterprise/entities/value-objects/cpf'
+import { Injectable } from '@nestjs/common'
 
 interface EditStudentUseCaseRequest {
   studentId: string
@@ -14,6 +15,7 @@ interface EditStudentUseCaseRequest {
 
 type EditStudentUseCaseResponse = Either<ResourceNotFoundError, {}>
 
+@Injectable()
 export class EditStudentUseCase {
   constructor(private studentsRepository: StudentsRepository) {}
   async execute({

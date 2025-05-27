@@ -15,6 +15,7 @@ import {
 import { OccurrenceAttachmentsRepository } from '../repositories/occurrence-attachments-repository'
 import { OccurrenceAttachmentsList } from '@/domain/occurrences/enterprise/entities/occurrence-attachments-list'
 import { OccurrenceAttachment } from '@/domain/occurrences/enterprise/entities/occurrence-attachment'
+import { Injectable } from '@nestjs/common'
 
 interface EditOccurrenceUseCaseRequest {
   occurrenceId: string
@@ -30,6 +31,7 @@ interface EditOccurrenceUseCaseRequest {
 
 type EditOccurrenceUseCaseResponse = Either<ResourceNotFoundError, {}>
 
+@Injectable()
 export class EditOccurrenceUseCase {
   constructor(
     private occurrencesRepository: OccurrencesRepository,

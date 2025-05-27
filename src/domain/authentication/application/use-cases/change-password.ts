@@ -5,6 +5,7 @@ import { UsersRepository } from '../repositories/users-repository'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { HashGenerator } from '../../../authentication/application/cryptography/hash-generator'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
+import { Injectable } from '@nestjs/common'
 
 interface ChangePasswordUseCaseRequest {
   email: string
@@ -17,6 +18,7 @@ type ChangePasswordUseCaseResponse = Either<
   {}
 >
 
+@Injectable()
 export class ChangePasswordUseCase {
   constructor(
     private usersRepository: UsersRepository,

@@ -2,7 +2,9 @@ import { GroupStudentsRepository } from '@/domain/occurrences/application/reposi
 import { GroupStudent } from '@/domain/occurrences/enterprise/entities/group-student'
 import { PrismaGroupStudentMapper } from '../mappers/prisma-group-student-mapper'
 import { PrismaService } from '../prisma.service'
+import { Injectable } from '@nestjs/common'
 
+@Injectable()
 export class PrismaGroupStudentsRepository implements GroupStudentsRepository {
   constructor(private prisma: PrismaService) {}
 

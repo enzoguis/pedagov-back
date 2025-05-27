@@ -14,6 +14,7 @@ import { EmailSender } from '../email/email-sender'
 import { StudentsRepository } from '../repositories/students-repository'
 import { OccurrenceAttachment } from '@/domain/occurrences/enterprise/entities/occurrence-attachment'
 import { OccurrenceAttachmentsList } from '@/domain/occurrences/enterprise/entities/occurrence-attachments-list'
+import { Injectable } from '@nestjs/common'
 
 interface CreateOccurrenceUseCaseRequest {
   authorId: string
@@ -35,6 +36,7 @@ type CreateOccurrenceUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class CreateOccurrenceUseCase {
   constructor(
     private occurrencesRepository: OccurrencesRepository,

@@ -9,6 +9,7 @@ import {
   GroupShiftsEnum,
   GroupShiftsType,
 } from '@/domain/occurrences/enterprise/entities/group'
+import { Injectable } from '@nestjs/common'
 
 interface EditGroupUseCaseRequest {
   groupId: string
@@ -20,6 +21,7 @@ interface EditGroupUseCaseRequest {
 
 type EditGroupUseCaseResponse = Either<ResourceNotFoundError, {}>
 
+@Injectable()
 export class EditGroupUseCase {
   constructor(
     private groupsRepository: GroupsRepository,

@@ -5,6 +5,7 @@ import { HashGenerator } from '../../../authentication/application/cryptography/
 import { EmailSender } from '../email/email-sender'
 import { User } from '../../enterprise/entities/user'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { Injectable } from '@nestjs/common'
 
 interface CreateTemporaryCredentialsUseCaseRequest {
   userId: string
@@ -18,6 +19,7 @@ type CreateTemporaryCredentialsUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class CreateTemporaryCredentialsUseCase {
   constructor(
     private usersRepository: UsersRepository,

@@ -6,6 +6,7 @@ import {
 import { TeachersRepository } from '../repositories/teachers-repository'
 import { Either, right } from '@/core/either'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { Injectable } from '@nestjs/common'
 
 interface CreateTeacherUseCaseRequest {
   name: string
@@ -19,6 +20,7 @@ type CreateTeacherUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class CreateTeacherUseCase {
   constructor(private teachersRepository: TeachersRepository) {}
   async execute({
