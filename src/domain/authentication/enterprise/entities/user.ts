@@ -4,7 +4,7 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 export interface UserProps {
   email: string
   password: string
-  temporaryPassword?: string
+  temporaryPassword?: string | null
 }
 
 export class User extends Entity<UserProps> {

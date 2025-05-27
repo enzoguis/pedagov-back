@@ -1,0 +1,26 @@
+import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { User } from '@/domain/authentication/enterprise/entities/user'
+import { Prisma, User as PrismaUser } from '@prisma/client'
+
+export class PrismaUserMapper {
+  static toDomain(raw: PrismaUser): User {
+    return User.create(
+      {
+        email: raw.email,
+        password: raw.password,
+        temporaryPassword: raw.temporaryPassword ?? null,
+      },
+      new UniqueEntityID(raw.id)
+    )
+  }
+
+  static toPrisma(user: User): Prisma.UserUncheckedCreateInput {
+    return {
+      id: user.id.toString(),
+      name: '',
+      email: user.email,
+      password: user.password,
+      temporaryPassword: user.password,
+    }
+  }
+}
