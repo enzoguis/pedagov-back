@@ -9,20 +9,37 @@ export class PrismaStudentsRepository implements StudentsRepository {
   constructor(private prisma: PrismaService) {}
 
   async create(student: Student): Promise<void> {
-    const data = PrismaStudentMapper.toPrisma(student)
+    const userData = {
+      id: student.id.toString(),
+      name: student.name,
+    }
 
-    await this.prisma.student.create({ data })
+    const studentData = PrismaStudentMapper.toPrisma(student)
+
+    await this.prisma.$transaction([
+      this.prisma.user.create({ data: userData }),
+      this.prisma.student.create({ data: studentData }),
+    ])
   }
 
   async save(student: Student) {
-    const data = PrismaStudentMapper.toPrisma(student)
+    const userUpdate = this.prisma.user.update({
+      where: {
+        id: student.id.toString(),
+      },
+      data: {
+        name: student.name,
+      },
+    })
 
-    await this.prisma.student.update({
+    const studentUpdate = this.prisma.student.update({
       where: {
         userId: student.id.toString(),
       },
-      data,
+      data: PrismaStudentMapper.toPrisma(student),
     })
+
+    await this.prisma.$transaction([userUpdate, studentUpdate])
   }
 
   async findById(id: string) {

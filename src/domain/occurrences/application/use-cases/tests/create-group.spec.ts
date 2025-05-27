@@ -1,15 +1,15 @@
 import { InMemoryGroupsRepository } from 'test/repositories/in-memory-groups-repository'
-import { InMemoryGroupStudentRepository } from 'test/repositories/in-memory-group-student-repository'
+import { InMemoryGroupStudentsRepository } from 'test/repositories/in-memory-group-student-repository'
 import { CreateGroupUseCase } from '../create-group'
-let inMemoryGroupStudentRepository: InMemoryGroupStudentRepository
+let inMemoryGroupStudentsRepository: InMemoryGroupStudentsRepository
 let inMemoryGroupsRepository: InMemoryGroupsRepository
 let sut: CreateGroupUseCase
 
 describe('Create Group Use Case', () => {
   beforeEach(() => {
-    inMemoryGroupStudentRepository = new InMemoryGroupStudentRepository()
+    inMemoryGroupStudentsRepository = new InMemoryGroupStudentsRepository()
     inMemoryGroupsRepository = new InMemoryGroupsRepository(
-      inMemoryGroupStudentRepository
+      inMemoryGroupStudentsRepository
     )
     sut = new CreateGroupUseCase(inMemoryGroupsRepository)
   })

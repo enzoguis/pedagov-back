@@ -4,7 +4,7 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { GroupStudent } from '@/domain/occurrences/enterprise/entities/group-student'
 import { GroupStudentList } from '@/domain/occurrences/enterprise/entities/group-student-list'
-import { GroupStudentRepository } from '../repositories/group-student-repository'
+import { GroupStudentsRepository } from '../repositories/group-student-repository'
 import {
   GroupShiftsEnum,
   GroupShiftsType,
@@ -23,7 +23,7 @@ type EditGroupUseCaseResponse = Either<ResourceNotFoundError, {}>
 export class EditGroupUseCase {
   constructor(
     private groupsRepository: GroupsRepository,
-    private groupStudentsRepository: GroupStudentRepository
+    private groupStudentsRepository: GroupStudentsRepository
   ) {}
   async execute({
     groupId,

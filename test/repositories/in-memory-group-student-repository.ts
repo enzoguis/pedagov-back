@@ -1,7 +1,9 @@
-import { GroupStudentRepository } from '@/domain/occurrences/application/repositories/group-student-repository'
+import { GroupStudentsRepository } from '@/domain/occurrences/application/repositories/group-student-repository'
 import { GroupStudent } from '@/domain/occurrences/enterprise/entities/group-student'
 
-export class InMemoryGroupStudentRepository implements GroupStudentRepository {
+export class InMemoryGroupStudentsRepository
+  implements GroupStudentsRepository
+{
   public items: GroupStudent[] = []
 
   async createMany(students: GroupStudent[]): Promise<void> {

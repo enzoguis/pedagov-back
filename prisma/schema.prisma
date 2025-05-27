@@ -10,8 +10,8 @@ datasource db {
 model User {
   id                String  @id @default(uuid())
   name              String
-  email             String  @unique
-  password          String
+  email             String? @unique
+  password          String?
   temporaryPassword String? @map("temporary_password")
 
   pedagogue Pedagogue?
@@ -49,9 +49,12 @@ enum GroupShift {
 }
 
 model Group {
-  id       String     @id @default(uuid())
-  name     String
-  shift    GroupShift
+  id        String     @id @default(uuid())
+  teacherId String     @map("teacher_id")
+  name      String
+  shift     GroupShift
+
+  teacher  Teacher   @relation(fields: [teacherId], references: [id])
   students Student[]
 
   @@map("groups")
@@ -150,6 +153,7 @@ model Teacher {
 
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   occurrences Occurrence[]
+  Group       Group[]
 
   @@unique([userId])
   @@index([userId])
