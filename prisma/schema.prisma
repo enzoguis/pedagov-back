@@ -14,12 +14,12 @@ model User {
   password          String
   temporaryPassword String? @map("temporary_password")
 
-  Pedagogue Pedagogue?
-  Teacher   Teacher?
-  Student   Student?
+  pedagogue Pedagogue?
+  teacher   Teacher?
+  student   Student?
 
-  occurrences       Occurrence[]        @relation("Occurrence_attendee")
-  occurrenceHistory OccurrenceHistory[]
+  occurrenceHistories    OccurrenceHistory[]
+  participatedOccurences OccurrenceAttendees[]
 
   @@map("users")
 }
@@ -76,14 +76,34 @@ model Occurrence {
   author  Pedagogue @relation(fields: [authorId], references: [id])
   teacher Teacher   @relation(fields: [teacherId], references: [id])
 
-  attendees           User[]              @relation("Occurrence_attendee")
-  students            Student[]           @relation("Occurrence_students")
   occurrenceHistories OccurrenceHistory[]
   attachments         Attachment[]
+  students            OccurrenceStudents[]
+  attendees           OccurrenceAttendees[]
 
   @@index([teacherId])
   @@index([authorId])
   @@map("occurrences")
+}
+
+model OccurrenceStudents {
+  occurrence   Occurrence @relation(fields: [occurrenceId], references: [id])
+  occurrenceId String     @map("occurrence_id")
+
+  student   Student @relation(fields: [studentId], references: [id])
+  studentId String  @map("student_id")
+
+  @@id([occurrenceId, studentId])
+}
+
+model OccurrenceAttendees {
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  occurrence   Occurrence @relation(fields: [occurrenceId], references: [id])
+  occurrenceId String     @map("occurrence_id")
+
+  @@id([occurrenceId, userId])
 }
 
 model OccurrenceHistory {
@@ -109,10 +129,9 @@ model Student {
   responsiblePhone String
   responsibleEmail String @unique
 
-  occurrences Occurrence[] @relation("Occurrence_students")
-
-  group Group @relation(fields: [groupId], references: [id])
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group       Group                @relation(fields: [groupId], references: [id])
+  user        User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  occurrences OccurrenceStudents[]
 
   @@index([userId])
   @@index([groupId])
