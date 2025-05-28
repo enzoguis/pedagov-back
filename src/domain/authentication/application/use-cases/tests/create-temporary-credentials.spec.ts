@@ -6,6 +6,7 @@ import { User } from '@/domain/authentication/enterprise/entities/user'
 import { CreateTemporaryCredentialsUseCase } from '../create-temporary-credentials'
 import { FakeEmailSender } from 'test/email/fake-email-sender'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { makeUser } from 'test/factories/make-user'
 
 let fakeHasher: FakeHasher
 let fakeEmailSender: FakeEmailSender
@@ -25,15 +26,17 @@ describe('Create Temporary Credentials Use Case', () => {
   })
 
   it('should send an email with the temporary password to the registered email', async () => {
+    inMemoryUsersRepository.create(makeUser({}, new UniqueEntityID('user-1')))
+
     const result = await sut.execute({
-      userId: '1',
+      userId: 'user-1',
       email: 'user@example.com',
     })
 
     expect(result.isRight).toBeTruthy()
-    expect(inMemoryUsersRepository.items[0].id).toStrictEqual(
-      new UniqueEntityID('1')
-    )
+    expect(
+      inMemoryUsersRepository.items[0].temporaryPassword?.length
+    ).toBeGreaterThan(1)
     expect(fakeEmailSender.sentMessages[0].data).toHaveProperty(
       'temporaryPassword'
     )

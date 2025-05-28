@@ -18,7 +18,7 @@ export class OnPedagogueCreated implements EventHandler {
 
   private async execute({ pedagogue }: PedagogueCreatedEvent) {
     const user = await this.usersRepository.findById(pedagogue.id.toString())
-    if (user) {
+    if (user && user.email) {
       await this.createTemporaryCredentials.execute({
         userId: pedagogue.id.toString(),
         email: user.email,

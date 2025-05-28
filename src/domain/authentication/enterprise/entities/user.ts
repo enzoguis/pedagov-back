@@ -2,8 +2,8 @@ import { Entity } from '@/core/entities/entitity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
 export interface UserProps {
-  email: string
-  password: string
+  email?: string | null
+  password?: string | null
   temporaryPassword?: string | null
 }
 
@@ -17,14 +17,14 @@ export class User extends Entity<UserProps> {
   }
 
   get temporaryPassword() {
-    return this.props.temporaryPassword ?? ''
+    return this.props.temporaryPassword
   }
 
-  set temporaryPassword(newPassword: string) {
+  set temporaryPassword(newPassword: string | null | undefined) {
     this.props.temporaryPassword = newPassword
   }
 
-  set password(password: string) {
+  set password(password: string | null | undefined) {
     this.props.password = password
   }
 

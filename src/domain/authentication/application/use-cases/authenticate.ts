@@ -32,7 +32,7 @@ export class AuthenticateUseCase {
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
     const user = await this.usersRepository.findByEmail(email)
 
-    if (!user) {
+    if (!user || !user.temporaryPassword || !user.password) {
       return left(new WrongCredentialsError())
     }
 
