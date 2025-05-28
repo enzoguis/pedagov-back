@@ -25,10 +25,7 @@ export class PrismaTeacherMapper {
   }
 
   static toPrisma(teacher: Teacher): Prisma.TeacherUncheckedCreateInput {
-    const id = new UniqueEntityID()
-
     return {
-      id: id.toString(),
       userId: teacher.id.toString(),
       status: teacher.status,
     }

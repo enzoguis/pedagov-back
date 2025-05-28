@@ -26,10 +26,7 @@ export class PrismaStudentMapper {
   }
 
   static toPrisma(student: Student): Prisma.StudentUncheckedCreateInput {
-    const id = new UniqueEntityID()
-
     return {
-      id: id.toString(),
       userId: student.id.toString(),
       groupId: student.groupId.toString(),
       cpf: student.cpf.value,

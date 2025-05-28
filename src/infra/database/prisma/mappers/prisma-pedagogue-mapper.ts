@@ -25,10 +25,7 @@ export class PrismaPedagogueMapper {
   }
 
   static toPrisma(pedagogue: Pedagogue): Prisma.PedagogueUncheckedCreateInput {
-    const id = new UniqueEntityID()
-
     return {
-      id: id.toString(),
       userId: pedagogue.id.toString(),
       role: pedagogue.role,
     }

@@ -4,6 +4,10 @@ import { Prisma, Attachment as PrismaAttachment } from '@prisma/client'
 
 export class PrismaOccurrenceAttachmentsMapper {
   static toDomain(raw: PrismaAttachment): OccurrenceAttachment {
+    if (!raw.occurrenceId) {
+      throw new Error('Property OccurrenceId is missing in attachment.')
+    }
+
     return OccurrenceAttachment.create({
       attachmentId: new UniqueEntityID(raw.id),
       occurrenceId: new UniqueEntityID(raw.occurrenceId),

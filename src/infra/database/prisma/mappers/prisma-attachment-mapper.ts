@@ -20,7 +20,6 @@ export class PrismaAttachmentMapper {
       id: attachment.id.toString(),
       title: attachment.title,
       url: attachment.url,
-      occurrenceId: '',
     }
   }
 }

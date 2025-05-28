@@ -6,7 +6,7 @@ import { Prisma, Student as PrismaStudent } from '@prisma/client'
 export class PrismaGroupStudentMapper {
   static toDomain(raw: PrismaStudent): GroupStudent {
     return GroupStudent.create({
-      groupId: new UniqueEntityID(raw.id),
+      groupId: new UniqueEntityID(raw.groupId),
       studentId: new UniqueEntityID(raw.userId),
     })
   }
@@ -18,7 +18,7 @@ export class PrismaGroupStudentMapper {
 
     return {
       where: {
-        id: {
+        userId: {
           in: studentsIds,
         },
       },
