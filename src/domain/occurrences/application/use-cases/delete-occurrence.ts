@@ -1,6 +1,7 @@
 import { Either, left, right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { OccurrencesRepository } from '../repositories/occurrences-repository'
+import { Injectable } from '@nestjs/common'
 
 interface DeleteOccurrenceUseCaseRequest {
   occurrenceId: string
@@ -8,6 +9,7 @@ interface DeleteOccurrenceUseCaseRequest {
 
 type DeleteOccurrenceUseCaseResponse = Either<ResourceNotFoundError, {}>
 
+@Injectable()
 export class DeleteOccurrenceUseCase {
   constructor(private occurrencesRepository: OccurrencesRepository) {}
   async execute({

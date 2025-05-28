@@ -11,12 +11,11 @@ const authenticateBodySchema = z.object({
 type AuthenticateBody = z.infer<typeof authenticateBodySchema>
 
 @Controller('/sessions')
-@UsePipes(new ZodValidationPipe(authenticateBodySchema))
 export class AuthenticateController {
   constructor(private jwt: JwtService) {}
 
   @Post()
-  async handle(@Body() body: AuthenticateBody) {
+  async handle() {
     const token = this.jwt.sign({ sub: 'user-id' })
 
     return {

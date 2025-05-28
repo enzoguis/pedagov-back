@@ -5,3 +5,29 @@
 
 POST {{baseUrl}}/sessions 
 Content-Type: application/json
+
+###
+
+# @name create_occurrences
+
+POST {{baseUrl}}/occurrences
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Aluno faltou à aula",
+  "description": "O aluno não compareceu à aula de matemática.",
+  "studentsIds": [
+    "7b3c2454-0f8e-4f22-84e9-9e2d68a02a61",
+    "5a2c29d0-3f35-432e-a5d8-48f8db47dbb7"
+  ],
+  "attendeesIds": [
+    "cd38b0dc-f7d3-47d3-a8b4-f3034b58bb6b"
+  ],
+  "attachmentsIds": [
+    "a3b647f3-6b3e-4bd6-bf1e-cf48be0fd3cd"
+  ],
+  "teacherId": "2e88243d-62bc-4f17-9d2c-4c7f6b90c31f",
+  "type": "absences",
+  "shouldSendEmail": true
+}

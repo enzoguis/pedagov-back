@@ -5,6 +5,7 @@ import {
   PedagogueRoleEnum,
   PedagogueRoleType,
 } from '../../enterprise/entities/pedagogue'
+import { Injectable } from '@nestjs/common'
 
 interface EditPedagogueUseCaseRequest {
   pedagogueId: string
@@ -14,6 +15,7 @@ interface EditPedagogueUseCaseRequest {
 
 type EditPedagogueUseCaseResponse = Either<ResourceNotFoundError, {}>
 
+@Injectable()
 export class EditPedagogueUseCase {
   constructor(private pedagoguesRepository: PedagoguesRepository) {}
   async execute({

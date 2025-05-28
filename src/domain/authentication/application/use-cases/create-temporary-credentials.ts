@@ -1,10 +1,14 @@
 import { UsersRepository } from '../repositories/users-repository'
-import { Either, right } from '@/core/either'
+import { Either, left, right } from '@/core/either'
 import generatePassword from 'generate-password'
 import { HashGenerator } from '../../../authentication/application/cryptography/hash-generator'
-import { EmailSender } from '../email/email-sender'
 import { User } from '../../enterprise/entities/user'
-import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { Injectable } from '@nestjs/common'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import {
+  EmailSender,
+  EmailSenderTemplateIdEnum,
+} from '@/core/email/email-sender'
 
 interface CreateTemporaryCredentialsUseCaseRequest {
   userId: string
@@ -12,12 +16,13 @@ interface CreateTemporaryCredentialsUseCaseRequest {
 }
 
 type CreateTemporaryCredentialsUseCaseResponse = Either<
-  null,
+  ResourceNotFoundError,
   {
     user: User
   }
 >
 
+@Injectable()
 export class CreateTemporaryCredentialsUseCase {
   constructor(
     private usersRepository: UsersRepository,
@@ -28,6 +33,12 @@ export class CreateTemporaryCredentialsUseCase {
     userId,
     email,
   }: CreateTemporaryCredentialsUseCaseRequest): Promise<CreateTemporaryCredentialsUseCaseResponse> {
+    const user = await this.usersRepository.findById(userId)
+
+    if (!user) {
+      return left(new ResourceNotFoundError())
+    }
+
     const temporaryPassword = generatePassword.generate({
       length: 8,
       numbers: true,
@@ -36,20 +47,13 @@ export class CreateTemporaryCredentialsUseCase {
 
     const password = await this.hashGenerator.hash(temporaryPassword)
 
-    const user = User.create(
-      {
-        email,
-        password,
-        temporaryPassword: password,
-      },
-      new UniqueEntityID(userId)
-    )
+    user.temporaryPassword = password
 
-    await this.usersRepository.create(user)
+    await this.usersRepository.save(user)
 
     await this.emailSender.send({
       recipientEmail: email,
-      templateId: '1',
+      templateId: EmailSenderTemplateIdEnum.TEMPORARY_PASSWORD_CREATED,
       data: { temporaryPassword },
     })
 

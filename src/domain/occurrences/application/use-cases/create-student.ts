@@ -4,6 +4,7 @@ import { Student } from '@/domain/occurrences/enterprise/entities/student'
 import { CPF } from '@/domain/occurrences/enterprise/entities/value-objects/cpf'
 import { StudentsRepository } from '../repositories/students-repository'
 import { StudentAlreadyExistsError } from './errors/student-already-exists-error'
+import { Injectable } from '@nestjs/common'
 
 interface CreateStudentUseCaseRequest {
   name: string
@@ -20,6 +21,7 @@ type CreateStudentUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class CreateStudentUseCase {
   constructor(private studentsRepository: StudentsRepository) {}
   async execute({

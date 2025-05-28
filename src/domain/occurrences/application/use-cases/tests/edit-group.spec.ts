@@ -1,22 +1,22 @@
 import { InMemoryGroupsRepository } from 'test/repositories/in-memory-groups-repository'
 import { makeGroup } from 'test/factories/make-group'
 import { EditGroupUseCase } from '../edit-group'
-import { InMemoryGroupStudentRepository } from 'test/repositories/in-memory-group-student-repository'
+import { InMemoryGroupStudentsRepository } from 'test/repositories/in-memory-group-student-repository'
 import { makeGroupStudent } from 'test/factories/make-group-student'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-let inMemoryGroupStudentRepository: InMemoryGroupStudentRepository
+let inMemoryGroupStudentsRepository: InMemoryGroupStudentsRepository
 let inMemoryGroupsRepository: InMemoryGroupsRepository
 let sut: EditGroupUseCase
 
 describe('Edit Group Use Case', () => {
   beforeEach(() => {
-    inMemoryGroupStudentRepository = new InMemoryGroupStudentRepository()
+    inMemoryGroupStudentsRepository = new InMemoryGroupStudentsRepository()
     inMemoryGroupsRepository = new InMemoryGroupsRepository(
-      inMemoryGroupStudentRepository
+      inMemoryGroupStudentsRepository
     )
     sut = new EditGroupUseCase(
       inMemoryGroupsRepository,
-      inMemoryGroupStudentRepository
+      inMemoryGroupStudentsRepository
     )
   })
 
@@ -26,7 +26,7 @@ describe('Edit Group Use Case', () => {
 
     const groupId = group.id.toString()
 
-    inMemoryGroupStudentRepository.items.push(
+    inMemoryGroupStudentsRepository.items.push(
       makeGroupStudent({
         groupId: group.id,
         studentId: new UniqueEntityID('1'),
@@ -42,7 +42,7 @@ describe('Edit Group Use Case', () => {
     })
 
     expect(result.isRight()).toBeTruthy()
-    expect(inMemoryGroupStudentRepository.items).toHaveLength(1)
+    expect(inMemoryGroupStudentsRepository.items).toHaveLength(1)
     expect(inMemoryGroupsRepository.items[0].students.currentItems).toEqual([
       expect.objectContaining({
         studentId: new UniqueEntityID('2'),

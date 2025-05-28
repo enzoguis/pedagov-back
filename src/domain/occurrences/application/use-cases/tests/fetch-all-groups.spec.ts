@@ -1,16 +1,16 @@
 import { InMemoryGroupsRepository } from 'test/repositories/in-memory-groups-repository'
 import { FetchAllGroupsUseCase } from '../fetch-all-groups'
 import { makeGroup } from 'test/factories/make-group'
-import { InMemoryGroupStudentRepository } from 'test/repositories/in-memory-group-student-repository'
-let inMemoryGroupStudentRepository: InMemoryGroupStudentRepository
+import { InMemoryGroupStudentsRepository } from 'test/repositories/in-memory-group-student-repository'
+let inMemoryGroupStudentsRepository: InMemoryGroupStudentsRepository
 let inMemoryGroupsRepository: InMemoryGroupsRepository
 let sut: FetchAllGroupsUseCase
 
 describe('Fetch All Groups Use Case', () => {
   beforeEach(() => {
-    inMemoryGroupStudentRepository = new InMemoryGroupStudentRepository()
+    inMemoryGroupStudentsRepository = new InMemoryGroupStudentsRepository()
     inMemoryGroupsRepository = new InMemoryGroupsRepository(
-      inMemoryGroupStudentRepository
+      inMemoryGroupStudentsRepository
     )
     sut = new FetchAllGroupsUseCase(inMemoryGroupsRepository)
   })

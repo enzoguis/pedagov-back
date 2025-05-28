@@ -2,33 +2,100 @@ import { StudentsRepository } from '@/domain/occurrences/application/repositorie
 import { Student } from '@/domain/occurrences/enterprise/entities/student'
 import { PrismaStudentMapper } from '../mappers/prisma-student-mapper'
 import { PrismaService } from '../prisma.service'
+import { Injectable } from '@nestjs/common'
 
+@Injectable()
 export class PrismaStudentsRepository implements StudentsRepository {
   constructor(private prisma: PrismaService) {}
 
   async create(student: Student): Promise<void> {
-    const data = PrismaStudentMapper.toPrisma(student)
+    const userData = {
+      id: student.id.toString(),
+      name: student.name,
+    }
 
-    await this.prisma.student.create({ data })
+    const studentData = PrismaStudentMapper.toPrisma(student)
+
+    await this.prisma.$transaction([
+      this.prisma.user.create({ data: userData }),
+      this.prisma.student.create({ data: studentData }),
+    ])
   }
 
-  save(student: Student): Promise<void> {
-    throw new Error('Method not implemented.')
+  async save(student: Student) {
+    const userUpdate = this.prisma.user.update({
+      where: {
+        id: student.id.toString(),
+      },
+      data: {
+        name: student.name,
+      },
+    })
+
+    const studentUpdate = this.prisma.student.update({
+      where: {
+        userId: student.id.toString(),
+      },
+      data: PrismaStudentMapper.toPrisma(student),
+    })
+
+    await this.prisma.$transaction([userUpdate, studentUpdate])
   }
 
-  findById(id: string): Promise<Student | null> {
-    throw new Error('Method not implemented.')
+  async findById(id: string) {
+    const student = await this.prisma.student.findUnique({
+      where: {
+        userId: id,
+      },
+      include: {
+        user: true,
+      },
+    })
+
+    if (!student) {
+      return null
+    }
+
+    return PrismaStudentMapper.toDomain(student)
   }
 
-  findManyByIds(ids: string[]): Promise<Student[]> {
-    throw new Error('Method not implemented.')
+  async findManyByIds(ids: string[]) {
+    const students = await this.prisma.student.findMany({
+      where: {
+        userId: {
+          in: ids,
+        },
+      },
+      include: {
+        user: true,
+      },
+    })
+
+    return students.map(PrismaStudentMapper.toDomain)
   }
 
-  findByCPF(cpf: string): Promise<Student | null> {
-    throw new Error('Method not implemented.')
+  async findByCPF(cpf: string): Promise<Student | null> {
+    const student = await this.prisma.student.findUnique({
+      where: {
+        cpf,
+      },
+      include: {
+        user: true,
+      },
+    })
+
+    if (!student) {
+      return null
+    }
+
+    return PrismaStudentMapper.toDomain(student)
   }
 
-  delete(student: Student): Promise<void> {
-    throw new Error('Method not implemented.')
+  async delete(student: Student): Promise<void> {
+    await this.prisma.user.delete({
+      where: {
+        id: student.id.toString(),
+      },
+    })
   }
 }

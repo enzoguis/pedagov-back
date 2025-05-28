@@ -4,6 +4,7 @@ import {
   OccurrenceTypes,
 } from '@/domain/occurrences/enterprise/entities/occurrence'
 import { OccurrencesRepository } from '../repositories/occurrences-repository'
+import { Injectable } from '@nestjs/common'
 
 interface FetchAllOccurrencesUseCaseRequest {
   page: number
@@ -19,6 +20,7 @@ type FetchAllOccurrencesUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class FetchAllOccurrencesUseCase {
   constructor(private occurrencesRepository: OccurrencesRepository) {}
   async execute({

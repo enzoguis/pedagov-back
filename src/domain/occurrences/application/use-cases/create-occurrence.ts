@@ -10,10 +10,14 @@ import { OccurrenceStudent } from '@/domain/occurrences/enterprise/entities/occu
 import { OccurrenceStudentList } from '@/domain/occurrences/enterprise/entities/occurrence-student-list'
 import { OccurrenceAttendee } from '@/domain/occurrences/enterprise/entities/occurrence-attendee'
 import { OccurrenceAttendeesList } from '@/domain/occurrences/enterprise/entities/occurrence-attendee-list'
-import { EmailSender } from '../email/email-sender'
 import { StudentsRepository } from '../repositories/students-repository'
 import { OccurrenceAttachment } from '@/domain/occurrences/enterprise/entities/occurrence-attachment'
 import { OccurrenceAttachmentsList } from '@/domain/occurrences/enterprise/entities/occurrence-attachments-list'
+import { Injectable } from '@nestjs/common'
+import {
+  EmailSender,
+  EmailSenderTemplateIdEnum,
+} from '@/core/email/email-sender'
 
 interface CreateOccurrenceUseCaseRequest {
   authorId: string
@@ -25,7 +29,6 @@ interface CreateOccurrenceUseCaseRequest {
   title: string
   description: string
   shouldSendEmail: boolean
-  templateId: string
 }
 
 type CreateOccurrenceUseCaseResponse = Either<
@@ -35,6 +38,7 @@ type CreateOccurrenceUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class CreateOccurrenceUseCase {
   constructor(
     private occurrencesRepository: OccurrencesRepository,
@@ -51,7 +55,6 @@ export class CreateOccurrenceUseCase {
     teacherId,
     title,
     shouldSendEmail,
-    templateId,
   }: CreateOccurrenceUseCaseRequest): Promise<CreateOccurrenceUseCaseResponse> {
     const occurrence = Occurrence.create({
       authorId: new UniqueEntityID(authorId),
@@ -97,7 +100,7 @@ export class CreateOccurrenceUseCase {
         students.map(async (student) => {
           await this.emailSender.send({
             recipientEmail: student.responsibleEmail,
-            templateId,
+            templateId: EmailSenderTemplateIdEnum.OCCURRENCE_CREATED,
             data: { studentName: student.name },
           })
         })

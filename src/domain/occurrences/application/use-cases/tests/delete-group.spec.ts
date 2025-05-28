@@ -3,16 +3,16 @@ import { makeGroup } from 'test/factories/make-group'
 import { DeleteGroupUseCase } from '../delete-group'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
-import { InMemoryGroupStudentRepository } from 'test/repositories/in-memory-group-student-repository'
-let inMemoryGroupStudentRepository: InMemoryGroupStudentRepository
+import { InMemoryGroupStudentsRepository } from 'test/repositories/in-memory-group-student-repository'
+let inMemoryGroupStudentsRepository: InMemoryGroupStudentsRepository
 let inMemoryGroupsRepository: InMemoryGroupsRepository
 let sut: DeleteGroupUseCase
 
 describe('Delete Group Use Case', () => {
   beforeEach(() => {
-    inMemoryGroupStudentRepository = new InMemoryGroupStudentRepository()
+    inMemoryGroupStudentsRepository = new InMemoryGroupStudentsRepository()
     inMemoryGroupsRepository = new InMemoryGroupsRepository(
-      inMemoryGroupStudentRepository
+      inMemoryGroupStudentsRepository
     )
     sut = new DeleteGroupUseCase(inMemoryGroupsRepository)
   })

@@ -71,7 +71,6 @@ describe('Create Occurrence Use Case', () => {
       teacherId: '1',
       title: 'occurrence title',
       type: 'ABSENCES',
-      templateId: '1',
     })
 
     expect(result.isRight).toBeTruthy()
@@ -109,7 +108,6 @@ describe('Create Occurrence Use Case', () => {
       teacherId: '1',
       title: 'occurrence title',
       type: 'ABSENCES',
-      templateId: '1',
     })
 
     expect(result.isRight).toBeTruthy()

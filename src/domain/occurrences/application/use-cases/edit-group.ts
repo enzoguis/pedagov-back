@@ -4,11 +4,12 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { GroupStudent } from '@/domain/occurrences/enterprise/entities/group-student'
 import { GroupStudentList } from '@/domain/occurrences/enterprise/entities/group-student-list'
-import { GroupStudentRepository } from '../repositories/group-student-repository'
+import { GroupStudentsRepository } from '../repositories/group-student-repository'
 import {
   GroupShiftsEnum,
   GroupShiftsType,
 } from '@/domain/occurrences/enterprise/entities/group'
+import { Injectable } from '@nestjs/common'
 
 interface EditGroupUseCaseRequest {
   groupId: string
@@ -20,10 +21,11 @@ interface EditGroupUseCaseRequest {
 
 type EditGroupUseCaseResponse = Either<ResourceNotFoundError, {}>
 
+@Injectable()
 export class EditGroupUseCase {
   constructor(
     private groupsRepository: GroupsRepository,
-    private groupStudentsRepository: GroupStudentRepository
+    private groupStudentsRepository: GroupStudentsRepository
   ) {}
   async execute({
     groupId,

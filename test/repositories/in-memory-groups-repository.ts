@@ -1,17 +1,19 @@
 import { PaginationParams } from '@/core/repositories/pagination-params'
 import { GroupsRepository } from '@/domain/occurrences/application/repositories/groups-repository'
 import { Group } from '@/domain/occurrences/enterprise/entities/group'
-import { InMemoryGroupStudentRepository } from './in-memory-group-student-repository'
+import { InMemoryGroupStudentsRepository } from './in-memory-group-student-repository'
 
 export class InMemoryGroupsRepository implements GroupsRepository {
   public items: Group[] = []
 
-  constructor(private groupStudentRepository: InMemoryGroupStudentRepository) {}
+  constructor(
+    private groupStudentsRepository: InMemoryGroupStudentsRepository
+  ) {}
 
   async create(group: Group) {
     this.items.push(group)
 
-    await this.groupStudentRepository.createMany(group.students.getItems())
+    await this.groupStudentsRepository.createMany(group.students.getItems())
   }
 
   async findAll({ page }: PaginationParams) {
@@ -27,9 +29,9 @@ export class InMemoryGroupsRepository implements GroupsRepository {
       this.items[itemIndex] = group
     }
 
-    await this.groupStudentRepository.createMany(group.students.getNewItems())
+    await this.groupStudentsRepository.createMany(group.students.getNewItems())
 
-    await this.groupStudentRepository.deleteMany(
+    await this.groupStudentsRepository.deleteMany(
       group.students.getRemovedItems()
     )
   }

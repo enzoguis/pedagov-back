@@ -4,7 +4,10 @@ import {
   PedagogueProps,
   PedagogueRoleEnum,
 } from '@/domain/occurrences/enterprise/entities/pedagogue'
+import { PrismaPedagogueMapper } from '@/infra/database/prisma/mappers/prisma-pedagogue-mapper'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { faker } from '@faker-js/faker'
+import { Injectable } from '@nestjs/common'
 
 export function makePedagogue(
   override: Partial<PedagogueProps> = {},
@@ -20,4 +23,26 @@ export function makePedagogue(
   )
 
   return pedagogue
+}
+
+@Injectable()
+export class PedagogueFactory {
+  constructor(private prisma: PrismaService) {}
+
+  async makePrismaPedagogue(data: Partial<PedagogueProps> = {}): Promise<Pedagogue> {
+    const pedagogue = makePedagogue(data)
+
+    await this.prisma.user.create({
+      data: {
+        id: pedagogue.id.toString(),
+        name: pedagogue.name,
+      },
+    })
+
+    await this.prisma.pedagogue.create({
+      data: PrismaPedagogueMapper.toPrisma(pedagogue),
+    })
+
+    return pedagogue
+  }
 }

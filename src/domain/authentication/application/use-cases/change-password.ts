@@ -1,10 +1,9 @@
 import { Either, left, right } from '@/core/either'
 import { HashComparer } from '../../../authentication/application/cryptography/hash-comparer'
-import { Encrypter } from '../../../authentication/application/cryptography/encrypter'
 import { UsersRepository } from '../repositories/users-repository'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { HashGenerator } from '../../../authentication/application/cryptography/hash-generator'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
+import { Injectable } from '@nestjs/common'
 
 interface ChangePasswordUseCaseRequest {
   email: string
@@ -12,11 +11,9 @@ interface ChangePasswordUseCaseRequest {
   newPassword: string
 }
 
-type ChangePasswordUseCaseResponse = Either<
-  ResourceNotFoundError | WrongCredentialsError,
-  {}
->
+type ChangePasswordUseCaseResponse = Either<WrongCredentialsError, {}>
 
+@Injectable()
 export class ChangePasswordUseCase {
   constructor(
     private usersRepository: UsersRepository,
@@ -31,8 +28,8 @@ export class ChangePasswordUseCase {
   }: ChangePasswordUseCaseRequest): Promise<ChangePasswordUseCaseResponse> {
     const user = await this.usersRepository.findByEmail(email)
 
-    if (!user) {
-      return left(new ResourceNotFoundError())
+    if (!user || !user.password) {
+      return left(new WrongCredentialsError())
     }
 
     const isPasswordValid = await this.hashComparer.compare(
@@ -47,7 +44,7 @@ export class ChangePasswordUseCase {
     const newPasswordHashed = await this.hashGenerator.hash(newPassword)
 
     user.password = newPasswordHashed
-    user.temporaryPassword = ''
+    user.temporaryPassword = null
 
     await this.usersRepository.save(user)
 
