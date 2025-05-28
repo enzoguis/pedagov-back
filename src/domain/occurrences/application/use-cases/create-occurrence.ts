@@ -10,11 +10,14 @@ import { OccurrenceStudent } from '@/domain/occurrences/enterprise/entities/occu
 import { OccurrenceStudentList } from '@/domain/occurrences/enterprise/entities/occurrence-student-list'
 import { OccurrenceAttendee } from '@/domain/occurrences/enterprise/entities/occurrence-attendee'
 import { OccurrenceAttendeesList } from '@/domain/occurrences/enterprise/entities/occurrence-attendee-list'
-import { EmailSender, EmailSenderTemplateIdEnum } from '../email/email-sender'
 import { StudentsRepository } from '../repositories/students-repository'
 import { OccurrenceAttachment } from '@/domain/occurrences/enterprise/entities/occurrence-attachment'
 import { OccurrenceAttachmentsList } from '@/domain/occurrences/enterprise/entities/occurrence-attachments-list'
 import { Injectable } from '@nestjs/common'
+import {
+  EmailSender,
+  EmailSenderTemplateIdEnum,
+} from '@/core/email/email-sender'
 
 interface CreateOccurrenceUseCaseRequest {
   authorId: string

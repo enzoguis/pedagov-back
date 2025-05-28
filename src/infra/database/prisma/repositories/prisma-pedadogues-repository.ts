@@ -55,7 +55,7 @@ export class PrismaPedagoguesRepository implements PedagoguesRepository {
   async findById(id: string): Promise<Pedagogue | null> {
     const pedagogue = await this.prisma.pedagogue.findUnique({
       where: {
-        id,
+        userId: id,
       },
       include: {
         user: true,

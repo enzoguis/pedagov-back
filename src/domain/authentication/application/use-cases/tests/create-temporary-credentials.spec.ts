@@ -1,8 +1,5 @@
 import { FakeHasher } from 'test/cryptography/fake-hasher'
-import { FakeEncrypter } from 'test/cryptography/fake-encrypter'
-import generatePassword from 'generate-password'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { User } from '@/domain/authentication/enterprise/entities/user'
 import { CreateTemporaryCredentialsUseCase } from '../create-temporary-credentials'
 import { FakeEmailSender } from 'test/email/fake-email-sender'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'

@@ -25,6 +25,10 @@ describe('ChangePassword Use Case', () => {
 
     inMemoryUsersRepository.create(user)
 
+    if (!user.email) {
+      return
+    }
+
     const result = await sut.execute({
       email: user.email,
       password: 'password-123',

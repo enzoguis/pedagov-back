@@ -1,7 +1,7 @@
-import { EmailSender } from '@/domain/occurrences/application/email/email-sender'
 import { Module } from '@nestjs/common'
-import { ConfigModule, ConfigService } from '@nestjs/config'
+import { ConfigModule } from '@nestjs/config'
 import { NodeMailerSender } from './nodemailer-sender'
+import { EmailSender } from '@/core/email/email-sender'
 
 @Module({
   imports: [ConfigModule],

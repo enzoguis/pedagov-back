@@ -2,10 +2,13 @@ import { UsersRepository } from '../repositories/users-repository'
 import { Either, left, right } from '@/core/either'
 import generatePassword from 'generate-password'
 import { HashGenerator } from '../../../authentication/application/cryptography/hash-generator'
-import { EmailSender, EmailSenderTemplateIdEnum } from '../email/email-sender'
 import { User } from '../../enterprise/entities/user'
 import { Injectable } from '@nestjs/common'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import {
+  EmailSender,
+  EmailSenderTemplateIdEnum,
+} from '@/core/email/email-sender'
 
 interface CreateTemporaryCredentialsUseCaseRequest {
   userId: string

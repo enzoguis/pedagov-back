@@ -13,7 +13,6 @@ import {
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { UserPayload } from '@/infra/auth/jwt-strategy'
-import { EmailSenderTemplateIdEnum } from '@/domain/occurrences/application/email/email-sender'
 
 const createOccurrenceBodySchema = z.object({
   title: z.string().min(1, 'The title must have at least 1 character'),

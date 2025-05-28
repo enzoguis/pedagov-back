@@ -27,7 +27,7 @@ export class PrismaGroupStudentsRepository implements GroupStudentsRepository {
 
     await this.prisma.student.deleteMany({
       where: {
-        id: {
+        userId: {
           in: studentsIds,
         },
       },
