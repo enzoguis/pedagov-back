@@ -1,7 +1,16 @@
-import { Body, Controller, Post, UsePipes } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  UnauthorizedException,
+  UsePipes,
+} from '@nestjs/common'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { z } from 'zod'
+import { Public } from '@/infra/auth/public'
+import { AuthenticateUseCase } from '@/domain/authentication/application/use-cases/authenticate'
+import { WrongCredentialsError } from '@/domain/authentication/application/use-cases/errors/wrong-credentials-error'
 
 const authenticateBodySchema = z.object({
   email: z.string().email(),
@@ -11,15 +20,37 @@ const authenticateBodySchema = z.object({
 type AuthenticateBody = z.infer<typeof authenticateBodySchema>
 
 @Controller('/sessions')
+@Public()
 export class AuthenticateController {
-  constructor(private jwt: JwtService) {}
+  constructor(private authenticate: AuthenticateUseCase) {}
 
   @Post()
-  async handle() {
-    const token = this.jwt.sign({ sub: 'user-id' })
+  @UsePipes(new ZodValidationPipe(authenticateBodySchema))
+  async handle(@Body() body: AuthenticateBody) {
+    const { email, password } = body
+
+    const result = await this.authenticate.execute({
+      email,
+      password,
+    })
+
+    if (result.isLeft()) {
+      const error = result.value
+
+      switch (error.constructor) {
+        case WrongCredentialsError:
+          console.log('caiu no case')
+          throw new UnauthorizedException(error.message)
+        default:
+          throw new BadRequestException(error.message)
+      }
+    }
+
+    const { accessToken, isFirstLogin } = result.value
 
     return {
-      access_token: token,
+      access_token: accessToken,
+      is_first_login: isFirstLogin,
     }
   }
 }

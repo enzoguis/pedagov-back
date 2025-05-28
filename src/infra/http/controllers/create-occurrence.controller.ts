@@ -8,7 +8,6 @@ import {
   Controller,
   Post,
   UseGuards,
-  UsePipes,
 } from '@nestjs/common'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
@@ -33,7 +32,6 @@ type CreateOccurrenceBody = z.infer<typeof createOccurrenceBodySchema>
 const bodyValidationPipe = new ZodValidationPipe(createOccurrenceBodySchema)
 
 @Controller('/occurrences')
-@UseGuards(JwtAuthGuard)
 export class CreateOccurrenceController {
   constructor(private createOccurrence: CreateOccurrenceUseCase) {}
 

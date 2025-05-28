@@ -32,31 +32,46 @@ export class AuthenticateUseCase {
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
     const user = await this.usersRepository.findByEmail(email)
 
-    if (!user || !user.temporaryPassword || !user.password) {
+    if (!user) {
       return left(new WrongCredentialsError())
     }
 
-    const isFirstLogin = await this.hashComparer.compare(
-      password,
-      user.temporaryPassword
-    )
+    if (user.temporaryPassword) {
+      const isFirstLogin = await this.hashComparer.compare(
+        password,
+        user.temporaryPassword
+      )
 
-    const isPasswordValid = await this.hashComparer.compare(
-      password,
-      user.password
-    )
+      const accessToken = await this.encrypter.encrypt({
+        sub: user.id.toString(),
+      })
 
-    if (!isPasswordValid) {
-      return left(new WrongCredentialsError())
+      return right({
+        accessToken,
+        isFirstLogin,
+      })
     }
 
-    const accessToken = await this.encrypter.encrypt({
-      sub: user.id.toString(),
-    })
+    if (user.password) {
+      const isPasswordValid = await this.hashComparer.compare(
+        password,
+        user.password
+      )
 
-    return right({
-      accessToken,
-      isFirstLogin,
-    })
+      if (!isPasswordValid) {
+        return left(new WrongCredentialsError())
+      }
+
+      const accessToken = await this.encrypter.encrypt({
+        sub: user.id.toString(),
+      })
+
+      return right({
+        accessToken,
+        isFirstLogin: false,
+      })
+    }
+
+    return left(new WrongCredentialsError())
   }
 }
