@@ -30,7 +30,6 @@ enum PedagogueRole {
 }
 
 model Pedagogue {
-  id     String        @id @default(uuid())
   role   PedagogueRole
   userId String        @map("user_id")
 
@@ -54,7 +53,7 @@ model Group {
   name      String
   shift     GroupShift
 
-  teacher  Teacher   @relation(fields: [teacherId], references: [id])
+  teacher  Teacher   @relation(fields: [teacherId], references: [userId])
   students Student[]
 
   @@map("groups")
@@ -76,8 +75,8 @@ model Occurrence {
   type        OccurrenceType
   createdAt   DateTime       @default(now()) @map("created_at")
 
-  author  Pedagogue @relation(fields: [authorId], references: [id])
-  teacher Teacher   @relation(fields: [teacherId], references: [id])
+  author  Pedagogue @relation(fields: [authorId], references: [userId])
+  teacher Teacher   @relation(fields: [teacherId], references: [userId])
 
   occurrenceHistories OccurrenceHistory[]
   attachments         Attachment[]
@@ -93,7 +92,7 @@ model OccurrenceStudents {
   occurrence   Occurrence @relation(fields: [occurrenceId], references: [id])
   occurrenceId String     @map("occurrence_id")
 
-  student   Student @relation(fields: [studentId], references: [id])
+  student   Student @relation(fields: [studentId], references: [userId])
   studentId String  @map("student_id")
 
   @@id([occurrenceId, studentId])
@@ -125,7 +124,6 @@ model OccurrenceHistory {
 }
 
 model Student {
-  id               String @id @default(uuid())
   userId           String @unique @map("user_id")
   groupId          String @map("group_id")
   cpf              String @unique
@@ -147,7 +145,6 @@ enum TeacherStatus {
 }
 
 model Teacher {
-  id     String        @id @default(uuid())
   userId String        @map("user_id")
   status TeacherStatus
 
@@ -161,12 +158,12 @@ model Teacher {
 }
 
 model Attachment {
-  id           String @id @default(uuid())
+  id           String  @id @default(uuid())
   title        String
   url          String
-  occurrenceId String @map("Occurrence_id")
+  occurrenceId String? @map("Occurrence_id")
 
-  occurrence Occurrence @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
+  occurrence Occurrence? @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
 
   @@index([occurrenceId])
   @@map("attachments")
