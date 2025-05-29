@@ -7,6 +7,7 @@ import { z } from 'zod'
 
 const userPayloadSchema = z.object({
   sub: z.string().uuid(),
+  roles: z.array(z.string()).optional(),
 })
 
 export type UserPayload = z.infer<typeof userPayloadSchema>

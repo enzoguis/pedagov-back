@@ -1,13 +1,11 @@
 import { CreateOccurrenceUseCase } from '@/domain/occurrences/application/use-cases/create-occurrence'
 import { OccurrenceTypeEnum } from '@/domain/occurrences/enterprise/entities/occurrence'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
-import { JwtAuthGuard } from '@/infra/auth/jwt-auth-guard'
 import {
   BadRequestException,
   Body,
   Controller,
   Post,
-  UseGuards,
 } from '@nestjs/common'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
