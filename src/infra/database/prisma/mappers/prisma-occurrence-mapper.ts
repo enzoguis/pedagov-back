@@ -7,14 +7,17 @@ import { Prisma, Occurrence as PrismaOccurrence } from '@prisma/client'
 
 export class PrismaOccurrenceMapper {
   static toDomain(raw: PrismaOccurrence): Occurrence {
-    return Occurrence.create({
-      authorId: new UniqueEntityID(raw.authorId),
-      teacherId: new UniqueEntityID(raw.teacherId),
-      title: raw.title,
-      description: raw.description,
-      type: OccurrenceTypeEnum[raw.type],
-      createdAt: raw.createdAt,
-    })
+    return Occurrence.create(
+      {
+        authorId: new UniqueEntityID(raw.authorId),
+        teacherId: new UniqueEntityID(raw.teacherId),
+        title: raw.title,
+        description: raw.description,
+        type: OccurrenceTypeEnum[raw.type],
+        createdAt: raw.createdAt,
+      },
+      new UniqueEntityID(raw.id)
+    )
   }
 
   static toPrisma(
