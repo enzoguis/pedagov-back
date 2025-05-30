@@ -20,6 +20,8 @@ import { DeleteOccurrenceController } from './controllers/delete-occurrence.cont
 import { DeleteOccurrenceUseCase } from '@/domain/occurrences/application/use-cases/delete-occurrence'
 import { DeletePedagogueController } from './controllers/delete-pedagogue.controller'
 import { DeletePedagogueUseCase } from '@/domain/occurrences/application/use-cases/delete-pedagogue'
+import { DeleteStudentController } from './controllers/delete-student.controller'
+import { DeleteStudentUseCase } from '@/domain/occurrences/application/use-cases/delete-student'
 
 @Module({
   imports: [DatabaseModule, EmailModule, CryptographyModule],
@@ -33,6 +35,7 @@ import { DeletePedagogueUseCase } from '@/domain/occurrences/application/use-cas
     DeleteGroupController,
     DeleteOccurrenceController,
     DeletePedagogueController,
+    DeleteStudentController,
   ],
   providers: [
     CreateOccurrenceUseCase,
@@ -44,6 +47,7 @@ import { DeletePedagogueUseCase } from '@/domain/occurrences/application/use-cas
     DeleteGroupUseCase,
     DeleteOccurrenceUseCase,
     DeletePedagogueUseCase,
+    DeleteStudentUseCase,
   ],
 })
 export class HttpModule {}
