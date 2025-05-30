@@ -8,6 +8,8 @@ import { CryptographyModule } from '../cryptography/cryptography.module'
 import { AuthenticateUseCase } from '@/domain/authentication/application/use-cases/authenticate'
 import { CreatePedagogueController } from './controllers/create-pedagogue.controller'
 import { CreatePedagogueUseCase } from '@/domain/occurrences/application/use-cases/create-pedagogue'
+import { CreateGroupController } from './controllers/create-group.controller'
+import { CreateGroupUseCase } from '@/domain/occurrences/application/use-cases/create-group'
 
 @Module({
   imports: [DatabaseModule, EmailModule, CryptographyModule],
@@ -15,11 +17,13 @@ import { CreatePedagogueUseCase } from '@/domain/occurrences/application/use-cas
     CreatePedagogueController,
     AuthenticateController,
     CreateOccurrenceController,
+    CreateGroupController,
   ],
   providers: [
     CreateOccurrenceUseCase,
     AuthenticateUseCase,
     CreatePedagogueUseCase,
+    CreateGroupUseCase,
   ],
 })
 export class HttpModule {}

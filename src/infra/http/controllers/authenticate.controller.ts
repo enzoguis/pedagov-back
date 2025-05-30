@@ -39,7 +39,6 @@ export class AuthenticateController {
 
       switch (error.constructor) {
         case WrongCredentialsError:
-          console.log('caiu no case')
           throw new UnauthorizedException(error.message)
         default:
           throw new BadRequestException(error.message)
