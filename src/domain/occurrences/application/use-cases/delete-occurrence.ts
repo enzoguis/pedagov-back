@@ -15,7 +15,11 @@ export class DeleteOccurrenceUseCase {
   async execute({
     occurrenceId,
   }: DeleteOccurrenceUseCaseRequest): Promise<DeleteOccurrenceUseCaseResponse> {
+    console.log('occurrenceId', occurrenceId)
+
     const occurrence = await this.occurrencesRepository.findById(occurrenceId)
+
+    console.log('occurrence', occurrence)
 
     if (!occurrence) {
       return left(new ResourceNotFoundError())
