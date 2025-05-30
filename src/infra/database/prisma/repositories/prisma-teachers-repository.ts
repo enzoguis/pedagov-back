@@ -27,10 +27,27 @@ export class PrismaTeachersRepository implements TeachersRepository {
   }
 
   async findById(id: string): Promise<Teacher | null> {
-    throw new Error('Method not implemented.')
+    const teacher = await this.prisma.teacher.findUnique({
+      where: {
+        userId: id,
+      },
+      include: {
+        user: true,
+      },
+    })
+
+    if (!teacher) {
+      return null
+    }
+
+    return PrismaTeacherMapper.toDomain(teacher)
   }
 
   async delete(teacher: Teacher): Promise<void> {
-    throw new Error('Method not implemented.')
+    await this.prisma.user.delete({
+      where: {
+        id: teacher.id.toString(),
+      },
+    })
   }
 }
