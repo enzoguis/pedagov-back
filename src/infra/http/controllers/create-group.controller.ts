@@ -9,7 +9,6 @@ import {
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { z } from 'zod'
 import { Public } from '@/infra/auth/public'
-import { WrongCredentialsError } from '@/domain/authentication/application/use-cases/errors/wrong-credentials-error'
 import { CreateGroupUseCase } from '@/domain/occurrences/application/use-cases/create-group'
 import { GroupShiftsEnum } from '@/domain/occurrences/enterprise/entities/group'
 

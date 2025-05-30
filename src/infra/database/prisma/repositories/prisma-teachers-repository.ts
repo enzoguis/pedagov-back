@@ -1,19 +1,36 @@
 import { TeachersRepository } from '@/domain/occurrences/application/repositories/teachers-repository'
 import { Teacher } from '@/domain/occurrences/enterprise/entities/teacher'
 import { Injectable } from '@nestjs/common'
+import { PrismaTeacherMapper } from '../mappers/prisma-teacher-mapper'
+import { PrismaService } from '../prisma.service'
 
 @Injectable()
 export class PrismaTeachersRepository implements TeachersRepository {
-  create(teacher: Teacher): Promise<void> {
+  constructor(private prisma: PrismaService) {}
+
+  async create(teacher: Teacher): Promise<void> {
+    const userData = {
+      id: teacher.id.toString(),
+      name: teacher.name,
+    }
+
+    const teacherData = PrismaTeacherMapper.toPrisma(teacher)
+
+    await this.prisma.$transaction([
+      this.prisma.user.create({ data: userData }),
+      this.prisma.teacher.create({ data: teacherData }),
+    ])
+  }
+
+  async save(teacher: Teacher): Promise<void> {
     throw new Error('Method not implemented.')
   }
-  save(teacher: Teacher): Promise<void> {
+
+  async findById(id: string): Promise<Teacher | null> {
     throw new Error('Method not implemented.')
   }
-  findById(id: string): Promise<Teacher | null> {
-    throw new Error('Method not implemented.')
-  }
-  delete(teacher: Teacher): Promise<void> {
+
+  async delete(teacher: Teacher): Promise<void> {
     throw new Error('Method not implemented.')
   }
 }

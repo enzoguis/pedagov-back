@@ -8,7 +8,6 @@ import {
 import { CreateStudentUseCase } from '@/domain/occurrences/application/use-cases/create-student'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
-import { StudentAlreadyExistsError } from '@/domain/occurrences/application/use-cases/errors/student-already-exists-error'
 import { StudentPresenter } from '../presenters/student-presenter'
 
 const createStudentBodySchema = z.object({

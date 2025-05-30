@@ -12,6 +12,8 @@ import { CreateGroupController } from './controllers/create-group.controller'
 import { CreateGroupUseCase } from '@/domain/occurrences/application/use-cases/create-group'
 import { CreateStudentController } from './controllers/create-student.controller'
 import { CreateStudentUseCase } from '@/domain/occurrences/application/use-cases/create-student'
+import { CreateTeacherController } from './controllers/create-teacher.controller'
+import { CreateTeacherUseCase } from '@/domain/occurrences/application/use-cases/create-teacher'
 
 @Module({
   imports: [DatabaseModule, EmailModule, CryptographyModule],
@@ -21,6 +23,7 @@ import { CreateStudentUseCase } from '@/domain/occurrences/application/use-cases
     CreateOccurrenceController,
     CreateGroupController,
     CreateStudentController,
+    CreateTeacherController,
   ],
   providers: [
     CreateOccurrenceUseCase,
@@ -28,6 +31,7 @@ import { CreateStudentUseCase } from '@/domain/occurrences/application/use-cases
     CreatePedagogueUseCase,
     CreateGroupUseCase,
     CreateStudentUseCase,
+    CreateTeacherUseCase,
   ],
 })
 export class HttpModule {}
