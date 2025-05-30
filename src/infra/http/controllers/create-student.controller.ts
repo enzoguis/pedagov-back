@@ -9,6 +9,7 @@ import { CreateStudentUseCase } from '@/domain/occurrences/application/use-cases
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { StudentAlreadyExistsError } from '@/domain/occurrences/application/use-cases/errors/student-already-exists-error'
+import { StudentPresenter } from '../presenters/student-presenter'
 
 const createStudentBodySchema = z.object({
   name: z.string(),
@@ -40,16 +41,11 @@ export class CreateStudentController {
     if (result.isLeft()) {
       const error = result.value
 
-      switch (error.constructor) {
-        case StudentAlreadyExistsError:
-          throw new Error('Estudante ja existe irmão')
-        default:
-          throw new BadRequestException('Sei la oq deu')
-      }
+      throw new BadRequestException(error.message)
     }
 
     const { student } = result.value
 
-    return { result: student }
+    return { result: StudentPresenter.toHTTP(student) }
   }
 }

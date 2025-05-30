@@ -55,7 +55,7 @@ describe('Create Student (E2E)', () => {
       .send({
         name: 'student-1',
         cpf: '43366417064',
-        groupId: group.id.toString,
+        groupId: group.id.toString(),
         responsibleEmail: 'responsible@example.com',
         responsiblePhone: '45982565566',
       })
@@ -68,10 +68,21 @@ describe('Create Student (E2E)', () => {
       where: {
         userId: id.value,
       },
+      include: {
+        user: true,
+      },
     })
 
     expect(studentOnDatabase).toBeTruthy()
-    expect(studentOnDatabase).toEqual(
+
+    const studentUserOnDatabase = await prisma.user.findUnique({
+      where: {
+        id: id.value,
+      },
+    })
+
+    expect(studentOnDatabase).toBeTruthy()
+    expect(studentUserOnDatabase).toEqual(
       expect.objectContaining({
         name: 'student-1',
       })
