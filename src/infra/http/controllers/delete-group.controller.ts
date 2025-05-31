@@ -6,7 +6,9 @@ import {
   Param,
 } from '@nestjs/common'
 import { DeleteGroupUseCase } from '@/domain/occurrences/application/use-cases/delete-group'
+import { ApiTags } from '@nestjs/swagger'
 
+@ApiTags('Groups')
 @Controller('/groups/:id')
 export class DeleteGroupController {
   constructor(private deleteGroup: DeleteGroupUseCase) {}

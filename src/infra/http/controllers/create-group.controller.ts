@@ -3,7 +3,6 @@ import {
   Body,
   Controller,
   Post,
-  UnauthorizedException,
   UsePipes,
 } from '@nestjs/common'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
@@ -11,6 +10,8 @@ import { z } from 'zod'
 import { Public } from '@/infra/auth/public'
 import { CreateGroupUseCase } from '@/domain/occurrences/application/use-cases/create-group'
 import { GroupShiftsEnum } from '@/domain/occurrences/enterprise/entities/group'
+import { ApiBody, ApiTags } from '@nestjs/swagger'
+import { CreateGroupDto } from '../dtos/create-group-dto'
 
 const createGroupBodySchema = z.object({
   name: z.string(),
@@ -24,12 +25,13 @@ const createGroupBodySchema = z.object({
 
 type CreateGroupBody = z.infer<typeof createGroupBodySchema>
 
+@ApiTags('Groups')
 @Controller('/groups')
-@Public()
 export class CreateGroupController {
   constructor(private createGroup: CreateGroupUseCase) {}
 
   @Post()
+  @ApiBody({ type: CreateGroupDto })
   @UsePipes(new ZodValidationPipe(createGroupBodySchema))
   async handle(@Body() body: CreateGroupBody) {
     const { name, shift, studentsIds, teacherId } = body
