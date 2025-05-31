@@ -8,7 +8,9 @@ import {
 } from '@nestjs/common'
 import { DeleteOccurrenceUseCase } from '@/domain/occurrences/application/use-cases/delete-occurrence'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { ApiTags } from '@nestjs/swagger'
 
+@ApiTags('Occurrences')
 @Controller('/occurrences/:id')
 export class DeleteOccurrenceController {
   constructor(private deleteOccurrence: DeleteOccurrenceUseCase) {}

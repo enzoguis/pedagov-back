@@ -1,15 +1,12 @@
 import { CreateOccurrenceUseCase } from '@/domain/occurrences/application/use-cases/create-occurrence'
 import { OccurrenceTypeEnum } from '@/domain/occurrences/enterprise/entities/occurrence'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Post,
-} from '@nestjs/common'
+import { BadRequestException, Body, Controller, Post } from '@nestjs/common'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { UserPayload } from '@/infra/auth/jwt-strategy'
+import { ApiBody, ApiTags } from '@nestjs/swagger'
+import { CreateOccurrenceDto } from '../dtos/create-occurrence-dto'
 
 const createOccurrenceBodySchema = z.object({
   title: z.string().min(1, 'The title must have at least 1 character'),
@@ -29,11 +26,13 @@ type CreateOccurrenceBody = z.infer<typeof createOccurrenceBodySchema>
 
 const bodyValidationPipe = new ZodValidationPipe(createOccurrenceBodySchema)
 
+@ApiTags('Occurrences')
 @Controller('/occurrences')
 export class CreateOccurrenceController {
   constructor(private createOccurrence: CreateOccurrenceUseCase) {}
 
   @Post()
+  @ApiBody({ type: CreateOccurrenceDto })
   async handle(
     @CurrentUser() user: UserPayload,
     @Body(bodyValidationPipe) body: CreateOccurrenceBody

@@ -10,6 +10,8 @@ import { z } from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { TeacherStatusEnum } from '@/domain/occurrences/enterprise/entities/teacher'
 import { TeacherPresenter } from '../presenters/teacher-presenter'
+import { ApiBody, ApiTags } from '@nestjs/swagger'
+import { CreateTeacherDto } from '../dtos/create-teacher-dto'
 
 const createTeacherBodySchema = z.object({
   name: z.string(),
@@ -21,11 +23,13 @@ const createTeacherBodySchema = z.object({
 
 type CreateTeacherBody = z.infer<typeof createTeacherBodySchema>
 
+@ApiTags('Teachers')
 @Controller('/accounts/teacher')
 export class CreateTeacherController {
   constructor(private createTeacher: CreateTeacherUseCase) {}
 
   @Post()
+  @ApiBody({ type: CreateTeacherDto })
   @UsePipes(new ZodValidationPipe(createTeacherBodySchema))
   async handle(@Body() body: CreateTeacherBody) {
     const { name, status } = body
