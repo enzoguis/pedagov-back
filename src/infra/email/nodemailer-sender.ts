@@ -7,26 +7,19 @@ import { Injectable } from '@nestjs/common'
 @Injectable()
 export class NodeMailerSender implements EmailSender {
   private GMAIL_USER: string
-  private OAUTH_CLIENT_ID: string
-  private OAUTH_ACCESS_TOKEN: string
-  private OAUTH_REFRESH_TOKEN: string
+  private GMAIL_AUTH_PASSWORD: string
 
   constructor(configService: ConfigService<Env, true>) {
     this.GMAIL_USER = configService.get('GMAIL_AUTH_USER')
-    this.OAUTH_CLIENT_ID = configService.get('GOOGLE_OAUTH_CLIENT_ID')
-    this.OAUTH_ACCESS_TOKEN = configService.get('GOOGLE_OAUTH_ACCESS_TOKEN')
-    this.OAUTH_REFRESH_TOKEN = configService.get('GOOGLE_OAUTH_REFRESH_TOKEN')
+    this.GMAIL_AUTH_PASSWORD = configService.get('GMAIL_AUTH_PASSWORD')
   }
 
   async send(message: EmailSenderSendParams): Promise<void> {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        type: 'OAUTH2',
         user: this.GMAIL_USER,
-        clientId: this.OAUTH_CLIENT_ID,
-        accessToken: this.OAUTH_ACCESS_TOKEN,
-        refreshToken: this.OAUTH_REFRESH_TOKEN,
+        pass: this.GMAIL_AUTH_PASSWORD,
       },
     })
 
