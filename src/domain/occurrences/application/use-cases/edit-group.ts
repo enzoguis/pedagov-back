@@ -40,8 +40,12 @@ export class EditGroupUseCase {
       return left(new ResourceNotFoundError())
     }
 
+    console.log('o que chegou', group.students)
+
     const currentGroupStudents =
       await this.groupStudentsRepository.findManyByGroupId(group.id.toString())
+
+    console.log('current', currentGroupStudents)
 
     const groupStudentsList = new GroupStudentList(currentGroupStudents)
 
@@ -52,12 +56,18 @@ export class EditGroupUseCase {
       })
     })
 
+    console.log('antes', groupStudentsList.currentItems)
+
     groupStudentsList.update(groupStudents)
+
+    console.log('depois', groupStudentsList.currentItems)
 
     group.name = name
     group.shift = GroupShiftsEnum[shift]
     group.students = groupStudentsList
     group.teacherId = new UniqueEntityID(teacherId)
+
+    await this.groupsRepository.save(group)
 
     return right({})
   }

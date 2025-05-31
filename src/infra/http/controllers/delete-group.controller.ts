@@ -3,9 +3,11 @@ import {
   Controller,
   Delete,
   HttpCode,
+  NotFoundException,
   Param,
 } from '@nestjs/common'
 import { DeleteGroupUseCase } from '@/domain/occurrences/application/use-cases/delete-group'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
 @Controller('/groups/:id')
 export class DeleteGroupController {
@@ -19,7 +21,14 @@ export class DeleteGroupController {
     })
 
     if (result.isLeft()) {
-      throw new BadRequestException()
+      const error = result.value
+
+      switch (error.constructor) {
+        case ResourceNotFoundError:
+          throw new NotFoundException(error.message)
+        default:
+          throw new BadRequestException(error.message)
+      }
     }
   }
 }
