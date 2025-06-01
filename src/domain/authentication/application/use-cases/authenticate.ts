@@ -32,6 +32,13 @@ export class AuthenticateUseCase {
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
     const user = await this.usersRepository.findByEmail(email)
 
+    console.log(
+      'password use case: ',
+      password,
+      'temporaryPassword de user',
+      user?.temporaryPassword
+    )
+
     if (!user) {
       return left(new WrongCredentialsError())
     }
@@ -41,6 +48,13 @@ export class AuthenticateUseCase {
         password,
         user.temporaryPassword
       )
+
+      console.log(isFirstLogin)
+
+      if (!isFirstLogin) {
+        console.log('caiu no !isFirstLogin')
+        return left(new WrongCredentialsError())
+      }
 
       const accessToken = await this.encrypter.encrypt({
         sub: user.id.toString(),
