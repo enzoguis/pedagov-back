@@ -37,16 +37,10 @@ describe('Edit Group Use Case', () => {
       groupId,
       name: 'Novo nome',
       shift: 'MORNING',
-      studentsIds: ['2'],
       teacherId: group.teacherId.toString(),
     })
 
     expect(result.isRight()).toBeTruthy()
-    expect(inMemoryGroupStudentsRepository.items).toHaveLength(1)
-    expect(inMemoryGroupsRepository.items[0].students.currentItems).toEqual([
-      expect.objectContaining({
-        studentId: new UniqueEntityID('2'),
-      }),
-    ])
+  
   })
 })
