@@ -29,7 +29,7 @@ describe('Authenticate Use Case', () => {
       symbols: true,
     })
 
-    const password = await fakeHasher.hash('123456')
+    const password = await fakeHasher.hash(plainPassword)
 
     const user = User.create({
       email: 'user@example.com',
@@ -41,7 +41,7 @@ describe('Authenticate Use Case', () => {
 
     const result = await sut.execute({
       email: 'user@example.com',
-      password: '123456',
+      password: plainPassword,
     })
 
     expect(result.isRight).toBeTruthy()
@@ -52,7 +52,7 @@ describe('Authenticate Use Case', () => {
     )
   })
 
-  it.skip('should return isFirstLogin when password is equal to temporary password', async () => {
+  it('should return isFirstLogin when password is equal to temporary password', async () => {
     const plainPassword = generatePassword.generate({
       length: 8,
       numbers: true,

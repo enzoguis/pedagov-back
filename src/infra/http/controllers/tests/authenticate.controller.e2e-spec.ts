@@ -46,6 +46,7 @@ describe('Authenticate (E2E)', () => {
     }
 
     user.email = 'user@example.com'
+    user.password = await hash('123456', 8)
     user.temporaryPassword = await hash('123456', 8)
 
     await prisma.user.update({
@@ -54,6 +55,7 @@ describe('Authenticate (E2E)', () => {
       },
       data: {
         email: user.email,
+        password: user.password,
         temporaryPassword: user.temporaryPassword,
       },
     })

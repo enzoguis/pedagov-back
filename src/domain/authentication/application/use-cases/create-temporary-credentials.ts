@@ -47,6 +47,7 @@ export class CreateTemporaryCredentialsUseCase {
 
     const password = await this.hashGenerator.hash(temporaryPassword)
 
+    user.password = password
     user.temporaryPassword = password
 
     await this.usersRepository.save(user)

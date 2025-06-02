@@ -36,7 +36,6 @@ export class AuthenticateUseCase {
       return left(new WrongCredentialsError())
     }
 
-    // Caso a senha oficial exista
     if (user.password) {
       const isPasswordValid = await this.hashComparer.compare(
         password,
@@ -68,25 +67,6 @@ export class AuthenticateUseCase {
         accessToken,
         isFirstLogin,
       })
-    }
-
-    // Caso password oficial não exista, tenta validar com temporaryPassword
-    if (user.temporaryPassword) {
-      const isTemporaryPassword = await this.hashComparer.compare(
-        password,
-        user.temporaryPassword
-      )
-
-      if (isTemporaryPassword) {
-        const accessToken = await this.encrypter.encrypt({
-          sub: user.id.toString(),
-        })
-
-        return right({
-          accessToken,
-          isFirstLogin: true,
-        })
-      }
     }
 
     return left(new WrongCredentialsError())
