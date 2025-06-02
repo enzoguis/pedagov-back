@@ -22,6 +22,7 @@ export interface OccurrenceProps {
   students: OccurrenceStudentList
   type: OccurrenceTypeEnum
   attachments: OccurrenceAttachmentsList
+  changes: { field: string; value: unknown }[]
   title: string
   description: string
   createdAt: Date
@@ -29,8 +30,6 @@ export interface OccurrenceProps {
 }
 
 export class Occurrence extends AggregateRoot<OccurrenceProps> {
-  private history: OccurrenceHistory[] = []
-
   get authorId() {
     return this.props.authorId
   }
@@ -71,8 +70,8 @@ export class Occurrence extends AggregateRoot<OccurrenceProps> {
     return this.props.updatedAt
   }
 
-  get histories() {
-    return this.history
+  get changes() {
+    return this.props.changes
   }
 
   set students(students: OccurrenceStudentList) {
@@ -87,64 +86,54 @@ export class Occurrence extends AggregateRoot<OccurrenceProps> {
     this.props.attachments = attachments
   }
 
-  updateAttendees(
-    attendees: OccurrenceAttendeesList,
-    editorId: UniqueEntityID
-  ) {
-    this.props.attendees = attendees
-    this.touch(editorId, ['attendees'])
-  }
+  set type(type: OccurrenceTypeEnum) {
+    if (type === this.props.type) {
+      return
+    }
 
-  updateStudents(students: OccurrenceStudentList, editorId: UniqueEntityID) {
-    this.props.students = students
-    this.touch(editorId, ['students'])
-  }
-
-  updateAttachments(
-    attachments: OccurrenceAttachmentsList,
-    editorId: UniqueEntityID
-  ) {
-    this.props.attachments = attachments
-    this.touch(editorId, ['attachments'])
-  }
-
-  updateType(type: OccurrenceTypeEnum, editorId: UniqueEntityID) {
     this.props.type = type
-    this.touch(editorId, ['type'])
+
+    this.touch('type', type)
   }
 
-  updateTitle(title: string, editorId: UniqueEntityID) {
+  set title(title: string) {
+    if (title === this.props.title) {
+      return
+    }
+
     this.props.title = title
-    this.touch(editorId, ['title'])
+
+    this.touch('title', title)
   }
 
-  updateTeacherId(teacherId: UniqueEntityID, editorId: UniqueEntityID) {
+  set teacherId(teacherId: UniqueEntityID) {
+    if (teacherId.equals(this.props.teacherId)) {
+      return
+    }
+
     this.props.teacherId = teacherId
-    this.touch(editorId, ['teacherId'])
+
+    this.touch('teacherId', teacherId)
   }
 
-  updateDescription(description: string, editorId: UniqueEntityID) {
+  set description(description: string) {
+    if (description === this.props.description) {
+      return
+    }
+
     this.props.description = description
-    this.touch(editorId, ['description'])
+
+    this.touch('description', description)
   }
 
-  private touch(editorId: UniqueEntityID, changedFields: string[]) {
-    this.props.updatedAt = new Date()
-
-    const history = OccurrenceHistory.create({
-      editorId,
-      occurrenceId: this.id,
-      createdAt: this.props.updatedAt,
-      changedFields,
-    })
-
-    this.history.push(history)
+  private touch(field: string, value: unknown) {
+    this.props.changes.push({ field, value })
   }
 
   static create(
     props: Optional<
       OccurrenceProps,
-      'createdAt' | 'attendees' | 'students' | 'attachments'
+      'createdAt' | 'attendees' | 'students' | 'attachments' | 'changes'
     >,
     id?: UniqueEntityID
   ) {
@@ -155,6 +144,7 @@ export class Occurrence extends AggregateRoot<OccurrenceProps> {
         attendees: props.attendees ?? new OccurrenceAttendeesList(),
         students: props.students ?? new OccurrenceStudentList(),
         attachments: props.attachments ?? new OccurrenceAttachmentsList(),
+        changes: props.changes ?? [],
       },
       id
     )

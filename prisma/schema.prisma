@@ -109,11 +109,11 @@ model OccurrenceAttendees {
 }
 
 model OccurrenceHistory {
-  id            String   @id @default(uuid())
-  editorId      String   @map("editor_id")
-  occurrenceId  String   @map("Occurrence_id")
-  createdAt     DateTime @default(now()) @map("created_at")
-  changedFields String[] @map("changed_fields")
+  id           String   @id @default(uuid())
+  editorId     String   @map("editor_id")
+  occurrenceId String   @map("Occurrence_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  changes      Json
 
   occurrence Occurrence @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
   editor     User       @relation(fields: [editorId], references: [id])

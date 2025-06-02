@@ -91,12 +91,6 @@ export class InMemoryOccurrencesRepository implements OccurrencesRepository {
     await this.occurrenceStudents.deleteMany(
       occurrence.students.getRemovedItems()
     )
-
-    const histories = occurrence.histories
-
-    histories.map((history) => {
-      this.occurrenceHistoryRepository.create(history)
-    })
   }
   async findById(id: string): Promise<Occurrence | null> {
     const occurrence = this.items.find((item) => item.id.toString() === id)

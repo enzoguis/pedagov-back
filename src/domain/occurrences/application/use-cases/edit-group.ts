@@ -16,7 +16,6 @@ interface EditGroupUseCaseRequest {
   teacherId: string
   name: string
   shift: GroupShiftsType
-  studentsIds: string[]
 }
 
 type EditGroupUseCaseResponse = Either<ResourceNotFoundError, {}>
@@ -32,7 +31,6 @@ export class EditGroupUseCase {
     teacherId,
     name,
     shift,
-    studentsIds,
   }: EditGroupUseCaseRequest): Promise<EditGroupUseCaseResponse> {
     const group = await this.groupsRepository.findById(groupId)
 
@@ -40,31 +38,8 @@ export class EditGroupUseCase {
       return left(new ResourceNotFoundError())
     }
 
-    console.log('o que chegou', group.students)
-
-    const currentGroupStudents =
-      await this.groupStudentsRepository.findManyByGroupId(group.id.toString())
-
-    console.log('current', currentGroupStudents)
-
-    const groupStudentsList = new GroupStudentList(currentGroupStudents)
-
-    const groupStudents = studentsIds.map((id) => {
-      return GroupStudent.create({
-        studentId: new UniqueEntityID(id),
-        groupId: group.id,
-      })
-    })
-
-    console.log('antes', groupStudentsList.currentItems)
-
-    groupStudentsList.update(groupStudents)
-
-    console.log('depois', groupStudentsList.currentItems)
-
     group.name = name
     group.shift = GroupShiftsEnum[shift]
-    group.students = groupStudentsList
     group.teacherId = new UniqueEntityID(teacherId)
 
     await this.groupsRepository.save(group)

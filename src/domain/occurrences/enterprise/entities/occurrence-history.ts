@@ -1,11 +1,12 @@
 import { Entity } from '@/core/entities/entitity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { Change } from './value-objects/change'
 
 export interface OccurrenceHistoryProps {
   editorId: UniqueEntityID
   occurrenceId: UniqueEntityID
   createdAt: Date
-  changedFields: string[]
+  changes: Change[]
 }
 
 export class OccurrenceHistory extends Entity<OccurrenceHistoryProps> {
@@ -21,8 +22,8 @@ export class OccurrenceHistory extends Entity<OccurrenceHistoryProps> {
     return this.props.createdAt
   }
 
-  get changedFields() {
-    return this.props.changedFields
+  get changes() {
+    return this.props.changes
   }
 
   static create(props: OccurrenceHistoryProps, id?: UniqueEntityID) {
