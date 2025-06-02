@@ -47,29 +47,31 @@ export class PrismaOccurrencesRepository implements OccurrencesRepository {
       data,
     })
 
-    await this.occurrenceAttachmentsRepository.createMany(
-      occurrence.attachments.getNewItems()
-    )
+    Promise.all([
+      this.occurrenceAttachmentsRepository.createMany(
+        occurrence.attachments.getNewItems()
+      ),
 
-    await this.occurrenceAttachmentsRepository.deleteMany(
-      occurrence.attachments.getRemovedItems()
-    )
+      this.occurrenceAttachmentsRepository.deleteMany(
+        occurrence.attachments.getRemovedItems()
+      ),
 
-    await this.occurrenceStudentsRepository.createMany(
-      occurrence.students.getNewItems()
-    )
+      this.occurrenceStudentsRepository.createMany(
+        occurrence.students.getNewItems()
+      ),
 
-    await this.occurrenceStudentsRepository.deleteMany(
-      occurrence.students.getRemovedItems()
-    )
+      this.occurrenceStudentsRepository.deleteMany(
+        occurrence.students.getRemovedItems()
+      ),
 
-    await this.occurrenceAttendeesRepository.createMany(
-      occurrence.attendees.getNewItems()
-    )
+      this.occurrenceAttendeesRepository.createMany(
+        occurrence.attendees.getNewItems()
+      ),
 
-    await this.occurrenceAttendeesRepository.deleteMany(
-      occurrence.attendees.getRemovedItems()
-    )
+      this.occurrenceAttendeesRepository.deleteMany(
+        occurrence.attendees.getRemovedItems()
+      ),
+    ])
   }
 
   async findById(id: string): Promise<Occurrence | null> {

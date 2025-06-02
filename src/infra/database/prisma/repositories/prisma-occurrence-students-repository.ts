@@ -17,7 +17,7 @@ export class PrismaOccurrenceStudentsRepository
 
     const data = PrismaOccurrenceStudentsMapper.toPrisma(students)
 
-    await this.prisma.occurrenceStudents.updateMany(data)
+    await this.prisma.occurrenceStudents.createMany({ data })
   }
 
   async deleteMany(students: OccurrenceStudent[]) {

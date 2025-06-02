@@ -15,19 +15,10 @@ export class PrismaOccurrenceStudentsMapper {
 
   static toPrisma(
     occurrenceStudents: OccurrenceStudent[]
-  ): Prisma.OccurrenceStudentsUpdateManyArgs {
-    const studentIds = occurrenceStudents.map((student) =>
-      student.studentId.toString()
-    )
-    return {
-      where: {
-        studentId: {
-          in: studentIds,
-        },
-      },
-      data: {
-        occurrenceId: occurrenceStudents[0].occurrenceId.toString(),
-      },
-    }
+  ): Prisma.OccurrenceStudentsCreateManyInput[] {
+    return occurrenceStudents.map((student) => ({
+      occurrenceId: student.occurrenceId.toString(),
+      studentId: student.studentId.toString(),
+    }))
   }
 }

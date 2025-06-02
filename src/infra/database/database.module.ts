@@ -22,6 +22,8 @@ import { UsersRepository } from '@/domain/authentication/application/repositorie
 import { PrismaUsersRepository } from './prisma/repositories/prisma-users-repository'
 import { PrismaTeachersRepository } from './prisma/repositories/prisma-teachers-repository'
 import { TeachersRepository } from '@/domain/occurrences/application/repositories/teachers-repository'
+import { OccurrenceHistoriesRepository } from '@/domain/occurrences/application/repositories/occurrence-histories-repository'
+import { PrismaOccurrenceHistoriesRepository } from './prisma/repositories/prisma-occurrence-histories-repository'
 
 @Module({
   providers: [
@@ -70,6 +72,10 @@ import { TeachersRepository } from '@/domain/occurrences/application/repositorie
       provide: UsersRepository,
       useClass: PrismaUsersRepository,
     },
+    {
+      provide: OccurrenceHistoriesRepository,
+      useClass: PrismaOccurrenceHistoriesRepository,
+    },
   ],
   exports: [
     PrismaService,
@@ -84,6 +90,7 @@ import { TeachersRepository } from '@/domain/occurrences/application/repositorie
     StudentsRepository,
     TeachersRepository,
     UsersRepository,
+    OccurrenceHistoriesRepository,
   ],
 })
 export class DatabaseModule {}
