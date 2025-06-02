@@ -9,6 +9,8 @@ import { CreateStudentUseCase } from '@/domain/occurrences/application/use-cases
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { StudentPresenter } from '../presenters/student-presenter'
+import { ApiBody, ApiTags } from '@nestjs/swagger'
+import { CreateStudentDto } from '../dtos/create-student-dto'
 
 const createStudentBodySchema = z.object({
   name: z.string(),
@@ -20,11 +22,13 @@ const createStudentBodySchema = z.object({
 
 type CreateStudentBody = z.infer<typeof createStudentBodySchema>
 
+@ApiTags('Students')
 @Controller('/accounts/student')
 export class CreateStudentController {
   constructor(private createStudent: CreateStudentUseCase) {}
 
   @Post()
+  @ApiBody({ type: CreateStudentDto })
   @UsePipes(new ZodValidationPipe(createStudentBodySchema))
   async handle(@Body() body: CreateStudentBody) {
     const { name, cpf, groupId, responsibleEmail, responsiblePhone } = body

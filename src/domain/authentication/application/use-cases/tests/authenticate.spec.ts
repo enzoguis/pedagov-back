@@ -33,11 +33,11 @@ describe('Authenticate Use Case', () => {
 
     const user = User.create({
       email: 'user@example.com',
-      password,
+      password: password,
       temporaryPassword: password,
     })
 
-    inMemoryUsersRepository.create(user)
+    await inMemoryUsersRepository.create(user)
 
     const result = await sut.execute({
       email: 'user@example.com',
@@ -64,7 +64,7 @@ describe('Authenticate Use Case', () => {
     const user = User.create({
       email: 'user@example.com',
       password,
-      temporaryPassword: 'random-string',
+      temporaryPassword: '',
     })
 
     inMemoryUsersRepository.create(user)

@@ -7,8 +7,9 @@ import {
   Param,
 } from '@nestjs/common'
 import { DeleteGroupUseCase } from '@/domain/occurrences/application/use-cases/delete-group'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { ApiTags } from '@nestjs/swagger'
 
+@ApiTags('Groups')
 @Controller('/groups/:id')
 export class DeleteGroupController {
   constructor(private deleteGroup: DeleteGroupUseCase) {}

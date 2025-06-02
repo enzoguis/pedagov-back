@@ -14,6 +14,14 @@ import { Roles } from '@/infra/auth/roles.decorator'
 import { RolesGuard } from '@/infra/auth/roles-guard'
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth-guard'
 import { PedagoguePresenter } from '../presenters/pedagogue-presenter'
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger'
+import { CreatePedagogueDto } from '../dtos/create-pedagogue-dto'
 
 const createPedagogueBodySchema = z.object({
   name: z.string(),
@@ -25,6 +33,7 @@ const createPedagogueBodySchema = z.object({
 
 type CreatePedagogueBody = z.infer<typeof createPedagogueBodySchema>
 
+@ApiTags('Pedagogues')
 @Controller('/accounts/pedagogue')
 @UseGuards(RolesGuard, JwtAuthGuard)
 @Roles('ADMIN')
@@ -32,6 +41,11 @@ export class CreatePedagogueController {
   constructor(private createPedagogue: CreatePedagogueUseCase) {}
 
   @Post()
+  @ApiOperation({
+    summary: 'Create a new pedagogue',
+    description: 'Only pedagogues with ADMIN role can access this route',
+  })
+  @ApiBody({ type: CreatePedagogueDto })
   @UsePipes(new ZodValidationPipe(createPedagogueBodySchema))
   async handle(@Body() body: CreatePedagogueBody) {
     const { name, role } = body

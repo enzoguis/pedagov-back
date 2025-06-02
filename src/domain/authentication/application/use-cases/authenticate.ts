@@ -36,22 +36,6 @@ export class AuthenticateUseCase {
       return left(new WrongCredentialsError())
     }
 
-    if (user.temporaryPassword) {
-      const isFirstLogin = await this.hashComparer.compare(
-        password,
-        user.temporaryPassword
-      )
-
-      const accessToken = await this.encrypter.encrypt({
-        sub: user.id.toString(),
-      })
-
-      return right({
-        accessToken,
-        isFirstLogin,
-      })
-    }
-
     if (user.password) {
       const isPasswordValid = await this.hashComparer.compare(
         password,
@@ -62,13 +46,26 @@ export class AuthenticateUseCase {
         return left(new WrongCredentialsError())
       }
 
+      let isFirstLogin = false
+
+      if (user.temporaryPassword) {
+        const isTemporaryPassword = await this.hashComparer.compare(
+          password,
+          user.temporaryPassword
+        )
+
+        if (isTemporaryPassword) {
+          isFirstLogin = true
+        }
+      }
+
       const accessToken = await this.encrypter.encrypt({
         sub: user.id.toString(),
       })
 
       return right({
         accessToken,
-        isFirstLogin: false,
+        isFirstLogin,
       })
     }
 

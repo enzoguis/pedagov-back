@@ -32,7 +32,7 @@ describe('Authenticate (E2E)', () => {
     await app.init()
   })
 
-  test('[POST] /sessions', async () => {
+  test('[POST] /sessions (first login)', async () => {
     const pedagogue = await pedagogueFactory.makePrismaPedagogue()
 
     const user = await prisma.user.findUnique({
@@ -46,6 +46,7 @@ describe('Authenticate (E2E)', () => {
     }
 
     user.email = 'user@example.com'
+    user.password = await hash('123456', 8)
     user.temporaryPassword = await hash('123456', 8)
 
     await prisma.user.update({
@@ -54,6 +55,7 @@ describe('Authenticate (E2E)', () => {
       },
       data: {
         email: user.email,
+        password: user.password,
         temporaryPassword: user.temporaryPassword,
       },
     })
@@ -65,5 +67,40 @@ describe('Authenticate (E2E)', () => {
 
     expect(response.statusCode).toBe(201)
     expect(response.body.is_first_login).toBeTruthy()
+  })
+
+  test('[POST] /sessions', async () => {
+    const pedagogue = await pedagogueFactory.makePrismaPedagogue()
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: pedagogue.id.toString(),
+      },
+    })
+
+    if (!user) {
+      throw new Error('Encontrei não chefia')
+    }
+
+    user.email = 'user2@example.com'
+    user.password = await hash('123456', 8)
+
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        email: user.email,
+        password: user.password,
+      },
+    })
+
+    const response = await request(app.getHttpServer()).post('/sessions').send({
+      email: user.email,
+      password: '123456',
+    })
+
+    expect(response.statusCode).toBe(201)
+    expect(response.body.is_first_login).not.toBeTruthy()
   })
 })

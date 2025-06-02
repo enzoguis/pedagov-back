@@ -8,7 +8,9 @@ import {
 } from '@nestjs/common'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { DeleteStudentUseCase } from '@/domain/occurrences/application/use-cases/delete-student'
+import { ApiTags } from '@nestjs/swagger'
 
+@ApiTags('Students')
 @Controller('/students/:id')
 export class DeleteStudentController {
   constructor(private deleteStudent: DeleteStudentUseCase) {}
