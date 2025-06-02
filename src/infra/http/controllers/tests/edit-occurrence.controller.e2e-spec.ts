@@ -11,7 +11,6 @@ import { TeacherFactory } from 'test/factories/make-teacher'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { GroupFactory } from 'test/factories/make-group'
 import { OccurrenceFactory } from 'test/factories/make-occurrence'
-import { U } from '@faker-js/faker/dist/airline-BUL6NtOJ'
 
 describe('Edit Occurrence (E2E)', () => {
   let app: INestApplication
@@ -128,5 +127,13 @@ describe('Edit Occurrence (E2E)', () => {
     expect(occurrenceStudentsOnDatabase[0].studentId).toBe(
       student.id.toString()
     )
+
+    const attachmentOnDatabase = await prisma.attachment.findFirst({
+      where: {
+        occurrenceId: occurrenceId,
+      },
+    })
+
+    expect(attachmentOnDatabase?.title).toBe(attachment.title)
   })
 })
