@@ -32,10 +32,9 @@ export class PrismaGroupsRepository implements GroupsRepository {
       data,
     })
 
-    await this.groupStudentsRepository.createMany(group.students.getNewItems())
-    await this.groupStudentsRepository.deleteMany(
-      group.students.getRemovedItems()
-    )
+    await Promise.all([
+      this.groupStudentsRepository.createMany(group.students.getNewItems()),
+    ])
   }
 
   async findById(id: string): Promise<Group | null> {
