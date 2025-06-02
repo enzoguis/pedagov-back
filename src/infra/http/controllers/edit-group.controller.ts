@@ -16,7 +16,6 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 const editGroupBodySchema = z.object({
   name: z.string(),
   teacherId: z.string().uuid(),
-  studentsIds: z.array(z.string().uuid()),
   shift: z.preprocess(
     (val) => (typeof val === 'string' ? val.toUpperCase() : val),
     z.nativeEnum(GroupShiftsEnum)
@@ -37,13 +36,12 @@ export class EditGroupController {
     @Body(bodyValidationPipe) body: EditGroupBody,
     @Param('id') groupId: string
   ) {
-    const { name, shift, studentsIds, teacherId } = body
+    const { name, shift, teacherId } = body
 
     const result = await this.editGroup.execute({
       groupId,
       name,
       shift,
-      studentsIds,
       teacherId,
     })
 

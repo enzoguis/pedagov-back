@@ -34,7 +34,6 @@ export class PrismaGroupsRepository implements GroupsRepository {
 
     await Promise.all([
       this.groupStudentsRepository.createMany(group.students.getNewItems()),
-      this.groupStudentsRepository.deleteMany(group.students.getRemovedItems()),
     ])
   }
 

@@ -59,8 +59,6 @@ describe('Create Group (E2E)', () => {
       teacherId: teacher.id,
     })
 
-    console.log('students no test', group.students.currentItems)
-
     const student = await studentFactory.makePrismaStudent({
       groupId: group.id,
     })
@@ -75,8 +73,6 @@ describe('Create Group (E2E)', () => {
       cpf: CPF.create('042.481.090-50'),
     })
 
-    console.log('student name', student.name)
-
     const accessToken = await jwt.sign({ sub: author.id.toString() })
 
     const response = await request(app.getHttpServer())
@@ -85,7 +81,6 @@ describe('Create Group (E2E)', () => {
       .send({
         name: '9 ano A',
         shift: 'MORNING',
-        studentsIds: [student.id.toString(), newStudent.id.toString()],
         teacherId: teacher.id.toString(),
       })
 
@@ -103,7 +98,14 @@ describe('Create Group (E2E)', () => {
     expect(groupOnDatabase).toBeTruthy()
     expect(groupOnDatabase).toEqual(
       expect.objectContaining({
-        students: expect.arrayContaining([student, newStudent]),
+        students: expect.arrayContaining([
+          expect.objectContaining({
+            cpf: student.cpf.value,
+          }),
+          expect.objectContaining({
+            cpf: newStudent.cpf.value,
+          }),
+        ]),
       })
     )
   })
