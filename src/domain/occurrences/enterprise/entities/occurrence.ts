@@ -75,15 +75,45 @@ export class Occurrence extends AggregateRoot<OccurrenceProps> {
   }
 
   set students(students: OccurrenceStudentList) {
+    if (students.equals(this.props.students)) {
+      return
+    }
+
     this.props.students = students
+
+    const currentStudentsIds = students.currentItems.map(
+      (student) => student.studentId
+    )
+
+    this.touch('students', currentStudentsIds)
   }
 
   set attendees(attendees: OccurrenceAttendeesList) {
+    if (attendees.equals(this.props.attendees)) {
+      return
+    }
+
     this.props.attendees = attendees
+
+    const currentAttendeesIds = attendees.currentItems.map(
+      (attendee) => attendee.id
+    )
+
+    this.touch('attendees', currentAttendeesIds)
   }
 
   set attachments(attachments: OccurrenceAttachmentsList) {
+    if (attachments.equals(this.props.attachments)) {
+      return
+    }
+
     this.props.attachments = attachments
+
+    const currentAttachmentsIds = attachments.currentItems.map(
+      (attachment) => attachment.id
+    )
+
+    this.touch('attachments', currentAttachmentsIds)
   }
 
   set type(type: OccurrenceTypeEnum) {
