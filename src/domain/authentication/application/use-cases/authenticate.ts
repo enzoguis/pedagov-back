@@ -32,28 +32,32 @@ export class AuthenticateUseCase {
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
     const user = await this.usersRepository.findByEmail(email)
 
-    console.log(
-      'password use case: ',
-      password,
-      'temporaryPassword de user',
-      user?.temporaryPassword
-    )
-
     if (!user) {
       return left(new WrongCredentialsError())
     }
 
-    if (user.temporaryPassword) {
-      const isFirstLogin = await this.hashComparer.compare(
+    // Caso a senha oficial exista
+    if (user.password) {
+      const isPasswordValid = await this.hashComparer.compare(
         password,
-        user.temporaryPassword
+        user.password
       )
 
-      console.log(isFirstLogin)
-
-      if (!isFirstLogin) {
-        console.log('caiu no !isFirstLogin')
+      if (!isPasswordValid) {
         return left(new WrongCredentialsError())
+      }
+
+      let isFirstLogin = false
+
+      if (user.temporaryPassword) {
+        const isTemporaryPassword = await this.hashComparer.compare(
+          password,
+          user.temporaryPassword
+        )
+
+        if (isTemporaryPassword) {
+          isFirstLogin = true
+        }
       }
 
       const accessToken = await this.encrypter.encrypt({
@@ -66,24 +70,23 @@ export class AuthenticateUseCase {
       })
     }
 
-    if (user.password) {
-      const isPasswordValid = await this.hashComparer.compare(
+    // Caso password oficial não exista, tenta validar com temporaryPassword
+    if (user.temporaryPassword) {
+      const isTemporaryPassword = await this.hashComparer.compare(
         password,
-        user.password
+        user.temporaryPassword
       )
 
-      if (!isPasswordValid) {
-        return left(new WrongCredentialsError())
+      if (isTemporaryPassword) {
+        const accessToken = await this.encrypter.encrypt({
+          sub: user.id.toString(),
+        })
+
+        return right({
+          accessToken,
+          isFirstLogin: true,
+        })
       }
-
-      const accessToken = await this.encrypter.encrypt({
-        sub: user.id.toString(),
-      })
-
-      return right({
-        accessToken,
-        isFirstLogin: false,
-      })
     }
 
     return left(new WrongCredentialsError())
