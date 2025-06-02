@@ -11,6 +11,7 @@ import { TeacherFactory } from 'test/factories/make-teacher'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { GroupFactory } from 'test/factories/make-group'
 import { OccurrenceFactory } from 'test/factories/make-occurrence'
+import { U } from '@faker-js/faker/dist/airline-BUL6NtOJ'
 
 describe('Edit Occurrence (E2E)', () => {
   let app: INestApplication
@@ -71,10 +72,12 @@ describe('Edit Occurrence (E2E)', () => {
 
     const attachment = await attachmentFactory.makePrismaAttachment()
 
+    const occurrenceId = occurrence.id.toString()
+
     const accessToken = await jwt.sign({ sub: author.id.toString() })
 
     const response = await request(app.getHttpServer())
-      .put(`/occurrences/${occurrence.id.toString()}`)
+      .put(`/occurrences/${occurrenceId}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         title: 'Aluno faltou à aula',
@@ -99,11 +102,31 @@ describe('Edit Occurrence (E2E)', () => {
     const occurrenceHistoryOnDatabase =
       await prisma.occurrenceHistory.findFirst({
         where: {
-          occurrenceId: occurrence.id.toString(),
+          occurrenceId: occurrenceId,
         },
       })
 
     expect(occurrenceHistoryOnDatabase).toBeTruthy()
     expect(occurrenceHistoryOnDatabase?.changes).toHaveLength(4)
+
+    const occurrenceAttendeesOnDatabase =
+      await prisma.occurrenceAttendees.findMany({
+        where: {
+          occurrenceId: occurrenceId,
+        },
+      })
+
+    expect(occurrenceAttendeesOnDatabase[0].userId).toBe(author.id.toString())
+
+    const occurrenceStudentsOnDatabase =
+      await prisma.occurrenceStudents.findMany({
+        where: {
+          occurrenceId: occurrenceId,
+        },
+      })
+
+    expect(occurrenceStudentsOnDatabase[0].studentId).toBe(
+      student.id.toString()
+    )
   })
 })

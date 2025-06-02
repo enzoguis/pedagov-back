@@ -17,7 +17,7 @@ export class PrismaOccurrenceAttendeesRepository
 
     const data = PrismaOccurrenceAttendeesMapper.toPrisma(attendees)
 
-    await this.prisma.occurrenceAttendees.updateMany(data)
+    await this.prisma.occurrenceAttendees.createMany({ data })
   }
 
   async deleteMany(attendees: OccurrenceAttendee[]) {

@@ -15,19 +15,10 @@ export class PrismaOccurrenceAttendeesMapper {
 
   static toPrisma(
     occurrenceAttendees: OccurrenceAttendee[]
-  ): Prisma.OccurrenceAttendeesUpdateManyArgs {
-    const attendeeIds = occurrenceAttendees.map((attendee) =>
-      attendee.attendeeId.toString()
-    )
-    return {
-      where: {
-        userId: {
-          in: attendeeIds,
-        },
-      },
-      data: {
-        occurrenceId: occurrenceAttendees[0].occurrenceId.toString(),
-      },
-    }
+  ): Prisma.OccurrenceAttendeesCreateManyInput[] {
+    return occurrenceAttendees.map((attendee) => ({
+      occurrenceId: attendee.occurrenceId.toString(),
+      userId: attendee.attendeeId.toString(),
+    }))
   }
 }
