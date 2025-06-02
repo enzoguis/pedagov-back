@@ -81,6 +81,8 @@ describe('Create Occurrence (E2E)', () => {
 
     expect(response.statusCode).toBe(201)
 
+    const { id } = response.body.result
+
     const occurrenceOnDatabase = await prisma.occurrence.findFirst({
       where: {
         title: 'Aluno faltou à aula',
@@ -88,5 +90,33 @@ describe('Create Occurrence (E2E)', () => {
     })
 
     expect(occurrenceOnDatabase).toBeTruthy()
+
+    const occurrenceAttendeesOnDatabase =
+      await prisma.occurrenceAttendees.findMany({
+        where: {
+          occurrenceId: id,
+        },
+      })
+
+    expect(occurrenceAttendeesOnDatabase[0].userId).toBe(author.id.toString())
+
+    const occurrenceStudentsOnDatabase =
+      await prisma.occurrenceStudents.findMany({
+        where: {
+          occurrenceId: id,
+        },
+      })
+
+    expect(occurrenceStudentsOnDatabase[0].studentId).toBe(
+      student.id.toString()
+    )
+
+    const attachmentOnDatabase = await prisma.attachment.findFirst({
+      where: {
+        occurrenceId: id,
+      },
+    })
+
+    expect(attachmentOnDatabase?.title).toBe(attachment.title)
   })
 })
