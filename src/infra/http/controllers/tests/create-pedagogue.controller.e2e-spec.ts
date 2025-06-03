@@ -61,11 +61,6 @@ describe('Create Pedagogue (E2E)', () => {
     })
 
     expect(pedagogueOnDatabase).toBeTruthy()
-    expect(pedagogueOnDatabase).toEqual(
-      expect.objectContaining({
-        role: 'COMMON',
-      })
-    )
 
     const pedagogueUserOnDatabase = await prisma.user.findFirst({
       where: {
@@ -77,6 +72,7 @@ describe('Create Pedagogue (E2E)', () => {
     expect(pedagogueUserOnDatabase).toEqual(
       expect.objectContaining({
         id: id.value,
+        role: 'COMMON',
       })
     )
   })

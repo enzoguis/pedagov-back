@@ -3,6 +3,7 @@ import { Teacher } from '@/domain/occurrences/enterprise/entities/teacher'
 import { Injectable } from '@nestjs/common'
 import { PrismaTeacherMapper } from '../mappers/prisma-teacher-mapper'
 import { PrismaService } from '../prisma.service'
+import { UserRoleEnum } from '@/domain/authentication/enterprise/entities/user'
 
 @Injectable()
 export class PrismaTeachersRepository implements TeachersRepository {
@@ -11,6 +12,7 @@ export class PrismaTeachersRepository implements TeachersRepository {
   async create(teacher: Teacher): Promise<void> {
     const userData = {
       id: teacher.id.toString(),
+      role: UserRoleEnum.COMMON,
       name: teacher.name,
     }
 

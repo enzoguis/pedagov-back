@@ -3,7 +3,10 @@ import { AuthenticateUseCase } from '../authenticate'
 import { FakeEncrypter } from 'test/cryptography/fake-encrypter'
 import generatePassword from 'generate-password'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { User } from '@/domain/authentication/enterprise/entities/user'
+import {
+  User,
+  UserRoleEnum,
+} from '@/domain/authentication/enterprise/entities/user'
 
 let fakeHasher: FakeHasher
 let fakeEncrypter: FakeEncrypter
@@ -32,6 +35,7 @@ describe('Authenticate Use Case', () => {
     const password = await fakeHasher.hash(plainPassword)
 
     const user = User.create({
+      role: UserRoleEnum.ADMIN,
       email: 'user@example.com',
       password: password,
       temporaryPassword: password,
@@ -44,10 +48,23 @@ describe('Authenticate Use Case', () => {
       password: plainPassword,
     })
 
-    expect(result.isRight).toBeTruthy()
+    expect(result.isRight()).toBeTruthy()
     expect(result.value).toEqual(
       expect.objectContaining({
         isFirstLogin: true,
+        accessToken: expect.any(String),
+      })
+    )
+
+    if (result.isLeft()) {
+      return
+    }
+
+    const parsedToken = JSON.parse(result.value.accessToken)
+
+    expect(parsedToken).toEqual(
+      expect.objectContaining({
+        roles: ['ADMIN'],
       })
     )
   })
@@ -62,6 +79,7 @@ describe('Authenticate Use Case', () => {
     const password = await fakeHasher.hash(plainPassword)
 
     const user = User.create({
+      role: UserRoleEnum.COMMON,
       email: 'user@example.com',
       password,
       temporaryPassword: '',
@@ -78,6 +96,19 @@ describe('Authenticate Use Case', () => {
     expect(result.value).toEqual(
       expect.objectContaining({
         isFirstLogin: false,
+        accessToken: expect.any(String),
+      })
+    )
+
+    if (result.isLeft()) {
+      return
+    }
+
+    const parsedToken = JSON.parse(result.value.accessToken)
+
+    expect(parsedToken).toEqual(
+      expect.objectContaining({
+        roles: ['COMMON'],
       })
     )
   })

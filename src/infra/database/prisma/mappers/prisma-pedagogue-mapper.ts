@@ -1,4 +1,5 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { UserRoleEnum } from '@/domain/authentication/enterprise/entities/user'
 import {
   Pedagogue,
   PedagogueRoleEnum,
@@ -9,16 +10,16 @@ import {
   User as PrismaUser,
 } from '@prisma/client'
 
-type PrismaPedagogueWithName = PrismaPedagogue & {
+type PrismaPedagogueWithUser = PrismaPedagogue & {
   user: PrismaUser
 }
 
 export class PrismaPedagogueMapper {
-  static toDomain(raw: PrismaPedagogueWithName): Pedagogue {
+  static toDomain(raw: PrismaPedagogueWithUser): Pedagogue {
     return Pedagogue.create(
       {
         name: raw.user.name,
-        role: PedagogueRoleEnum[raw.role],
+        role: PedagogueRoleEnum[raw.user.role],
       },
       new UniqueEntityID(raw.userId)
     )
@@ -27,7 +28,6 @@ export class PrismaPedagogueMapper {
   static toPrisma(pedagogue: Pedagogue): Prisma.PedagogueUncheckedCreateInput {
     return {
       userId: pedagogue.id.toString(),
-      role: pedagogue.role,
     }
   }
 }

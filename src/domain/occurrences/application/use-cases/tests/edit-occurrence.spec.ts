@@ -77,8 +77,6 @@ describe('Edit Occurrence Use Case', () => {
       occurrenceId: occurrence.id.toString(),
     })
 
-    console.log(inMemoryOccurrencesRepository.items[0].changes)
-
     expect(result.isRight).toBeTruthy()
     expect(inMemoryAttachmentsRepository.items).toHaveLength(1)
     expect(
