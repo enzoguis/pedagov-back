@@ -6,6 +6,7 @@ import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { INestApplication } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
+import { PrismaClient } from '@prisma/client'
 import request from 'supertest'
 import { PedagogueFactory } from 'test/factories/make-pedagogue'
 import { waitFor } from 'test/utils/wait-for'
@@ -54,15 +55,14 @@ describe('On Pedagogue Created (E2E)', () => {
 
     await waitFor(async () => {
       const { id } = response.body.result
-      await prisma.user.findUnique({
-        where: {
-          id,
-        },
-        select: {
-          temporaryPassword: true,
-          password: true,
-        },
+      const freshPrisma = new PrismaClient()
+      const pedagogueOnDatabase = await freshPrisma.user.findUnique({
+        where: { id },
       })
+      await freshPrisma.$disconnect()
+
+      console.log('Fresh query:', pedagogueOnDatabase)
+      expect(pedagogueOnDatabase?.password).not.toBeNull()
     })
   })
 })
