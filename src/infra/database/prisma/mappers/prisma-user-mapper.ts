@@ -10,7 +10,7 @@ export class PrismaUserMapper {
   static toDomain(raw: PrismaUser): User {
     return User.create(
       {
-        role: UserRoleEnum.COMMON,
+        role: UserRoleEnum[raw.role],
         email: raw.email,
         password: raw.password,
         temporaryPassword: raw.temporaryPassword ?? null,
