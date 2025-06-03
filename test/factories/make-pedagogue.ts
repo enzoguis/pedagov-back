@@ -29,12 +29,15 @@ export function makePedagogue(
 export class PedagogueFactory {
   constructor(private prisma: PrismaService) {}
 
-  async makePrismaPedagogue(data: Partial<PedagogueProps> = {}): Promise<Pedagogue> {
+  async makePrismaPedagogue(
+    data: Partial<PedagogueProps> = {}
+  ): Promise<Pedagogue> {
     const pedagogue = makePedagogue(data)
 
     await this.prisma.user.create({
       data: {
         id: pedagogue.id.toString(),
+        role: pedagogue.role,
         name: pedagogue.name,
       },
     })

@@ -7,12 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  ADMIN
+  COMMON
+}
+
 model User {
-  id                String  @id @default(uuid())
+  id                String   @id @default(uuid())
   name              String
-  email             String? @unique
+  role              UserRole
+  email             String?  @unique
   password          String?
-  temporaryPassword String? @map("temporary_password")
+  temporaryPassword String?  @map("temporary_password")
 
   pedagogue Pedagogue?
   teacher   Teacher?
@@ -24,14 +30,8 @@ model User {
   @@map("users")
 }
 
-enum PedagogueRole {
-  ADMIN
-  COMMON
-}
-
 model Pedagogue {
-  role   PedagogueRole
-  userId String        @map("user_id")
+  userId String @map("user_id")
 
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   occurrences Occurrence[]
