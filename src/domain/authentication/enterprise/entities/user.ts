@@ -1,6 +1,13 @@
 import { Entity } from '@/core/entities/entitity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
+export enum UserStatusEnum {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+}
+
+export type UserStatusType = keyof typeof UserStatusEnum
+
 export enum UserRoleEnum {
   ADMIN = 'ADMIN',
   COMMON = 'COMMON',
@@ -10,6 +17,7 @@ export type UserRoleEnumType = keyof typeof UserRoleEnum
 
 export interface UserProps {
   role: UserRoleEnum
+  status: UserStatusEnum
   email?: string | null
   password?: string | null
   temporaryPassword?: string | null
@@ -18,6 +26,10 @@ export interface UserProps {
 export class User extends Entity<UserProps> {
   get role() {
     return this.props.role
+  }
+
+  get status() {
+    return this.props.status
   }
 
   get email() {
@@ -30,6 +42,10 @@ export class User extends Entity<UserProps> {
 
   get temporaryPassword() {
     return this.props.temporaryPassword
+  }
+
+  set status(status: UserStatusEnum) {
+    this.props.status = status
   }
 
   set role(role: UserRoleEnum) {

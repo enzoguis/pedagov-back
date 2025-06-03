@@ -1,16 +1,15 @@
-import {
-  Teacher,
-  TeacherStatusEnum,
-  TeacherStatusType,
-} from '@/domain/occurrences/enterprise/entities/teacher'
+import { Teacher } from '@/domain/occurrences/enterprise/entities/teacher'
 import { TeachersRepository } from '../repositories/teachers-repository'
 import { Either, right } from '@/core/either'
-import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Injectable } from '@nestjs/common'
+import {
+  UserStatusEnum,
+  UserStatusType,
+} from '@/domain/authentication/enterprise/entities/user'
 
 interface CreateTeacherUseCaseRequest {
   name: string
-  status: TeacherStatusType
+  status: UserStatusType
 }
 
 type CreateTeacherUseCaseResponse = Either<
@@ -27,7 +26,7 @@ export class CreateTeacherUseCase {
     name,
     status,
   }: CreateTeacherUseCaseRequest): Promise<CreateTeacherUseCaseResponse> {
-    const teacher = Teacher.create({ name, status: TeacherStatusEnum[status] })
+    const teacher = Teacher.create({ name, status: UserStatusEnum[status] })
 
     await this.teachersRepository.create(teacher)
 

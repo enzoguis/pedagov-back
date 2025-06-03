@@ -6,10 +6,15 @@ import {
 import { PedagoguesRepository } from '../repositories/pedagogues-repository'
 import { Either, right } from '@/core/either'
 import { Injectable } from '@nestjs/common'
+import {
+  UserStatusEnum,
+  UserStatusType,
+} from '@/domain/authentication/enterprise/entities/user'
 
 interface CreatePedagogueUseCaseRequest {
   name: string
   email: string
+  status: UserStatusType
   role: PedagogueRoleType
 }
 
@@ -26,9 +31,14 @@ export class CreatePedagogueUseCase {
   async execute({
     name,
     email,
+    status,
     role,
   }: CreatePedagogueUseCaseRequest): Promise<CreatePedagogueUseCaseResponse> {
-    const pedagogue = Pedagogue.create({ name, role: PedagogueRoleEnum[role] })
+    const pedagogue = Pedagogue.create({
+      name,
+      role: PedagogueRoleEnum[role],
+      status: UserStatusEnum[status],
+    })
 
     await this.pedagoguesRepository.create(pedagogue, email)
     return right({ pedagogue })

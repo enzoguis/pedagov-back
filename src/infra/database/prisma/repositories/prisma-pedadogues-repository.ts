@@ -12,7 +12,8 @@ export class PrismaPedagoguesRepository implements PedagoguesRepository {
   async create(pedagogue: Pedagogue, email: string): Promise<void> {
     const userData = {
       id: pedagogue.id.toString(),
-      email: email,
+      email,
+      status: pedagogue.status,
       name: pedagogue.name,
       role: pedagogue.role,
     }

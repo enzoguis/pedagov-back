@@ -16,10 +16,15 @@ import { JwtAuthGuard } from '@/infra/auth/jwt-auth-guard'
 import { PedagoguePresenter } from '../presenters/pedagogue-presenter'
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CreatePedagogueDto } from '../dtos/create-pedagogue-dto'
+import { UserStatusEnum } from '@/domain/authentication/enterprise/entities/user'
 
 const createPedagogueBodySchema = z.object({
   name: z.string(),
   email: z.string().email(),
+  status: z.preprocess(
+    (val) => (typeof val === 'string' ? val.toUpperCase() : val),
+    z.nativeEnum(UserStatusEnum)
+  ),
   role: z.preprocess(
     (val) => (typeof val === 'string' ? val.toUpperCase() : val),
     z.nativeEnum(PedagogueRoleEnum)
@@ -43,12 +48,13 @@ export class CreatePedagogueController {
   @ApiBody({ type: CreatePedagogueDto })
   @UsePipes(new ZodValidationPipe(createPedagogueBodySchema))
   async handle(@Body() body: CreatePedagogueBody) {
-    const { name, email, role } = body
+    const { name, email, role, status } = body
 
     const result = await this.createPedagogue.execute({
       name,
       email,
       role,
+      status,
     })
 
     if (result.isLeft()) {

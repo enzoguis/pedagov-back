@@ -12,6 +12,7 @@ export class PrismaStudentsRepository implements StudentsRepository {
   async create(student: Student): Promise<void> {
     const userData = {
       id: student.id.toString(),
+      status: student.status,
       role: UserRoleEnum.COMMON,
       name: student.name,
     }
