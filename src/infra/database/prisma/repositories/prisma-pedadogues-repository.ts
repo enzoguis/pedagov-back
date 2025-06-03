@@ -8,11 +8,12 @@ import { PrismaService } from '../prisma.service'
 export class PrismaPedagoguesRepository implements PedagoguesRepository {
   constructor(private prisma: PrismaService) {}
 
-  async create(pedagogue: Pedagogue): Promise<void> {
+  async create(pedagogue: Pedagogue, email: string): Promise<void> {
     const userData = {
       id: pedagogue.id.toString(),
-      role: pedagogue.role,
+      email: email,
       name: pedagogue.name,
+      role: pedagogue.role,
     }
 
     const pedagogueData = PrismaPedagogueMapper.toPrisma(pedagogue)

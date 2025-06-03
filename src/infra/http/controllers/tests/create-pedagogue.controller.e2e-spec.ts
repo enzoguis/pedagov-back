@@ -47,6 +47,7 @@ describe('Create Pedagogue (E2E)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         name: 'pedagogue-1',
+        email: 'pedagogue@example.com',
         role: 'common',
       })
 
@@ -72,6 +73,7 @@ describe('Create Pedagogue (E2E)', () => {
     expect(pedagogueUserOnDatabase).toEqual(
       expect.objectContaining({
         id: id.value,
+        email: 'pedagogue@example.com',
         role: 'COMMON',
       })
     )

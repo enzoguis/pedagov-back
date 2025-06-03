@@ -5,6 +5,9 @@ export class CreatePedagogueDto {
   @ApiProperty({ example: 'Maria Silva' })
   name!: string
 
+  @ApiProperty({ example: 'pedagogue@example.com' })
+  email!: string
+
   @ApiProperty({
     enum: PedagogueRoleEnum,
     example: PedagogueRoleEnum.ADMIN,

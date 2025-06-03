@@ -14,17 +14,12 @@ import { Roles } from '@/infra/auth/roles.decorator'
 import { RolesGuard } from '@/infra/auth/roles-guard'
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth-guard'
 import { PedagoguePresenter } from '../presenters/pedagogue-presenter'
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger'
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CreatePedagogueDto } from '../dtos/create-pedagogue-dto'
 
 const createPedagogueBodySchema = z.object({
   name: z.string(),
+  email: z.string().email(),
   role: z.preprocess(
     (val) => (typeof val === 'string' ? val.toUpperCase() : val),
     z.nativeEnum(PedagogueRoleEnum)
@@ -48,10 +43,11 @@ export class CreatePedagogueController {
   @ApiBody({ type: CreatePedagogueDto })
   @UsePipes(new ZodValidationPipe(createPedagogueBodySchema))
   async handle(@Body() body: CreatePedagogueBody) {
-    const { name, role } = body
+    const { name, email, role } = body
 
     const result = await this.createPedagogue.execute({
       name,
+      email,
       role,
     })
 

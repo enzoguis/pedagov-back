@@ -12,6 +12,7 @@ describe('Create Pedagogue Use Case', () => {
 
   it('should be able to create a new pedagogue', async () => {
     const result = await sut.execute({
+      email: 'pedagogue@example.com',
       name: 'pedagogue',
       role: 'COMMON',
     })
