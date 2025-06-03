@@ -1,4 +1,5 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { UserRoleEnum } from '@/domain/authentication/enterprise/entities/user'
 import {
   Teacher,
   TeacherProps,
@@ -36,6 +37,7 @@ export class TeacherFactory {
     await this.prisma.user.create({
       data: {
         id: teacher.id.toString(),
+        role: UserRoleEnum.COMMON,
         name: teacher.name,
       },
     })

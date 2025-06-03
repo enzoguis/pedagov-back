@@ -2,6 +2,7 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import {
   User,
   UserProps,
+  UserRoleEnum,
 } from '@/domain/authentication/enterprise/entities/user'
 import { PrismaUserMapper } from '@/infra/database/prisma/mappers/prisma-user-mapper'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
@@ -14,6 +15,7 @@ export function makeUser(
 ) {
   const user = User.create(
     {
+      role: UserRoleEnum.COMMON,
       email: faker.internet.email(),
       password: faker.internet.password(),
       ...override,
@@ -36,6 +38,7 @@ export class UserFactory {
 
     await this.prisma.user.create({
       data: {
+        role: user.role,
         name: entity.name,
         email: user.email,
         password: user.password,

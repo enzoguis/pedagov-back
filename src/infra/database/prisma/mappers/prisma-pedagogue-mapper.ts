@@ -10,12 +10,12 @@ import {
   User as PrismaUser,
 } from '@prisma/client'
 
-type PrismaPedagogueWithName = PrismaPedagogue & {
+type PrismaPedagogueWithUser = PrismaPedagogue & {
   user: PrismaUser
 }
 
 export class PrismaPedagogueMapper {
-  static toDomain(raw: PrismaPedagogueWithName): Pedagogue {
+  static toDomain(raw: PrismaPedagogueWithUser): Pedagogue {
     return Pedagogue.create(
       {
         name: raw.user.name,
