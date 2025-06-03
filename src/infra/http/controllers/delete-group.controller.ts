@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common'
 import { DeleteGroupUseCase } from '@/domain/occurrences/application/use-cases/delete-group'
 import { ApiTags } from '@nestjs/swagger'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
 @ApiTags('Groups')
 @Controller('/groups/:id')
