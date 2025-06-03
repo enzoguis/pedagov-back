@@ -3,6 +3,7 @@ import { Pedagogue } from '@/domain/occurrences/enterprise/entities/pedagogue'
 import { Injectable } from '@nestjs/common'
 import { PrismaPedagogueMapper } from '../mappers/prisma-pedagogue-mapper'
 import { PrismaService } from '../prisma.service'
+import { DomainEvents } from '@/core/events/domain-events'
 
 @Injectable()
 export class PrismaPedagoguesRepository implements PedagoguesRepository {
@@ -22,6 +23,8 @@ export class PrismaPedagoguesRepository implements PedagoguesRepository {
       this.prisma.user.create({ data: userData }),
       this.prisma.pedagogue.create({ data: pedagogueData }),
     ])
+
+    DomainEvents.dispatchEventsForAggregate(pedagogue.id)
   }
 
   async save(pedagogue: Pedagogue): Promise<void> {

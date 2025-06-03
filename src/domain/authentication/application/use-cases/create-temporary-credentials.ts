@@ -50,6 +50,7 @@ export class CreateTemporaryCredentialsUseCase {
     user.password = password
     user.temporaryPassword = password
 
+
     await this.usersRepository.save(user)
 
     await this.emailSender.send({

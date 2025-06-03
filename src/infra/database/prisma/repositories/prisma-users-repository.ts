@@ -12,9 +12,7 @@ export class PrismaUsersRepository implements UsersRepository {
     const data = PrismaUserMapper.toPrisma(user)
 
     await this.prisma.user.update({
-      where: {
-        id: data.id,
-      },
+      where: { id: data.id },
       data,
     })
   }

@@ -3,7 +3,9 @@ import { EventHandler } from '@/core/events/event-handler'
 import { PedagogueCreatedEvent } from '@/domain/occurrences/enterprise/events/pedagogue-created-event'
 import { CreateTemporaryCredentialsUseCase } from '../use-cases/create-temporary-credentials'
 import { UsersRepository } from '../repositories/users-repository'
+import { Injectable } from '@nestjs/common'
 
+@Injectable()
 export class OnPedagogueCreated implements EventHandler {
   constructor(
     private createTemporaryCredentials: CreateTemporaryCredentialsUseCase,
