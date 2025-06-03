@@ -32,7 +32,8 @@ export class PedagogueFactory {
   constructor(private prisma: PrismaService) {}
 
   async makePrismaPedagogue(
-    data: Partial<PedagogueProps> = {}
+    data: Partial<PedagogueProps> = {},
+    email?: string
   ): Promise<Pedagogue> {
     const pedagogue = makePedagogue(data)
 
@@ -42,6 +43,7 @@ export class PedagogueFactory {
         status: pedagogue.status,
         role: pedagogue.role,
         name: pedagogue.name,
+        email,
       },
     })
 

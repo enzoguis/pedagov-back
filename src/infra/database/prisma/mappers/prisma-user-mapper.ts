@@ -30,7 +30,7 @@ export class PrismaUserMapper {
       status: user.status,
       email: user.email,
       password: user.password,
-      temporaryPassword: user.password,
+      temporaryPassword: user.temporaryPassword,
     }
   }
 }
