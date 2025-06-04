@@ -49,11 +49,12 @@ export class AuthenticateController {
       }
     }
 
-    const { accessToken, isFirstLogin } = result.value
+    const { accessToken, isFirstLogin, isActive } = result.value
 
     return {
       access_token: accessToken,
       is_first_login: isFirstLogin,
+      is_active: isActive,
     }
   }
 }
