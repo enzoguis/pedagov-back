@@ -1,5 +1,8 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { UserRoleEnum } from '@/domain/authentication/enterprise/entities/user'
+import {
+  UserRoleEnum,
+  UserStatusEnum,
+} from '@/domain/authentication/enterprise/entities/user'
 import {
   Pedagogue,
   PedagogueRoleEnum,
@@ -20,6 +23,7 @@ export class PrismaPedagogueMapper {
       {
         name: raw.user.name,
         role: PedagogueRoleEnum[raw.user.role],
+        status: UserStatusEnum[raw.user.status],
       },
       new UniqueEntityID(raw.userId)
     )

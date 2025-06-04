@@ -13,6 +13,7 @@ export class PrismaTeachersRepository implements TeachersRepository {
     const userData = {
       id: teacher.id.toString(),
       role: UserRoleEnum.COMMON,
+      status: teacher.status,
       name: teacher.name,
     }
 

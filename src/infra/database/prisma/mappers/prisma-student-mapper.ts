@@ -1,4 +1,5 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { UserStatusEnum } from '@/domain/authentication/enterprise/entities/user'
 import { Student } from '@/domain/occurrences/enterprise/entities/student'
 import { CPF } from '@/domain/occurrences/enterprise/entities/value-objects/cpf'
 import {
@@ -16,6 +17,7 @@ export class PrismaStudentMapper {
     return Student.create(
       {
         groupId: new UniqueEntityID(raw.groupId),
+        status: UserStatusEnum[raw.user.status],
         name: raw.user.name,
         cpf: CPF.create(raw.cpf),
         responsibleEmail: raw.responsibleEmail,

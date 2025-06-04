@@ -1,9 +1,11 @@
 import { Entity } from '@/core/entities/entitity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { CPF } from './value-objects/cpf'
+import { UserStatusEnum } from '@/domain/authentication/enterprise/entities/user'
 
 export interface StudentProps {
   name: string
+  status: UserStatusEnum
   groupId: UniqueEntityID
   cpf: CPF
   responsiblePhone: string
@@ -13,6 +15,10 @@ export interface StudentProps {
 export class Student extends Entity<StudentProps> {
   get name() {
     return this.props.name
+  }
+
+  get status() {
+    return this.props.status
   }
 
   get groupId() {
@@ -33,6 +39,10 @@ export class Student extends Entity<StudentProps> {
 
   set name(name: string) {
     this.props.name = name
+  }
+
+  set status(status: UserStatusEnum) {
+    this.props.status = status
   }
 
   set groupId(id: UniqueEntityID) {

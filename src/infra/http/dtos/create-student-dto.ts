@@ -1,10 +1,21 @@
+import { UserStatusEnum } from '@/domain/authentication/enterprise/entities/user'
 import { ApiProperty } from '@nestjs/swagger'
 
 export class CreateStudentDto {
   @ApiProperty({ example: 'João da Silva' })
   name!: string
 
-  @ApiProperty({ format: 'uuid', example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiProperty({
+    enum: UserStatusEnum,
+    example: UserStatusEnum.ACTIVE,
+    description: 'Status do aluno (ACTIVE, INACTIVE, etc.)',
+  })
+  status!: UserStatusEnum
+
+  @ApiProperty({
+    format: 'uuid',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
   groupId!: string
 
   @ApiProperty({ example: '123.456.789-00', description: 'CPF do aluno' })

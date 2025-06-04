@@ -1,5 +1,8 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { UserRoleEnum } from '@/domain/authentication/enterprise/entities/user'
+import {
+  UserRoleEnum,
+  UserStatusEnum,
+} from '@/domain/authentication/enterprise/entities/user'
 import {
   Student,
   StudentProps,
@@ -17,6 +20,7 @@ export function makeStudent(
   const student = Student.create(
     {
       name: faker.person.fullName(),
+      status: UserStatusEnum.ACTIVE,
       cpf: CPF.create('11505628032'),
       groupId: new UniqueEntityID(faker.string.uuid()),
       responsibleEmail: faker.internet.email(),
@@ -39,6 +43,7 @@ export class StudentFactory {
     await this.prisma.user.create({
       data: {
         id: student.id.toString(),
+        status: student.status,
         role: UserRoleEnum.COMMON,
         name: student.name,
       },

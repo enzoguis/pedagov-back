@@ -1,16 +1,10 @@
 import { Entity } from '@/core/entities/entitity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-
-export enum TeacherStatusEnum {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
-}
-
-export type TeacherStatusType = keyof typeof TeacherStatusEnum
+import { UserStatusEnum } from '@/domain/authentication/enterprise/entities/user'
 
 export interface TeacherProps {
   name: string
-  status: TeacherStatusEnum
+  status: UserStatusEnum
 }
 
 export class Teacher extends Entity<TeacherProps> {
@@ -26,7 +20,7 @@ export class Teacher extends Entity<TeacherProps> {
     this.props.name = name
   }
 
-  set status(status: TeacherStatusEnum) {
+  set status(status: UserStatusEnum) {
     this.props.status = status
   }
 

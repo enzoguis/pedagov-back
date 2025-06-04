@@ -12,13 +12,19 @@ enum UserRole {
   COMMON
 }
 
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
 model User {
-  id                String   @id @default(uuid())
+  id                String     @id @default(uuid())
   name              String
   role              UserRole
-  email             String?  @unique
+  status            UserStatus
+  email             String?    @unique
   password          String?
-  temporaryPassword String?  @map("temporary_password")
+  temporaryPassword String?    @map("temporary_password")
 
   pedagogue Pedagogue?
   teacher   Teacher?
@@ -139,14 +145,8 @@ model Student {
   @@map("students")
 }
 
-enum TeacherStatus {
-  ACTIVE
-  INACTIVE
-}
-
 model Teacher {
-  userId String        @map("user_id")
-  status TeacherStatus
+  userId String @map("user_id")
 
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   occurrences Occurrence[]
