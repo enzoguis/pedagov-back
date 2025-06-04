@@ -4,6 +4,7 @@ import { Encrypter } from '../../../authentication/application/cryptography/encr
 import { UsersRepository } from '../repositories/users-repository'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
 import { Injectable } from '@nestjs/common'
+import { UserStatusEnum } from '../../enterprise/entities/user'
 
 interface AuthenticateUseCaseRequest {
   email: string
@@ -15,6 +16,7 @@ type AuthenticateUseCaseResponse = Either<
   {
     accessToken: string
     isFirstLogin: boolean
+    isActive: boolean
   }
 >
 
@@ -64,9 +66,12 @@ export class AuthenticateUseCase {
         roles: [user.role],
       })
 
+      const isActive = user.status === UserStatusEnum.ACTIVE ? true : false
+
       return right({
         accessToken,
         isFirstLogin,
+        isActive,
       })
     }
 
