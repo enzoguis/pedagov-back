@@ -1,6 +1,7 @@
 import { Either, left, right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { PedagoguesRepository } from '../repositories/pedagogues-repository'
+import { Injectable } from '@nestjs/common'
 
 interface DeletePedagogueUseCaseRequest {
   pedagogueId: string
@@ -8,6 +9,7 @@ interface DeletePedagogueUseCaseRequest {
 
 type DeletePedagogueUseCaseResponse = Either<ResourceNotFoundError, {}>
 
+@Injectable()
 export class DeletePedagogueUseCase {
   constructor(private pedagoguesRepository: PedagoguesRepository) {}
   async execute({

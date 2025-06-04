@@ -1,6 +1,7 @@
 import { GroupsRepository } from '../repositories/groups-repository'
 import { Either, left, right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { Injectable } from '@nestjs/common'
 
 interface DeleteGroupUseCaseRequest {
   groupId: string
@@ -8,6 +9,7 @@ interface DeleteGroupUseCaseRequest {
 
 type DeleteGroupUseCaseResponse = Either<ResourceNotFoundError, {}>
 
+@Injectable()
 export class DeleteGroupUseCase {
   constructor(private groupsRepository: GroupsRepository) {}
   async execute({

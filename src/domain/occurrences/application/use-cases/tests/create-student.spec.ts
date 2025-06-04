@@ -12,6 +12,7 @@ describe('Create Student Use Case', () => {
   it('should be able to create a new student', async () => {
     const result = await sut.execute({
       name: 'John Doe',
+      status: 'ACTIVE',
       cpf: '92624103015',
       groupId: '1',
       responsibleEmail: 'johndoe@example.com',

@@ -1,9 +1,7 @@
 import { Either, right } from '@/core/either'
-import {
-  Occurrence,
-  OccurrenceTypes,
-} from '@/domain/occurrences/enterprise/entities/occurrence'
+import { Occurrence } from '@/domain/occurrences/enterprise/entities/occurrence'
 import { OccurrencesRepository } from '../repositories/occurrences-repository'
+import { Injectable } from '@nestjs/common'
 
 interface FetchRecentsOccurrencesUseCaseRequest {
   page: number
@@ -17,6 +15,7 @@ type FetchRecentsOccurrencesUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class FetchRecentsOccurrencesUseCase {
   constructor(private occurrencesRepository: OccurrencesRepository) {}
   async execute({

@@ -4,9 +4,15 @@ import { Student } from '@/domain/occurrences/enterprise/entities/student'
 import { CPF } from '@/domain/occurrences/enterprise/entities/value-objects/cpf'
 import { StudentsRepository } from '../repositories/students-repository'
 import { StudentAlreadyExistsError } from './errors/student-already-exists-error'
+import { Injectable } from '@nestjs/common'
+import {
+  UserStatusEnum,
+  UserStatusType,
+} from '@/domain/authentication/enterprise/entities/user'
 
 interface CreateStudentUseCaseRequest {
   name: string
+  status: UserStatusType
   groupId: string
   cpf: string
   responsiblePhone: string
@@ -20,10 +26,12 @@ type CreateStudentUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class CreateStudentUseCase {
   constructor(private studentsRepository: StudentsRepository) {}
   async execute({
     name,
+    status,
     cpf,
     groupId,
     responsibleEmail,
@@ -37,6 +45,7 @@ export class CreateStudentUseCase {
 
     const student = Student.create({
       name,
+      status: UserStatusEnum[status],
       cpf: CPF.create(cpf),
       groupId: new UniqueEntityID(groupId),
       responsibleEmail,

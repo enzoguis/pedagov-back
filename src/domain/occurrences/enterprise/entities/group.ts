@@ -4,9 +4,9 @@ import { Optional } from '@/core/types/optional'
 import { GroupStudentList } from './group-student-list'
 
 export enum GroupShiftsEnum {
-  MORNING = 'morning',
-  AFTERNOON = 'afternoon',
-  NIGHT = 'night',
+  MORNING = 'MORNING',
+  AFTERNOON = 'AFTERNOON',
+  NIGHT = 'NIGHT',
 }
 
 export type GroupShiftsType = keyof typeof GroupShiftsEnum

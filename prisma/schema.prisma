@@ -7,40 +7,39 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserType {
-  TEACHER
-  STUDENT
-  PEDAGOGUE
-}
-
-model User {
-  id                String  @id @default(uuid())
-  name              String
-  email             String  @unique
-  password          String
-  temporaryPassword String? @map("temporary_password")
-
-  Pedagogue Pedagogue?
-  Teacher   Teacher?
-  Student   Student?
-
-  ocurrence         Occurrence[]        @relation("Occurrence_attendee")
-  occurrenceHistory OccurrenceHistory[]
-
-  @@map("users")
-}
-
-enum PedagogueRole {
+enum UserRole {
   ADMIN
   COMMON
 }
 
-model Pedagogue {
-  id     String        @id @default(uuid())
-  Role   PedagogueRole
-  userId String        @map("user_id")
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
 
-  user        User         @relation(fields: [userId], references: [id])
+model User {
+  id                String     @id @default(uuid())
+  name              String
+  role              UserRole
+  status            UserStatus
+  email             String?    @unique
+  password          String?
+  temporaryPassword String?    @map("temporary_password")
+
+  pedagogue Pedagogue?
+  teacher   Teacher?
+  student   Student?
+
+  occurrenceHistories    OccurrenceHistory[]
+  participatedOccurences OccurrenceAttendees[]
+
+  @@map("users")
+}
+
+model Pedagogue {
+  userId String @map("user_id")
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   occurrences Occurrence[]
 
   @@unique([userId])
@@ -55,9 +54,12 @@ enum GroupShift {
 }
 
 model Group {
-  id       String     @id @default(uuid())
-  name     String
-  shift    GroupShift
+  id        String     @id @default(uuid())
+  teacherId String     @map("teacher_id")
+  name      String
+  shift     GroupShift
+
+  teacher  Teacher   @relation(fields: [teacherId], references: [userId])
   students Student[]
 
   @@map("groups")
@@ -79,28 +81,48 @@ model Occurrence {
   type        OccurrenceType
   createdAt   DateTime       @default(now()) @map("created_at")
 
-  author  Pedagogue @relation(fields: [authorId], references: [id])
-  teacher Teacher   @relation(fields: [teacherId], references: [id])
+  author  Pedagogue @relation(fields: [authorId], references: [userId])
+  teacher Teacher   @relation(fields: [teacherId], references: [userId])
 
-  attendees           User[]              @relation("Occurrence_attendee")
-  students            Student[]           @relation("Occurrence_students")
   occurrenceHistories OccurrenceHistory[]
   attachments         Attachment[]
+  students            OccurrenceStudents[]
+  attendees           OccurrenceAttendees[]
 
   @@index([teacherId])
   @@index([authorId])
   @@map("occurrences")
 }
 
-model OccurrenceHistory {
-  id            String   @id @default(uuid())
-  editorId      String   @map("editor_id")
-  occurrenceId  String   @map("Occurrence_id")
-  createdAt     DateTime @default(now()) @map("created_at")
-  changedFields String[] @map("changed_fields")
+model OccurrenceStudents {
+  occurrence   Occurrence @relation(fields: [occurrenceId], references: [id])
+  occurrenceId String     @map("occurrence_id")
 
-  ocurrence Occurrence @relation(fields: [occurrenceId], references: [id])
-  editor    User       @relation(fields: [editorId], references: [id])
+  student   Student @relation(fields: [studentId], references: [userId])
+  studentId String  @map("student_id")
+
+  @@id([occurrenceId, studentId])
+}
+
+model OccurrenceAttendees {
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  occurrence   Occurrence @relation(fields: [occurrenceId], references: [id])
+  occurrenceId String     @map("occurrence_id")
+
+  @@id([occurrenceId, userId])
+}
+
+model OccurrenceHistory {
+  id           String   @id @default(uuid())
+  editorId     String   @map("editor_id")
+  occurrenceId String   @map("Occurrence_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  changes      Json
+
+  occurrence Occurrence @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
+  editor     User       @relation(fields: [editorId], references: [id])
 
   @@index([editorId])
   @@index([occurrenceId])
@@ -108,35 +130,27 @@ model OccurrenceHistory {
 }
 
 model Student {
-  id               String @id @default(uuid())
   userId           String @unique @map("user_id")
   groupId          String @map("group_id")
   cpf              String @unique
   responsiblePhone String
   responsibleEmail String @unique
 
-  ocurrences Occurrence[] @relation("Occurrence_students")
-
-  group Group @relation(fields: [groupId], references: [id])
-  user  User  @relation(fields: [userId], references: [id])
+  group       Group                @relation(fields: [groupId], references: [id])
+  user        User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  occurrences OccurrenceStudents[]
 
   @@index([userId])
   @@index([groupId])
   @@map("students")
 }
 
-enum TeacherStatus {
-  ACTIVE
-  INACTIVE
-}
-
 model Teacher {
-  id     String        @id @default(uuid())
-  userId String        @map("user_id")
-  status TeacherStatus
+  userId String @map("user_id")
 
-  user        User         @relation(fields: [userId], references: [id])
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   occurrences Occurrence[]
+  Group       Group[]
 
   @@unique([userId])
   @@index([userId])
@@ -144,12 +158,12 @@ model Teacher {
 }
 
 model Attachment {
-  id           String @id @default(uuid())
+  id           String  @id @default(uuid())
   title        String
   url          String
-  occurrenceId String @map("Occurrence_id")
+  occurrenceId String? @map("Occurrence_id")
 
-  occurrence Occurrence @relation(fields: [occurrenceId], references: [id])
+  occurrence Occurrence? @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
 
   @@index([occurrenceId])
   @@map("attachments")

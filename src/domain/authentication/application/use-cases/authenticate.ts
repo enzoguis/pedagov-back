@@ -3,6 +3,7 @@ import { HashComparer } from '../../../authentication/application/cryptography/h
 import { Encrypter } from '../../../authentication/application/cryptography/encrypter'
 import { UsersRepository } from '../repositories/users-repository'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
+import { Injectable } from '@nestjs/common'
 
 interface AuthenticateUseCaseRequest {
   email: string
@@ -17,6 +18,7 @@ type AuthenticateUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class AuthenticateUseCase {
   constructor(
     private usersRepository: UsersRepository,
@@ -34,27 +36,40 @@ export class AuthenticateUseCase {
       return left(new WrongCredentialsError())
     }
 
-    const isFirstLogin = await this.hashComparer.compare(
-      password,
-      user.temporaryPassword
-    )
+    if (user.password) {
+      const isPasswordValid = await this.hashComparer.compare(
+        password,
+        user.password
+      )
 
-    const isPasswordValid = await this.hashComparer.compare(
-      password,
-      user.password
-    )
+      if (!isPasswordValid) {
+        return left(new WrongCredentialsError())
+      }
 
-    if (!isPasswordValid) {
-      return left(new WrongCredentialsError())
+      let isFirstLogin = false
+
+      if (user.temporaryPassword) {
+        const isTemporaryPassword = await this.hashComparer.compare(
+          password,
+          user.temporaryPassword
+        )
+
+        if (isTemporaryPassword) {
+          isFirstLogin = true
+        }
+      }
+
+      const accessToken = await this.encrypter.encrypt({
+        sub: user.id.toString(),
+        roles: [user.role],
+      })
+
+      return right({
+        accessToken,
+        isFirstLogin,
+      })
     }
 
-    const accessToken = await this.encrypter.encrypt({
-      sub: user.id.toString(),
-    })
-
-    return right({
-      accessToken,
-      isFirstLogin,
-    })
+    return left(new WrongCredentialsError())
   }
 }

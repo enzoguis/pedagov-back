@@ -4,6 +4,11 @@ export const envSchema = z.object({
   DATABASE_URL: z.string().url(),
   JWT_PRIVATE_KEY: z.string(),
   JWT_PUBLIC_KEY: z.string(),
+  GMAIL_AUTH_USER: z.string(),
+  GMAIL_AUTH_PASSWORD: z.string(),
+  GOOGLE_OAUTH_CLIENT_ID: z.string(),
+  GOOGLE_OAUTH_ACCESS_TOKEN: z.string(),
+  GOOGLE_OAUTH_REFRESH_TOKEN: z.string(),
   PORT: z.coerce.number().optional().default(3333),
 })
 

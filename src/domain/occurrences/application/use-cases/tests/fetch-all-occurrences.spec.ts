@@ -76,6 +76,6 @@ describe('Fetch All Occurrences Use Case', () => {
 
     expect(result.isRight()).toBeTruthy()
     expect(result.value?.occurrences).toHaveLength(1)
-    expect(result.value?.occurrences[0].type).toBe('tardiness')
+    expect(result.value?.occurrences[0].type).toBe('TARDINESS')
   })
 })

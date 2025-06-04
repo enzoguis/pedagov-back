@@ -2,6 +2,7 @@ import { Either, left, right } from '@/core/either'
 import { PedagoguesRepository } from '../repositories/pedagogues-repository'
 import { Pedagogue } from '@/domain/occurrences/enterprise/entities/pedagogue'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { Injectable } from '@nestjs/common'
 
 interface GetPedagogueByIdUseCaseRequest {
   pedagogueId: string
@@ -14,6 +15,7 @@ type GetPedagogueByIdUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class GetPedagogueByIdUseCase {
   constructor(private pedagoguesRepository: PedagoguesRepository) {}
   async execute({

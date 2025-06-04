@@ -1,16 +1,16 @@
 import { InMemoryGroupsRepository } from 'test/repositories/in-memory-groups-repository'
 import { makeGroup } from 'test/factories/make-group'
-import { InMemoryGroupStudentRepository } from 'test/repositories/in-memory-group-student-repository'
+import { InMemoryGroupStudentsRepository } from 'test/repositories/in-memory-group-student-repository'
 import { GetGroupByIdUseCase } from '../get-group-by-id'
-let inMemoryGroupStudentRepository: InMemoryGroupStudentRepository
+let inMemoryGroupStudentsRepository: InMemoryGroupStudentsRepository
 let inMemoryGroupsRepository: InMemoryGroupsRepository
 let sut: GetGroupByIdUseCase
 
 describe('Edit Group Use Case', () => {
   beforeEach(() => {
-    inMemoryGroupStudentRepository = new InMemoryGroupStudentRepository()
+    inMemoryGroupStudentsRepository = new InMemoryGroupStudentsRepository()
     inMemoryGroupsRepository = new InMemoryGroupsRepository(
-      inMemoryGroupStudentRepository
+      inMemoryGroupStudentsRepository
     )
     sut = new GetGroupByIdUseCase(inMemoryGroupsRepository)
   })

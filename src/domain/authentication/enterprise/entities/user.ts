@@ -1,13 +1,37 @@
 import { Entity } from '@/core/entities/entitity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
+export enum UserStatusEnum {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+}
+
+export type UserStatusType = keyof typeof UserStatusEnum
+
+export enum UserRoleEnum {
+  ADMIN = 'ADMIN',
+  COMMON = 'COMMON',
+}
+
+export type UserRoleEnumType = keyof typeof UserRoleEnum
+
 export interface UserProps {
-  email: string
-  password: string
-  temporaryPassword?: string
+  role: UserRoleEnum
+  status: UserStatusEnum
+  email?: string | null
+  password?: string | null
+  temporaryPassword?: string | null
 }
 
 export class User extends Entity<UserProps> {
+  get role() {
+    return this.props.role
+  }
+
+  get status() {
+    return this.props.status
+  }
+
   get email() {
     return this.props.email
   }
@@ -17,14 +41,22 @@ export class User extends Entity<UserProps> {
   }
 
   get temporaryPassword() {
-    return this.props.temporaryPassword ?? ''
+    return this.props.temporaryPassword
   }
 
-  set temporaryPassword(newPassword: string) {
+  set status(status: UserStatusEnum) {
+    this.props.status = status
+  }
+
+  set role(role: UserRoleEnum) {
+    this.props.role = role
+  }
+
+  set temporaryPassword(newPassword: string | null | undefined) {
     this.props.temporaryPassword = newPassword
   }
 
-  set password(password: string) {
+  set password(password: string | null | undefined) {
     this.props.password = password
   }
 

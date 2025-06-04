@@ -15,6 +15,10 @@ import {
 import { OccurrenceAttachmentsRepository } from '../repositories/occurrence-attachments-repository'
 import { OccurrenceAttachmentsList } from '@/domain/occurrences/enterprise/entities/occurrence-attachments-list'
 import { OccurrenceAttachment } from '@/domain/occurrences/enterprise/entities/occurrence-attachment'
+import { Injectable } from '@nestjs/common'
+import { OccurrenceHistory } from '../../enterprise/entities/occurrence-history'
+import { Change } from '../../enterprise/entities/value-objects/change'
+import { OccurrenceHistoriesRepository } from '../repositories/occurrence-histories-repository'
 
 interface EditOccurrenceUseCaseRequest {
   occurrenceId: string
@@ -30,9 +34,11 @@ interface EditOccurrenceUseCaseRequest {
 
 type EditOccurrenceUseCaseResponse = Either<ResourceNotFoundError, {}>
 
+@Injectable()
 export class EditOccurrenceUseCase {
   constructor(
     private occurrencesRepository: OccurrencesRepository,
+    private occurrenceHistoriesRepository: OccurrenceHistoriesRepository,
     private occurrenceStudentsRepository: OccurrenceStudentsRepository,
     private occurrenceAttendeesRepository: OccurrenceAttendeesRepository,
     private occurrenceAttachmentsRepository: OccurrenceAttachmentsRepository
@@ -108,30 +114,31 @@ export class EditOccurrenceUseCase {
 
     occurrenceAttachmentsList.update(occurrenceAttachments)
 
-    occurrence.updateStudents(
-      occurrenceStudentsList,
-      new UniqueEntityID(editorId)
-    )
-    occurrence.updateAttendees(
-      occurrenceAttendeesList,
-      new UniqueEntityID(editorId)
-    )
-    occurrence.updateAttachments(
-      occurrenceAttachmentsList,
-      new UniqueEntityID(editorId)
-    )
-    occurrence.updateTitle(title, new UniqueEntityID(editorId))
-    occurrence.updateDescription(description, new UniqueEntityID(editorId))
-    occurrence.updateType(
-      OccurrenceTypeEnum[type],
-      new UniqueEntityID(editorId)
-    )
-    occurrence.updateTeacherId(
-      new UniqueEntityID(teacherId),
-      new UniqueEntityID(editorId)
-    )
+    occurrence.students = occurrenceStudentsList
+    occurrence.attendees = occurrenceAttendeesList
+
+    occurrence.attachments = occurrenceAttachmentsList
+    occurrence.title = title
+    occurrence.description = description
+    occurrence.type = OccurrenceTypeEnum[type]
+    occurrence.teacherId = new UniqueEntityID(teacherId)
+
+    const occurrenceChange = occurrence.changes.map((change) => {
+      return Change.create(change)
+    })
 
     await this.occurrencesRepository.save(occurrence)
+
+    if (occurrenceChange.length > 0) {
+      const occurrenceHistory = OccurrenceHistory.create({
+        createdAt: new Date(),
+        editorId: new UniqueEntityID(editorId),
+        occurrenceId: occurrence.id,
+        changes: occurrenceChange,
+      })
+
+      await this.occurrenceHistoriesRepository.create(occurrenceHistory)
+    }
 
     return right({})
   }
