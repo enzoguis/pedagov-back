@@ -6,6 +6,7 @@ import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repos
 import {
   User,
   UserRoleEnum,
+  UserStatusEnum,
 } from '@/domain/authentication/enterprise/entities/user'
 
 let fakeHasher: FakeHasher
@@ -36,6 +37,7 @@ describe('Authenticate Use Case', () => {
 
     const user = User.create({
       role: UserRoleEnum.ADMIN,
+      status: UserStatusEnum.ACTIVE,
       email: 'user@example.com',
       password: password,
       temporaryPassword: password,
@@ -80,6 +82,7 @@ describe('Authenticate Use Case', () => {
 
     const user = User.create({
       role: UserRoleEnum.COMMON,
+      status: UserStatusEnum.ACTIVE,
       email: 'user@example.com',
       password,
       temporaryPassword: '',
