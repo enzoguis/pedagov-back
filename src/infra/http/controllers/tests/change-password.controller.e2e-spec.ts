@@ -69,8 +69,6 @@ describe('Change Password (E2E)', () => {
       },
     })
 
-    console.log(userOnDatabase)
-
     if (userOnDatabase?.password) {
       const isPasswordChanged = await compare(
         '12345678',
