@@ -8,6 +8,7 @@ import request from 'supertest'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { UserFactory } from 'test/factories/make-user'
 import { PedagogueRoleEnum } from '@/domain/occurrences/enterprise/entities/pedagogue'
+import { DomainEvents } from '@/core/events/domain-events'
 
 describe('Create Pedagogue (E2E)', () => {
   let app: INestApplication
@@ -28,6 +29,8 @@ describe('Create Pedagogue (E2E)', () => {
     pedagogueFactory = moduleRef.get(PedagogueFactory)
 
     jwt = moduleRef.get(JwtService)
+
+    DomainEvents.shouldRun = true
 
     await app.init()
   })
