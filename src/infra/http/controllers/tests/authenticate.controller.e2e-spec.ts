@@ -67,6 +67,7 @@ describe('Authenticate (E2E)', () => {
 
     expect(response.statusCode).toBe(201)
     expect(response.body.is_first_login).toBeTruthy()
+    expect(response.body.is_active).toBeTruthy()
   })
 
   test('[POST] /sessions', async () => {

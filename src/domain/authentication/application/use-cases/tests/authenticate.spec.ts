@@ -55,6 +55,7 @@ describe('Authenticate Use Case', () => {
       expect.objectContaining({
         isFirstLogin: true,
         accessToken: expect.any(String),
+        isActive: true,
       })
     )
 

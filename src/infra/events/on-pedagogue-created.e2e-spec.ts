@@ -59,10 +59,6 @@ describe('On Pedagogue Created (E2E)', () => {
         where: {
           id,
         },
-        select: {
-          temporaryPassword: true,
-          password: true,
-        },
       })
     })
   })
