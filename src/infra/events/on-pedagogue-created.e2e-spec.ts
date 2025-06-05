@@ -61,8 +61,6 @@ describe('On Pedagogue Created (E2E)', () => {
         where: { id },
       })
 
-      console.log('pedagogueOnDatabase', pedagogueOnDatabase)
-
       expect(pedagogueOnDatabase?.password).not.toBeNull()
     })
   })

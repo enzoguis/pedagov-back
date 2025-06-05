@@ -7,7 +7,6 @@ export class MailerSender implements EmailSender {
   constructor(private mailerService: MailerService) {}
 
   async send(message: EmailSenderSendParams): Promise<void> {
-    console.log(message)
 
     try {
       await this.mailerService.sendMail({
