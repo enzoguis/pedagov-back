@@ -35,6 +35,8 @@ export class PrismaPedagoguesRepository implements PedagoguesRepository {
       },
       data: {
         name: pedagogue.name,
+        role: pedagogue.role,
+        status: pedagogue.status,
       },
     })
 
