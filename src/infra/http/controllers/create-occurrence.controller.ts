@@ -5,8 +5,10 @@ import { BadRequestException, Body, Controller, Post } from '@nestjs/common'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { UserPayload } from '@/infra/auth/jwt-strategy'
-import { ApiBody, ApiTags } from '@nestjs/swagger'
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { CreateOccurrenceDto } from '../dtos/create-occurrence-dto'
+import { OccurrencePresenter } from '../presenters/occurrence-presenter'
+import { CreateOccurrenceResponseDto } from '../dtos/create-occurrence-response-dto'
 
 const createOccurrenceBodySchema = z.object({
   title: z.string().min(1, 'The title must have at least 1 character'),
@@ -33,6 +35,7 @@ export class CreateOccurrenceController {
 
   @Post()
   @ApiBody({ type: CreateOccurrenceDto })
+  @ApiResponse({ type: CreateOccurrenceResponseDto })
   async handle(
     @CurrentUser() user: UserPayload,
     @Body(bodyValidationPipe) body: CreateOccurrenceBody
@@ -64,6 +67,8 @@ export class CreateOccurrenceController {
       throw new BadRequestException()
     }
 
-    return { result: result.value }
+    const { occurrence } = result.value
+
+    return { result: OccurrencePresenter.toHTTP(occurrence) }
   }
 }

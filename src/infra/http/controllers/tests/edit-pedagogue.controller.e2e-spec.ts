@@ -10,7 +10,7 @@ import { UserFactory } from 'test/factories/make-user'
 import { PedagogueRoleEnum } from '@/domain/occurrences/enterprise/entities/pedagogue'
 import { DomainEvents } from '@/core/events/domain-events'
 
-describe('Create Pedagogue (E2E)', () => {
+describe('Edit Pedagogue (E2E)', () => {
   let app: INestApplication
   let prisma: PrismaService
   let pedagogueFactory: PedagogueFactory
@@ -35,10 +35,13 @@ describe('Create Pedagogue (E2E)', () => {
     await app.init()
   })
 
-  test('[POST] /accounts/pedagogue', async () => {
-    const pedagogue = await pedagogueFactory.makePrismaPedagogue({
-      role: PedagogueRoleEnum.ADMIN,
-    })
+  test('[PUT] /pedagogues/:id', async () => {
+    const pedagogue = await pedagogueFactory.makePrismaPedagogue(
+      {
+        role: PedagogueRoleEnum.ADMIN,
+      },
+      'pedagogue@example.com'
+    )
 
     const accessToken = jwt.sign({
       sub: pedagogue.id.toString(),
@@ -46,16 +49,15 @@ describe('Create Pedagogue (E2E)', () => {
     })
 
     const response = await request(app.getHttpServer())
-      .post('/accounts/pedagogue')
+      .put(`/pedagogues/${pedagogue.id.toString()}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         name: 'pedagogue-1',
         status: 'active',
-        email: 'pedagogue@example.com',
         role: 'common',
       })
 
-    expect(response.statusCode).toBe(201)
+    expect(response.statusCode).toBe(200)
 
     const { id } = response.body.result
 
@@ -76,36 +78,10 @@ describe('Create Pedagogue (E2E)', () => {
     expect(pedagogueUserOnDatabase).toBeTruthy()
     expect(pedagogueUserOnDatabase).toEqual(
       expect.objectContaining({
-        id: id,
+        id,
         email: 'pedagogue@example.com',
         role: 'COMMON',
       })
-    )
-  })
-
-  test('[POST] /accounts/pedagogue (without admin role)', async () => {
-    const pedagogue = await pedagogueFactory.makePrismaPedagogue({
-      role: PedagogueRoleEnum.COMMON,
-    })
-
-    const accessToken = jwt.sign({
-      sub: pedagogue.id.toString(),
-      roles: ['COMMON'],
-    })
-
-    const response = await request(app.getHttpServer())
-      .post('/accounts/pedagogue')
-      .set('Authorization', `Bearer ${accessToken}`)
-      .send({
-        name: 'pedagogue-1',
-        status: 'active',
-        email: 'pedagogue@example.com',
-        role: 'common',
-      })
-
-    expect(response.statusCode).toBe(403)
-    expect(response.body.message).toBe(
-      'You do not have permission to access this route.'
     )
   })
 })

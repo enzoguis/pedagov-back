@@ -12,9 +12,10 @@ import { z } from 'zod'
 import { Public } from '@/infra/auth/public'
 import { AuthenticateUseCase } from '@/domain/authentication/application/use-cases/authenticate'
 import { WrongCredentialsError } from '@/domain/authentication/application/use-cases/errors/wrong-credentials-error'
-import { ApiBody, ApiTags } from '@nestjs/swagger'
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { AuthenticateDto } from '../dtos/authenticate-dto'
 import { InactiveUserError } from '@/domain/authentication/application/use-cases/errors/inactive-user-error'
+import { AuthenticateResponseDto } from '../dtos/authenticate-response-dto'
 
 const authenticateBodySchema = z.object({
   email: z.string().email(),
@@ -31,6 +32,7 @@ export class AuthenticateController {
 
   @Post()
   @ApiBody({ type: AuthenticateDto })
+  @ApiResponse({ type: AuthenticateResponseDto })
   @UsePipes(new ZodValidationPipe(authenticateBodySchema))
   async handle(@Body() body: AuthenticateBody) {
     const { email, password } = body

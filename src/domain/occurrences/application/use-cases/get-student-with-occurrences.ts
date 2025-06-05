@@ -3,25 +3,26 @@ import { StudentsRepository } from '../repositories/students-repository'
 import { Student } from '@/domain/occurrences/enterprise/entities/student'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { Injectable } from '@nestjs/common'
+import { StudentWithOccurrences } from '../../enterprise/entities/value-objects/student-with-occurrences'
 
-interface GetStudentByIdUseCaseRequest {
+interface GetStudentWithOccurrencesUseCaseRequest {
   studentId: string
 }
 
-type GetStudentByIdUseCaseResponse = Either<
+type GetStudentWithOccurrencesUseCaseResponse = Either<
   ResourceNotFoundError,
   {
-    student: Student
+    student: StudentWithOccurrences
   }
 >
 
 @Injectable()
-export class GetStudentByIdUseCase {
+export class GetStudentWithOccurrencesUseCase {
   constructor(private studentsRepository: StudentsRepository) {}
   async execute({
     studentId,
-  }: GetStudentByIdUseCaseRequest): Promise<GetStudentByIdUseCaseResponse> {
-    const student = await this.studentsRepository.findById(studentId)
+  }: GetStudentWithOccurrencesUseCaseRequest): Promise<GetStudentWithOccurrencesUseCaseResponse> {
+    const student = await this.studentsRepository.findWithOccurrences(studentId)
 
     if (!student) {
       return left(new ResourceNotFoundError())
