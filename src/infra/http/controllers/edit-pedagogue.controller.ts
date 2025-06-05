@@ -14,8 +14,10 @@ import { Roles } from '@/infra/auth/roles.decorator'
 import { RolesGuard } from '@/infra/auth/roles-guard'
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth-guard'
 import { PedagoguePresenter } from '../presenters/pedagogue-presenter'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserStatusEnum } from '@/domain/authentication/enterprise/entities/user'
+import { EditPedagogueDto } from '../dtos/edit-pedagogue-dto'
+import { EditPedagogueResponseDto } from '../dtos/edit-pedagogue-response-dto'
 
 const editPedagogueBodySchema = z.object({
   name: z.string(),
@@ -41,8 +43,9 @@ export class EditPedagogueController {
   constructor(private editPedagogue: EditPedagogueUseCase) {}
 
   @Put()
+  @ApiBody({ type: EditPedagogueDto })
+  @ApiResponse({ type: EditPedagogueResponseDto })
   @ApiOperation({
-    summary: 'Edit a pedagogue',
     description: 'Only pedagogues with ADMIN role can access this route',
   })
   async handle(

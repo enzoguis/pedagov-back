@@ -42,7 +42,6 @@ export class CreatePedagogueController {
 
   @Post()
   @ApiOperation({
-    summary: 'Create a new pedagogue',
     description: 'Only pedagogues with ADMIN role can access this route',
   })
   @ApiBody({ type: CreatePedagogueDto })
