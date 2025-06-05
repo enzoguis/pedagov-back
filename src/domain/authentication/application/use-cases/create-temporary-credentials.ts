@@ -50,7 +50,6 @@ export class CreateTemporaryCredentialsUseCase {
     user.password = password
     user.temporaryPassword = password
 
-
     await this.usersRepository.save(user)
 
     await this.emailSender.send({
@@ -58,6 +57,7 @@ export class CreateTemporaryCredentialsUseCase {
       templateId: EmailSenderTemplateIdEnum.TEMPORARY_PASSWORD_CREATED,
       data: { temporaryPassword },
     })
+
 
     return right({ user })
   }

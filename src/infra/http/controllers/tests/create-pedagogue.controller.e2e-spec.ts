@@ -8,6 +8,7 @@ import request from 'supertest'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { UserFactory } from 'test/factories/make-user'
 import { PedagogueRoleEnum } from '@/domain/occurrences/enterprise/entities/pedagogue'
+import { DomainEvents } from '@/core/events/domain-events'
 
 describe('Create Pedagogue (E2E)', () => {
   let app: INestApplication
@@ -29,6 +30,8 @@ describe('Create Pedagogue (E2E)', () => {
 
     jwt = moduleRef.get(JwtService)
 
+    DomainEvents.shouldRun = true
+
     await app.init()
   })
 
@@ -47,6 +50,7 @@ describe('Create Pedagogue (E2E)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         name: 'pedagogue-1',
+        status: 'active',
         email: 'pedagogue@example.com',
         role: 'common',
       })
@@ -57,7 +61,7 @@ describe('Create Pedagogue (E2E)', () => {
 
     const pedagogueOnDatabase = await prisma.pedagogue.findUnique({
       where: {
-        userId: id.value,
+        userId: id,
       },
     })
 
@@ -72,7 +76,7 @@ describe('Create Pedagogue (E2E)', () => {
     expect(pedagogueUserOnDatabase).toBeTruthy()
     expect(pedagogueUserOnDatabase).toEqual(
       expect.objectContaining({
-        id: id.value,
+        id: id,
         email: 'pedagogue@example.com',
         role: 'COMMON',
       })

@@ -10,6 +10,8 @@ async function bootstrap() {
   const configService = app.get<ConfigService<Env, true>>(ConfigService)
   const port = configService.get('PORT', { infer: true })
 
+  app.enableCors({ origin: '*' })
+
   const config = new DocumentBuilder()
     .setTitle('PEDAGOV API')
     .setDescription('Documentação da API do sistema de ocorrências escolares')

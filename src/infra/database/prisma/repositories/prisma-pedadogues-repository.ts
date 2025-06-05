@@ -12,7 +12,8 @@ export class PrismaPedagoguesRepository implements PedagoguesRepository {
   async create(pedagogue: Pedagogue, email: string): Promise<void> {
     const userData = {
       id: pedagogue.id.toString(),
-      email: email,
+      email,
+      status: pedagogue.status,
       name: pedagogue.name,
       role: pedagogue.role,
     }
@@ -45,6 +46,36 @@ export class PrismaPedagoguesRepository implements PedagoguesRepository {
     })
 
     await this.prisma.$transaction([userUpdate, pedagogueUpdate])
+  }
+
+  async findByEmail(email: string): Promise<Pedagogue | null> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+      include: {
+        pedagogue: true,
+      },
+    })
+
+    if (!user) {
+      return null
+    }
+
+    const pedagogue = await this.prisma.pedagogue.findUnique({
+      where: {
+        userId: user.id,
+      },
+      include: {
+        user: true,
+      },
+    })
+
+    if (!pedagogue) {
+      return null
+    }
+
+    return PrismaPedagogueMapper.toDomain(pedagogue)
   }
 
   async findAll(): Promise<Pedagogue[]> {

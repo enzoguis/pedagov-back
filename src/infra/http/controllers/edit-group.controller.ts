@@ -12,6 +12,8 @@ import { z } from 'zod'
 import { EditGroupUseCase } from '@/domain/occurrences/application/use-cases/edit-group'
 import { GroupShiftsEnum } from '@/domain/occurrences/enterprise/entities/group'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { ApiBody, ApiTags } from '@nestjs/swagger'
+import { EditGroupDto } from '../dtos/edit-group-dto'
 
 const editGroupBodySchema = z.object({
   name: z.string(),
@@ -26,12 +28,14 @@ type EditGroupBody = z.infer<typeof editGroupBodySchema>
 
 const bodyValidationPipe = new ZodValidationPipe(editGroupBodySchema)
 
+@ApiTags('Groups')
 @Controller('/groups/:id')
 export class EditGroupController {
   constructor(private editGroup: EditGroupUseCase) {}
 
   @Put()
   @HttpCode(201)
+  @ApiBody({ type: EditGroupDto })
   async handle(
     @Body(bodyValidationPipe) body: EditGroupBody,
     @Param('id') groupId: string

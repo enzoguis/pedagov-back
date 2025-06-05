@@ -1,8 +1,6 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import {
-  Teacher,
-  TeacherStatusEnum,
-} from '@/domain/occurrences/enterprise/entities/teacher'
+import { UserStatusEnum } from '@/domain/authentication/enterprise/entities/user'
+import { Teacher } from '@/domain/occurrences/enterprise/entities/teacher'
 import {
   Prisma,
   Teacher as PrismaTeacher,
@@ -18,7 +16,7 @@ export class PrismaTeacherMapper {
     return Teacher.create(
       {
         name: raw.user.name,
-        status: TeacherStatusEnum[raw.status],
+        status: UserStatusEnum[raw.user.status],
       },
       new UniqueEntityID(raw.userId)
     )
@@ -27,7 +25,6 @@ export class PrismaTeacherMapper {
   static toPrisma(teacher: Teacher): Prisma.TeacherUncheckedCreateInput {
     return {
       userId: teacher.id.toString(),
-      status: teacher.status,
     }
   }
 }

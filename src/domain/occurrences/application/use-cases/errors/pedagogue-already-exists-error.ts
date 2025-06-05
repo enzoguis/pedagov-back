@@ -1,5 +1,5 @@
-export class StudentAlreadyExistsError extends Error {
+export class PedagogueAlreadyExistsError extends Error {
   constructor(identifier: string) {
-    super(`Student "${identifier}" already exists.`)
+    super(`Pedagogue "${identifier}" already exists.`)
   }
 }

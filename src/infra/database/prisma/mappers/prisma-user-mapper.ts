@@ -3,6 +3,7 @@ import { Optional } from '@/core/types/optional'
 import {
   User,
   UserRoleEnum,
+  UserStatusEnum,
 } from '@/domain/authentication/enterprise/entities/user'
 import { Prisma, User as PrismaUser } from '@prisma/client'
 
@@ -11,6 +12,7 @@ export class PrismaUserMapper {
     return User.create(
       {
         role: UserRoleEnum[raw.role],
+        status: UserStatusEnum[raw.status],
         email: raw.email,
         password: raw.password,
         temporaryPassword: raw.temporaryPassword ?? null,
@@ -25,6 +27,7 @@ export class PrismaUserMapper {
     return {
       id: user.id.toString(),
       role: user.role,
+      status: user.status,
       email: user.email,
       password: user.password,
       temporaryPassword: user.temporaryPassword,

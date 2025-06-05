@@ -28,6 +28,8 @@ import { EditGroupController } from './controllers/edit-group.controller'
 import { EditGroupUseCase } from '@/domain/occurrences/application/use-cases/edit-group'
 import { EditOccurrenceController } from './controllers/edit-occurrence.controller'
 import { EditOccurrenceUseCase } from '@/domain/occurrences/application/use-cases/edit-occurrence'
+import { ChangePasswordController } from './controllers/change-password.controller'
+import { ChangePasswordUseCase } from '@/domain/authentication/application/use-cases/change-password'
 
 @Module({
   imports: [DatabaseModule, EmailModule, CryptographyModule],
@@ -45,6 +47,7 @@ import { EditOccurrenceUseCase } from '@/domain/occurrences/application/use-case
     DeleteTeacherController,
     EditGroupController,
     EditOccurrenceController,
+    ChangePasswordController,
   ],
   providers: [
     CreateOccurrenceUseCase,
@@ -60,6 +63,7 @@ import { EditOccurrenceUseCase } from '@/domain/occurrences/application/use-case
     DeleteTeacherUseCase,
     EditGroupUseCase,
     EditOccurrenceUseCase,
+    ChangePasswordUseCase,
   ],
 })
 export class HttpModule {}

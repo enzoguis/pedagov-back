@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  ForbiddenException,
   Post,
   UnauthorizedException,
   UsePipes,
@@ -13,6 +14,7 @@ import { AuthenticateUseCase } from '@/domain/authentication/application/use-cas
 import { WrongCredentialsError } from '@/domain/authentication/application/use-cases/errors/wrong-credentials-error'
 import { ApiBody, ApiTags } from '@nestjs/swagger'
 import { AuthenticateDto } from '../dtos/authenticate-dto'
+import { InactiveUserError } from '@/domain/authentication/application/use-cases/errors/inactive-user-error'
 
 const authenticateBodySchema = z.object({
   email: z.string().email(),
@@ -44,6 +46,8 @@ export class AuthenticateController {
       switch (error.constructor) {
         case WrongCredentialsError:
           throw new UnauthorizedException(error.message)
+        case InactiveUserError:
+          throw new ForbiddenException(error.message)
         default:
           throw new BadRequestException(error.message)
       }

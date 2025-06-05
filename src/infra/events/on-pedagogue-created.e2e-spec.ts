@@ -49,19 +49,20 @@ describe('On Pedagogue Created (E2E)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         name: 'new pedagogue',
+        status: 'active',
         email: 'pedagogue@example.com',
         role: 'common',
       })
 
     await waitFor(async () => {
       const { id } = response.body.result
-      const freshPrisma = new PrismaClient()
-      const pedagogueOnDatabase = await freshPrisma.user.findUnique({
+
+      const pedagogueOnDatabase = await prisma.user.findUnique({
         where: { id },
       })
-      await freshPrisma.$disconnect()
 
-      console.log('Fresh query:', pedagogueOnDatabase)
+      console.log('pedagogueOnDatabase', pedagogueOnDatabase)
+
       expect(pedagogueOnDatabase?.password).not.toBeNull()
     })
   })

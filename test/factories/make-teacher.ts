@@ -1,9 +1,11 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { UserRoleEnum } from '@/domain/authentication/enterprise/entities/user'
+import {
+  UserRoleEnum,
+  UserStatusEnum,
+} from '@/domain/authentication/enterprise/entities/user'
 import {
   Teacher,
   TeacherProps,
-  TeacherStatusEnum,
 } from '@/domain/occurrences/enterprise/entities/teacher'
 import { CPF } from '@/domain/occurrences/enterprise/entities/value-objects/cpf'
 import { PrismaTeacherMapper } from '@/infra/database/prisma/mappers/prisma-teacher-mapper'
@@ -18,7 +20,7 @@ export function makeTeacher(
   const teacher = Teacher.create(
     {
       name: faker.person.fullName(),
-      status: TeacherStatusEnum.ACTIVE,
+      status: UserStatusEnum.ACTIVE,
       ...override,
     },
     id
@@ -37,6 +39,7 @@ export class TeacherFactory {
     await this.prisma.user.create({
       data: {
         id: teacher.id.toString(),
+        status: teacher.status,
         role: UserRoleEnum.COMMON,
         name: teacher.name,
       },

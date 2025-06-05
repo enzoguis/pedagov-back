@@ -6,10 +6,15 @@ import {
   PedagogueRoleType,
 } from '../../enterprise/entities/pedagogue'
 import { Injectable } from '@nestjs/common'
+import {
+  UserStatusEnum,
+  UserStatusType,
+} from '@/domain/authentication/enterprise/entities/user'
 
 interface EditPedagogueUseCaseRequest {
   pedagogueId: string
   name: string
+  status: UserStatusType
   role: PedagogueRoleType
 }
 
@@ -21,6 +26,7 @@ export class EditPedagogueUseCase {
   async execute({
     pedagogueId,
     name,
+    status,
     role,
   }: EditPedagogueUseCaseRequest): Promise<EditPedagogueUseCaseResponse> {
     const pedagogue = await this.pedagoguesRepository.findById(pedagogueId)
@@ -29,6 +35,7 @@ export class EditPedagogueUseCase {
       return left(new ResourceNotFoundError())
     }
 
+    pedagogue.status = UserStatusEnum[status]
     pedagogue.name = name
     pedagogue.role = PedagogueRoleEnum[role]
 

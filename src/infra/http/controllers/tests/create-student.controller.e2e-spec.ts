@@ -54,6 +54,7 @@ describe('Create Student (E2E)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         name: 'student-1',
+        status: 'active',
         cpf: '43366417064',
         groupId: group.id.toString(),
         responsibleEmail: 'responsible@example.com',

@@ -8,16 +8,16 @@ import {
 import { CreateTeacherUseCase } from '@/domain/occurrences/application/use-cases/create-teacher'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
-import { TeacherStatusEnum } from '@/domain/occurrences/enterprise/entities/teacher'
 import { TeacherPresenter } from '../presenters/teacher-presenter'
 import { ApiBody, ApiTags } from '@nestjs/swagger'
 import { CreateTeacherDto } from '../dtos/create-teacher-dto'
+import { UserStatusEnum } from '@/domain/authentication/enterprise/entities/user'
 
 const createTeacherBodySchema = z.object({
   name: z.string(),
   status: z.preprocess(
     (val) => (typeof val === 'string' ? val.toUpperCase() : val),
-    z.nativeEnum(TeacherStatusEnum)
+    z.nativeEnum(UserStatusEnum)
   ),
 })
 

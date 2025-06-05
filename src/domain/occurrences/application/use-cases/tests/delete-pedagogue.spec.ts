@@ -3,12 +3,17 @@ import { makePedagogue } from 'test/factories/make-pedagogue'
 import { DeletePedagogueUseCase } from '../delete-pedagogue'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 let inMemoryPedagoguesRepository: InMemoryPedagoguesRepository
+let inMemoryUsersRepository: InMemoryUsersRepository
 let sut: DeletePedagogueUseCase
 
 describe('Delete Pedagogue Use Case', () => {
   beforeEach(() => {
-    inMemoryPedagoguesRepository = new InMemoryPedagoguesRepository()
+    inMemoryUsersRepository = new InMemoryUsersRepository()
+    inMemoryPedagoguesRepository = new InMemoryPedagoguesRepository(
+      inMemoryUsersRepository
+    )
     sut = new DeletePedagogueUseCase(inMemoryPedagoguesRepository)
   })
 

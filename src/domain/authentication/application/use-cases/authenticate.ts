@@ -4,6 +4,8 @@ import { Encrypter } from '../../../authentication/application/cryptography/encr
 import { UsersRepository } from '../repositories/users-repository'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
 import { Injectable } from '@nestjs/common'
+import { UserStatusEnum } from '../../enterprise/entities/user'
+import { InactiveUserError } from './errors/inactive-user-error'
 
 interface AuthenticateUseCaseRequest {
   email: string
@@ -11,7 +13,7 @@ interface AuthenticateUseCaseRequest {
 }
 
 type AuthenticateUseCaseResponse = Either<
-  WrongCredentialsError,
+  WrongCredentialsError | InactiveUserError,
   {
     accessToken: string
     isFirstLogin: boolean
@@ -34,6 +36,12 @@ export class AuthenticateUseCase {
 
     if (!user) {
       return left(new WrongCredentialsError())
+    }
+
+    const isInactive = user.status === UserStatusEnum.INACTIVE ? true : false
+
+    if (isInactive) {
+      return left(new InactiveUserError(user.id.toString()))
     }
 
     if (user.password) {
