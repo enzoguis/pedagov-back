@@ -82,4 +82,30 @@ describe('Create Pedagogue (E2E)', () => {
       })
     )
   })
+
+  test('[POST] /accounts/pedagogue (without admin role)', async () => {
+    const pedagogue = await pedagogueFactory.makePrismaPedagogue({
+      role: PedagogueRoleEnum.COMMON,
+    })
+
+    const accessToken = jwt.sign({
+      sub: pedagogue.id.toString(),
+      roles: ['COMMON'],
+    })
+
+    const response = await request(app.getHttpServer())
+      .post('/accounts/pedagogue')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        name: 'pedagogue-1',
+        status: 'active',
+        email: 'pedagogue@example.com',
+        role: 'common',
+      })
+
+    expect(response.statusCode).toBe(403)
+    expect(response.body.message).toBe(
+      'You do not have permission to access this route.'
+    )
+  })
 })
