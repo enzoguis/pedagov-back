@@ -9,6 +9,7 @@ export class StudentPresenter {
       groupId: student.groupId,
       responsibleEmail: student.responsibleEmail,
       responsiblePhone: student.responsiblePhone,
+      status: student.status,
     }
   }
 }

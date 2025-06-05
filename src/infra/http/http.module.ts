@@ -32,6 +32,8 @@ import { ChangePasswordController } from './controllers/change-password.controll
 import { ChangePasswordUseCase } from '@/domain/authentication/application/use-cases/change-password'
 import { GetPedagogueByIdController } from './controllers/get-pedagogue-by-id.controller'
 import { GetPedagogueByIdUseCase } from '@/domain/occurrences/application/use-cases/get-pedagogue-by-id'
+import { GetStudentWithOccurrencesController } from './controllers/get-student-with-occurrences.controller'
+import { GetStudentWithOccurrencesUseCase } from '@/domain/occurrences/application/use-cases/get-student-with-occurrences'
 
 @Module({
   imports: [DatabaseModule, EmailModule, CryptographyModule],
@@ -51,6 +53,7 @@ import { GetPedagogueByIdUseCase } from '@/domain/occurrences/application/use-ca
     EditOccurrenceController,
     ChangePasswordController,
     GetPedagogueByIdController,
+    GetStudentWithOccurrencesController,
   ],
   providers: [
     CreateOccurrenceUseCase,
@@ -68,6 +71,7 @@ import { GetPedagogueByIdUseCase } from '@/domain/occurrences/application/use-ca
     EditOccurrenceUseCase,
     ChangePasswordUseCase,
     GetPedagogueByIdUseCase,
+    GetStudentWithOccurrencesUseCase,
   ],
 })
 export class HttpModule {}

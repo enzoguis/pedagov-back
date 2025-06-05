@@ -7,8 +7,9 @@ import {
   NotFoundException,
   Param,
 } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiResponse, ApiTags } from '@nestjs/swagger'
 import { PedagoguePresenter } from '../presenters/pedagogue-presenter'
+import { GetPedagogueByIdResponseDto } from '../dtos/get-pedagogue-by-id-response-dto'
 
 @Controller('pedagogues/:id')
 @ApiTags('Pedagogues')
@@ -16,6 +17,7 @@ export class GetPedagogueByIdController {
   constructor(private getPedagogueById: GetPedagogueByIdUseCase) {}
 
   @Get()
+  @ApiResponse({ type: GetPedagogueByIdResponseDto })
   async handle(@Param('id') pedagogueId: string) {
     const result = await this.getPedagogueById.execute({
       pedagogueId,

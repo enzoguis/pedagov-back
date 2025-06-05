@@ -12,7 +12,6 @@ import { DomainEvents } from '@/core/events/domain-events'
 
 describe('Get Pedagogue By Id(E2E)', () => {
   let app: INestApplication
-  let prisma: PrismaService
   let pedagogueFactory: PedagogueFactory
   let jwt: JwtService
 
@@ -23,8 +22,6 @@ describe('Get Pedagogue By Id(E2E)', () => {
     }).compile()
 
     app = moduleRef.createNestApplication()
-
-    prisma = moduleRef.get(PrismaService)
 
     pedagogueFactory = moduleRef.get(PedagogueFactory)
 
