@@ -1,5 +1,4 @@
 import { AppModule } from '@/infra/app.module'
-import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { INestApplication } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
@@ -98,6 +97,7 @@ describe('Get Student With Occurrences (E2E)', () => {
         occurrences: [
           {
             id: occurrence.id.toString(),
+            authorId: author.id.toString(),
             title: occurrence.title,
             description: occurrence.description,
             type: occurrence.type,
