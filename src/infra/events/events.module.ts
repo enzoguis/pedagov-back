@@ -7,6 +7,6 @@ import { EmailModule } from '../email/email.module'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, EmailModule],
-  providers: [OnPedagogueCreated, CreateTemporaryCredentialsUseCase],
+  providers: [CreateTemporaryCredentialsUseCase, OnPedagogueCreated],
 })
 export class EventsModule {}

@@ -113,7 +113,7 @@ export class PrismaOccurrencesRepository implements OccurrencesRepository {
   }: FetchAllOccurrencesParams): Promise<Occurrence[]> {
     const perPage = limit ?? 10
 
-    const groups = await this.prisma.occurrence.findMany({
+    const occurrences = await this.prisma.occurrence.findMany({
       where: {
         ...(studentId && {
           students: {
@@ -127,11 +127,11 @@ export class PrismaOccurrencesRepository implements OccurrencesRepository {
       orderBy: {
         createdAt: 'asc',
       },
-      skip: perPage,
-      take: (page - 1) * perPage,
+      skip: (page - 1) * perPage,
+      take: perPage,
     })
 
-    return groups.map(PrismaOccurrenceMapper.toDomain)
+    return occurrences.map(PrismaOccurrenceMapper.toDomain)
   }
 
   async delete(occurrence: Occurrence): Promise<void> {

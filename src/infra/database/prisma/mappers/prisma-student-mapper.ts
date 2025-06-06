@@ -8,7 +8,7 @@ import {
   User as PrismaUser,
 } from '@prisma/client'
 
-type PrismaStudentWithName = PrismaStudent & {
+export type PrismaStudentWithName = PrismaStudent & {
   user: PrismaUser
 }
 

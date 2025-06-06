@@ -5,6 +5,7 @@ export class PedagoguePresenter {
     return {
       id: pedagogue.id.value,
       name: pedagogue.name,
+      status: pedagogue.status,
       role: pedagogue.role,
     }
   }

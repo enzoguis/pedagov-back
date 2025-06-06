@@ -2,11 +2,11 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Post,
+  Param,
+  Put,
   UseGuards,
-  UsePipes,
 } from '@nestjs/common'
-import { CreatePedagogueUseCase } from '@/domain/occurrences/application/use-cases/create-pedagogue'
+import { EditPedagogueUseCase } from '@/domain/occurrences/application/use-cases/edit-pedagogue'
 import { z } from 'zod'
 import { PedagogueRoleEnum } from '@/domain/occurrences/enterprise/entities/pedagogue'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
@@ -14,13 +14,13 @@ import { Roles } from '@/infra/auth/roles.decorator'
 import { RolesGuard } from '@/infra/auth/roles-guard'
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth-guard'
 import { PedagoguePresenter } from '../presenters/pedagogue-presenter'
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { CreatePedagogueDto } from '../dtos/create-pedagogue-dto'
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserStatusEnum } from '@/domain/authentication/enterprise/entities/user'
+import { EditPedagogueDto } from '../dtos/edit-pedagogue-dto'
+import { EditPedagogueResponseDto } from '../dtos/edit-pedagogue-response-dto'
 
-const createPedagogueBodySchema = z.object({
+const editPedagogueBodySchema = z.object({
   name: z.string(),
-  email: z.string().email(),
   status: z.preprocess(
     (val) => (typeof val === 'string' ? val.toUpperCase() : val),
     z.nativeEnum(UserStatusEnum)
@@ -31,29 +31,34 @@ const createPedagogueBodySchema = z.object({
   ),
 })
 
-type CreatePedagogueBody = z.infer<typeof createPedagogueBodySchema>
+type EditPedagogueBody = z.infer<typeof editPedagogueBodySchema>
+
+const bodyValidationPipe = new ZodValidationPipe(editPedagogueBodySchema)
 
 @ApiTags('Pedagogues')
-@Controller('/accounts/pedagogue')
+@Controller('/pedagogues/:id')
 @UseGuards(RolesGuard, JwtAuthGuard)
 @Roles('ADMIN')
-export class CreatePedagogueController {
-  constructor(private createPedagogue: CreatePedagogueUseCase) {}
+export class EditPedagogueController {
+  constructor(private editPedagogue: EditPedagogueUseCase) {}
 
-  @Post()
+  @Put()
+  @ApiBody({ type: EditPedagogueDto })
+  @ApiResponse({ type: EditPedagogueResponseDto })
   @ApiOperation({
     description: 'Only pedagogues with ADMIN role can access this route',
   })
-  @ApiBody({ type: CreatePedagogueDto })
-  @UsePipes(new ZodValidationPipe(createPedagogueBodySchema))
-  async handle(@Body() body: CreatePedagogueBody) {
-    const { name, email, role, status } = body
+  async handle(
+    @Param('id') pedagogueId: string,
+    @Body(bodyValidationPipe) body: EditPedagogueBody
+  ) {
+    const { name, role, status } = body
 
-    const result = await this.createPedagogue.execute({
+    const result = await this.editPedagogue.execute({
       name,
-      email,
       role,
       status,
+      pedagogueId,
     })
 
     if (result.isLeft()) {

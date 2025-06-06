@@ -9,8 +9,9 @@ import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { z } from 'zod'
 import { CreateGroupUseCase } from '@/domain/occurrences/application/use-cases/create-group'
 import { GroupShiftsEnum } from '@/domain/occurrences/enterprise/entities/group'
-import { ApiBody, ApiTags } from '@nestjs/swagger'
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { CreateGroupDto } from '../dtos/create-group-dto'
+import { GroupPresenter } from '../presenters/group-presenter'
 
 const createGroupBodySchema = z.object({
   name: z.string(),
@@ -49,7 +50,7 @@ export class CreateGroupController {
     const { group } = result.value
 
     return {
-      result: group,
+      result: GroupPresenter.toHTTP(group),
     }
   }
 }

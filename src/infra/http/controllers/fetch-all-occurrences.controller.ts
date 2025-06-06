@@ -4,9 +4,10 @@ import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
+import { OccurrencePresenter } from '../presenters/occurrence-presenter'
 
 const queryParamsSchema = z.object({
-  page: z.number(),
+  page: z.coerce.number(),
   limit: z.number().optional(),
   type: z.preprocess(
     (val) => (typeof val === 'string' ? val.toUpperCase() : val),
@@ -39,6 +40,10 @@ export class FetchAllOccurrencesController {
       throw new BadRequestException()
     }
 
-    return {}
+    const { occurrences } = result.value
+
+    return {
+      result: occurrences.map(OccurrencePresenter.toHTTP),
+    }
   }
 }

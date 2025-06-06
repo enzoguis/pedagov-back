@@ -4,6 +4,8 @@ import { PrismaStudentMapper } from '../mappers/prisma-student-mapper'
 import { PrismaService } from '../prisma.service'
 import { Injectable } from '@nestjs/common'
 import { UserRoleEnum } from '@/domain/authentication/enterprise/entities/user'
+import { StudentWithOccurrences } from '@/domain/occurrences/enterprise/entities/value-objects/student-with-occurrences'
+import { PrismaStudentWithOccurrencesMapper } from '../mappers/prisma-student-with-occurrences-mapper'
 
 @Injectable()
 export class PrismaStudentsRepository implements StudentsRepository {
@@ -60,6 +62,31 @@ export class PrismaStudentsRepository implements StudentsRepository {
     }
 
     return PrismaStudentMapper.toDomain(student)
+  }
+
+  async findWithOccurrences(
+    id: string
+  ): Promise<StudentWithOccurrences | null> {
+    const student = await this.prisma.student.findUnique({
+      where: {
+        userId: id,
+      },
+      include: {
+        occurrences: {
+          include: {
+            occurrence: true,
+          },
+        },
+        group: true,
+        user: true,
+      },
+    })
+
+    if (!student) {
+      return null
+    }
+
+    return PrismaStudentWithOccurrencesMapper.toDomain(student)
   }
 
   async findManyByIds(ids: string[]) {
