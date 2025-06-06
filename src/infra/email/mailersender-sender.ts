@@ -7,11 +7,28 @@ export class MailerSender implements EmailSender {
   constructor(private mailerService: MailerService) {}
 
   async send(message: EmailSenderSendParams): Promise<void> {
+    const templates = {
+      OCCURRENCE_CREATED: {
+        subject: 'Nova ocorrência registrada',
+        text: `Seu filho ${message.data.studentName} teve uma nova ocorrência escolar registrada.`,
+      },
+      TEMPORARY_PASSWORD_CREATED: {
+        subject: 'Sua senha temporária de acesso',
+        text: `Sua senha temporária de acesso é: ${message.data.temporaryPassword}`,
+      },
+    }
+
+    const selectedTemplate = templates[message.templateId]
+
+    if (!selectedTemplate) {
+      throw new Error(`Template "${message.templateId}" não encontrado`)
+    }
+
     try {
       await this.mailerService.sendMail({
         to: 'enzog0315@gmail.com',
-        subject: 'Nova ocorrência registrada',
-        text: `Seu filho ${message.data.studentName} teve uma nova ocorrência escolar registrada`,
+        subject: selectedTemplate.subject,
+        text: selectedTemplate.text,
       })
       console.log('E-mail enviado com sucesso!')
     } catch (error) {

@@ -1,57 +1,62 @@
 import { AppModule } from '@/infra/app.module'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { INestApplication } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
-import { StudentFactory } from 'test/factories/make-student'
+import { PedagogueFactory } from 'test/factories/make-pedagogue'
 import request from 'supertest'
 import { DatabaseModule } from '@/infra/database/database.module'
+import { PedagogueRoleEnum } from '@/domain/occurrences/enterprise/entities/pedagogue'
 import { DomainEvents } from '@/core/events/domain-events'
-import { GroupFactory } from 'test/factories/make-group'
-import { TeacherFactory } from 'test/factories/make-teacher'
-import { PedagogueFactory } from 'test/factories/make-pedagogue'
 import { OccurrenceFactory } from 'test/factories/make-occurrence'
+import { TeacherFactory } from 'test/factories/make-teacher'
+import { StudentFactory } from 'test/factories/make-student'
 import { OccurrenceStudentFactory } from 'test/factories/make-occurrence-student'
+import { GroupFactory } from 'test/factories/make-group'
 
-describe('Get Student With Occurrences (E2E)', () => {
+describe('Fetch All Occurrences(E2E)', () => {
   let app: INestApplication
-  let studentFactory: StudentFactory
-  let groupFactory: GroupFactory
-  let teacherFactory: TeacherFactory
   let pedagogueFactory: PedagogueFactory
   let occurrenceFactory: OccurrenceFactory
+  let teacherFactory: TeacherFactory
+  let studentFactory: StudentFactory
   let occurrenceStudentFactory: OccurrenceStudentFactory
+  let groupFactory: GroupFactory
   let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
       providers: [
-        StudentFactory,
-        GroupFactory,
-        TeacherFactory,
         PedagogueFactory,
         OccurrenceFactory,
+        TeacherFactory,
+        StudentFactory,
         OccurrenceStudentFactory,
+        GroupFactory,
       ],
     }).compile()
 
     app = moduleRef.createNestApplication()
 
-    studentFactory = moduleRef.get(StudentFactory)
-    groupFactory = moduleRef.get(GroupFactory)
-    teacherFactory = moduleRef.get(TeacherFactory)
     pedagogueFactory = moduleRef.get(PedagogueFactory)
     occurrenceFactory = moduleRef.get(OccurrenceFactory)
+    teacherFactory = moduleRef.get(TeacherFactory)
+    studentFactory = moduleRef.get(StudentFactory)
     occurrenceStudentFactory = moduleRef.get(OccurrenceStudentFactory)
+    groupFactory = moduleRef.get(GroupFactory)
 
     jwt = moduleRef.get(JwtService)
 
-    DomainEvents.shouldRun = true
 
     await app.init()
   })
 
-  test('[GET] /students/:id', async () => {
+  test('[GET] /occurrences', async () => {
+    const author = await pedagogueFactory.makePrismaPedagogue({
+      role: PedagogueRoleEnum.COMMON,
+    })
+
     const teacher = await teacherFactory.makePrismaTeacher()
 
     const group = await groupFactory.makePrismaGroup({
@@ -62,11 +67,9 @@ describe('Get Student With Occurrences (E2E)', () => {
       groupId: group.id,
     })
 
-    const author = await pedagogueFactory.makePrismaPedagogue()
-
     const occurrence = await occurrenceFactory.makePrismaOccurrence({
-      authorId: author.id,
       teacherId: teacher.id,
+      authorId: author.id,
     })
 
     await occurrenceStudentFactory.makePrismaOccurrenceStudent({
@@ -80,31 +83,20 @@ describe('Get Student With Occurrences (E2E)', () => {
     })
 
     const response = await request(app.getHttpServer())
-      .get(`/students/${student.id.toString()}`)
+      .get(`/occurrences`)
+      .query({
+        page: 1,
+        student: student.id.toString(),
+      })
       .set('Authorization', `Bearer ${accessToken}`)
       .send()
 
     expect(response.body).toEqual({
-      result: {
-        studentId: { value: student.id.toString() },
-        student: student.name,
-        groupId: group.id.toString(),
-        group: group.name,
-        cpf: student.cpf.value,
-        responsibleEmail: student.responsibleEmail,
-        responsiblePhone: student.responsiblePhone,
-        status: student.status,
-        occurrences: [
-          {
-            id: occurrence.id.toString(),
-            authorId: author.id.toString(),
-            title: occurrence.title,
-            description: occurrence.description,
-            type: occurrence.type,
-            createdAt: expect.any(String),
-          },
-        ],
-      },
+      result: expect.arrayContaining([
+        expect.objectContaining({
+          id: occurrence.id.toString(),
+        }),
+      ]),
     })
   })
 })

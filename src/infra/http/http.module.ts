@@ -36,6 +36,8 @@ import { GetStudentWithOccurrencesController } from './controllers/get-student-w
 import { GetStudentWithOccurrencesUseCase } from '@/domain/occurrences/application/use-cases/get-student-with-occurrences'
 import { EditPedagogueController } from './controllers/edit-pedagogue.controller'
 import { EditPedagogueUseCase } from '@/domain/occurrences/application/use-cases/edit-pedagogue'
+import { FetchAllOccurrencesController } from './controllers/fetch-all-occurrences.controller'
+import { FetchAllOccurrencesUseCase } from '@/domain/occurrences/application/use-cases/fetch-all-occurrences'
 
 @Module({
   imports: [DatabaseModule, EmailModule, CryptographyModule],
@@ -57,6 +59,7 @@ import { EditPedagogueUseCase } from '@/domain/occurrences/application/use-cases
     GetPedagogueByIdController,
     GetStudentWithOccurrencesController,
     EditPedagogueController,
+    FetchAllOccurrencesController,
   ],
   providers: [
     CreateOccurrenceUseCase,
@@ -76,6 +79,7 @@ import { EditPedagogueUseCase } from '@/domain/occurrences/application/use-cases
     GetPedagogueByIdUseCase,
     GetStudentWithOccurrencesUseCase,
     EditPedagogueUseCase,
+    FetchAllOccurrencesUseCase,
   ],
 })
 export class HttpModule {}
