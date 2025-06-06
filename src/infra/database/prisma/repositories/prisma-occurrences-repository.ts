@@ -10,6 +10,8 @@ import { PrismaOccurrenceMapper } from '../mappers/prisma-occurrence-mapper'
 import { OccurrenceAttachmentsRepository } from '@/domain/occurrences/application/repositories/occurrence-attachments-repository'
 import { OccurrenceStudentsRepository } from '@/domain/occurrences/application/repositories/occurrence-student-repository'
 import { OccurrenceAttendeesRepository } from '@/domain/occurrences/application/repositories/occurrence-attendees-repository'
+import { OccurrenceDetails } from '@/domain/occurrences/enterprise/entities/value-objects/occurrence-details'
+import { PrismaOccurrenceDetailsMapper } from '../mappers/prisma-occurrence-details-mapper'
 
 @Injectable()
 export class PrismaOccurrencesRepository implements OccurrencesRepository {
@@ -86,6 +88,45 @@ export class PrismaOccurrencesRepository implements OccurrencesRepository {
     }
 
     return PrismaOccurrenceMapper.toDomain(group)
+  }
+
+  async findWithDetails(id: string): Promise<OccurrenceDetails | null> {
+    const occurrence = await this.prisma.occurrence.findUnique({
+      where: { id },
+      include: {
+        attachments: true,
+        attendees: {
+          include: {
+            user: true,
+          },
+        },
+        author: {
+          include: {
+            user: true,
+          },
+        },
+        teacher: {
+          include: {
+            user: true,
+          },
+        },
+        students: {
+          include: {
+            student: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        },
+      },
+    })
+
+    if (!occurrence) {
+      return null
+    }
+
+    return PrismaOccurrenceDetailsMapper.toDomain(occurrence)
   }
 
   async findManyRecents({
