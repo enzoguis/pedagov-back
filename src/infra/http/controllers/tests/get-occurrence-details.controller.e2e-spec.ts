@@ -6,21 +6,30 @@ import { Test } from '@nestjs/testing'
 import { PedagogueFactory } from 'test/factories/make-pedagogue'
 import request from 'supertest'
 import { DatabaseModule } from '@/infra/database/database.module'
+import { UserFactory } from 'test/factories/make-user'
 import { PedagogueRoleEnum } from '@/domain/occurrences/enterprise/entities/pedagogue'
+import { DomainEvents } from '@/core/events/domain-events'
 import { OccurrenceFactory } from 'test/factories/make-occurrence'
-import { TeacherFactory } from 'test/factories/make-teacher'
+import { OccurrenceAttachmentFactory } from 'test/factories/make-occurrence-attachment'
+import { AttachmentFactory } from 'test/factories/make-attachments'
 import { StudentFactory } from 'test/factories/make-student'
 import { OccurrenceStudentFactory } from 'test/factories/make-occurrence-student'
 import { GroupFactory } from 'test/factories/make-group'
+import { TeacherFactory } from 'test/factories/make-teacher'
+import { OccurrenceAttendeeFactory } from 'test/factories/make-occurrence-attendee'
 
-describe('Fetch All Occurrences(E2E)', () => {
+describe('Get Occurrence Details (E2E)', () => {
   let app: INestApplication
   let pedagogueFactory: PedagogueFactory
   let occurrenceFactory: OccurrenceFactory
-  let teacherFactory: TeacherFactory
+  let attachmentFactory: AttachmentFactory
+  let occurrenceAttachmentFactory: OccurrenceAttachmentFactory
   let studentFactory: StudentFactory
   let occurrenceStudentFactory: OccurrenceStudentFactory
   let groupFactory: GroupFactory
+  let teacherFactory: TeacherFactory
+  let occurrenceAttendeeFactory: OccurrenceAttendeeFactory
+
   let jwt: JwtService
 
   beforeAll(async () => {
@@ -29,10 +38,13 @@ describe('Fetch All Occurrences(E2E)', () => {
       providers: [
         PedagogueFactory,
         OccurrenceFactory,
-        TeacherFactory,
+        AttachmentFactory,
+        OccurrenceAttachmentFactory,
         StudentFactory,
         OccurrenceStudentFactory,
         GroupFactory,
+        TeacherFactory,
+        OccurrenceAttendeeFactory,
       ],
     }).compile()
 
@@ -40,18 +52,20 @@ describe('Fetch All Occurrences(E2E)', () => {
 
     pedagogueFactory = moduleRef.get(PedagogueFactory)
     occurrenceFactory = moduleRef.get(OccurrenceFactory)
-    teacherFactory = moduleRef.get(TeacherFactory)
+    attachmentFactory = moduleRef.get(AttachmentFactory)
+    occurrenceAttachmentFactory = moduleRef.get(OccurrenceAttachmentFactory)
     studentFactory = moduleRef.get(StudentFactory)
     occurrenceStudentFactory = moduleRef.get(OccurrenceStudentFactory)
     groupFactory = moduleRef.get(GroupFactory)
+    teacherFactory = moduleRef.get(TeacherFactory)
+    occurrenceAttendeeFactory = moduleRef.get(OccurrenceAttendeeFactory)
 
     jwt = moduleRef.get(JwtService)
-
 
     await app.init()
   })
 
-  test('[GET] /occurrences', async () => {
+  test('[GET] /occurrences/:id', async () => {
     const author = await pedagogueFactory.makePrismaPedagogue({
       role: PedagogueRoleEnum.COMMON,
     })
@@ -66,14 +80,26 @@ describe('Fetch All Occurrences(E2E)', () => {
       groupId: group.id,
     })
 
+    const attachment = await attachmentFactory.makePrismaAttachment()
+
     const occurrence = await occurrenceFactory.makePrismaOccurrence({
-      teacherId: teacher.id,
       authorId: author.id,
+      teacherId: teacher.id,
+    })
+
+    await occurrenceAttachmentFactory.makePrismaOccurrenceAttachment({
+      attachmentId: attachment.id,
+      occurrenceId: occurrence.id,
     })
 
     await occurrenceStudentFactory.makePrismaOccurrenceStudent({
       occurrenceId: occurrence.id,
       studentId: student.id,
+    })
+
+    await occurrenceAttendeeFactory.makePrismaOccurrenceAttendee({
+      attendeeId: author.id,
+      occurrenceId: occurrence.id,
     })
 
     const accessToken = jwt.sign({
@@ -82,20 +108,13 @@ describe('Fetch All Occurrences(E2E)', () => {
     })
 
     const response = await request(app.getHttpServer())
-      .get(`/occurrences`)
-      .query({
-        page: 1,
-        student: student.id.toString(),
-      })
+      .get(`/occurrences/${occurrence.id.toString()}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send()
 
-    expect(response.body).toEqual({
-      result: expect.arrayContaining([
-        expect.objectContaining({
-          id: occurrence.id.toString(),
-        }),
-      ]),
-    })
+    console.log(response.body.result)
+    console.log(response.body.result.students)
+    console.log(response.body.result.attachments)
+    console.log(response.body.result.attendees)
   })
 })

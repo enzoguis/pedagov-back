@@ -15,10 +15,12 @@ import { OccurrenceTypeEnum } from '@/domain/occurrences/enterprise/entities/occ
 import { PrismaOccurrenceAttendeesMapper } from './prisma-occurrence-attendee-mapper'
 
 type PrismaOccurrenceDetails = PrismaOccurrence & {
-  author: PrismaUser
-  teacher: PrismaUser
-  attendees: (PrismaOccurrenceAttendee & { attendee: PrismaUser })[]
-  students: PrismaStudentWithName[]
+  author: { user: PrismaUser }
+  teacher: { user: PrismaUser }
+  attendees: (PrismaOccurrenceAttendee & { user: PrismaUser })[]
+  students: Array<{
+    student: PrismaStudentWithName
+  }>
   attachments: PrismaAttachment[]
 }
 
@@ -26,12 +28,14 @@ export class PrismaOccurrenceDetailsMapper {
   static toDomain(raw: PrismaOccurrenceDetails) {
     return OccurrenceDetails.create({
       occurrenceId: new UniqueEntityID(raw.id),
-      authorId: new UniqueEntityID(raw.author.id),
-      author: raw.author.name,
-      teacherId: new UniqueEntityID(raw.teacher.id),
-      teacher: raw.teacher.name,
+      authorId: new UniqueEntityID(raw.author.user.id),
+      author: raw.author.user.name,
+      teacherId: new UniqueEntityID(raw.teacher.user.id),
+      teacher: raw.teacher.user.name,
       attachments: raw.attachments.map(PrismaAttachmentMapper.toDomain),
-      students: raw.students.map(PrismaStudentMapper.toDomain),
+      students: raw.students.map((s) =>
+        PrismaStudentMapper.toDomain(s.student)
+      ),
       attendees: raw.attendees.map(PrismaOccurrenceAttendeesMapper.toDomain),
       createdAt: raw.createdAt,
       description: raw.description,

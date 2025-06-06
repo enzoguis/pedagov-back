@@ -1,27 +1,29 @@
 import { Either, left, right } from '@/core/either'
 import { OccurrencesRepository } from '../repositories/occurrences-repository'
-import { Occurrence } from '@/domain/occurrences/enterprise/entities/occurrence'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { Injectable } from '@nestjs/common'
+import { OccurrenceDetails } from '../../enterprise/entities/value-objects/occurrence-details'
 
-interface GetOccurrenceByIdUseCaseRequest {
+interface GetOccurrenceDetailsUseCaseRequest {
   occurrenceId: string
 }
 
-type GetOccurrenceByIdUseCaseResponse = Either<
+type GetOccurrenceDetailsUseCaseResponse = Either<
   ResourceNotFoundError,
   {
-    occurrence: Occurrence
+    occurrence: OccurrenceDetails
   }
 >
 
 @Injectable()
-export class GetOccurrenceByIdUseCase {
+export class GetOccurrenceDetailsUseCase {
   constructor(private occurrencesRepository: OccurrencesRepository) {}
   async execute({
     occurrenceId,
-  }: GetOccurrenceByIdUseCaseRequest): Promise<GetOccurrenceByIdUseCaseResponse> {
-    const occurrence = await this.occurrencesRepository.findById(occurrenceId)
+  }: GetOccurrenceDetailsUseCaseRequest): Promise<GetOccurrenceDetailsUseCaseResponse> {
+    const occurrence = await this.occurrencesRepository.findWithDetails(
+      occurrenceId
+    )
 
     if (!occurrence) {
       return left(new ResourceNotFoundError())

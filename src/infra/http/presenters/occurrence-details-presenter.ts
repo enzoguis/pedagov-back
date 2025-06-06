@@ -5,10 +5,10 @@ import { AttachmentPresenter } from './attachment-presenter'
 export class OccurrenceDetailsPresenter {
   static toHTTP(occurrenceDetails: OccurrenceDetails) {
     return {
-      occurrenceId: occurrenceDetails.occurrenceId,
-      authorId: occurrenceDetails.authorId,
+      occurrenceId: occurrenceDetails.occurrenceId.value,
+      authorId: occurrenceDetails.authorId.value,
       author: occurrenceDetails.author,
-      teacherId: occurrenceDetails.teacherId,
+      teacherId: occurrenceDetails.teacherId.value,
       teacher: occurrenceDetails.teacher,
       title: occurrenceDetails.title,
       description: occurrenceDetails.description,
