@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { OccurrenceTypeEnum } from '@/domain/occurrences/enterprise/entities/occurrence'
 
-export class CreateOccurrenceResponseDto {
+export class FetchOccurrencesItemDto {
   @ApiProperty({
     example: '3f29e8e0-9f84-4d53-9a45-5f3b4c6a1a0d',
     description: 'ID da ocorrência',
@@ -9,7 +9,7 @@ export class CreateOccurrenceResponseDto {
   id!: string
 
   @ApiProperty({
-    example: '3f29e8e0-9f84-4d53-9a45-5f3b4c6a1a0d',
+    example: 'a8c88d62-1785-47db-a6bc-b7c5e58c2820',
     description: 'ID do autor da ocorrência',
   })
   authorId!: string
@@ -40,7 +40,9 @@ export class CreateOccurrenceResponseDto {
   createdAt!: string
 }
 
-export class CreateOccurrenceResponseWrapperDto {
-  @ApiProperty({ type: CreateOccurrenceResponseDto })
-  result!: CreateOccurrenceResponseDto
+export class FetchOccurrencesResponseDto {
+  @ApiProperty({
+    type: [FetchOccurrencesItemDto],
+  })
+  result!: FetchOccurrencesItemDto[]
 }

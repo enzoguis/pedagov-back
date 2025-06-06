@@ -1,14 +1,16 @@
 import { FetchAllOccurrencesUseCase } from '@/domain/occurrences/application/use-cases/fetch-all-occurrences'
 import { OccurrenceTypeEnum } from '@/domain/occurrences/enterprise/entities/occurrence'
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { OccurrencePresenter } from '../presenters/occurrence-presenter'
+import { FetchAllOccurrencesQueryDto } from '../dtos/fetch-occurrences-query-dto'
+import { FetchOccurrencesResponseDto } from '../dtos/fetch-occurrences-response-dto'
 
 const queryParamsSchema = z.object({
   page: z.coerce.number(),
-  limit: z.number().optional(),
+  limit: z.coerce.number().optional(),
   type: z.preprocess(
     (val) => (typeof val === 'string' ? val.toUpperCase() : val),
     z.nativeEnum(OccurrenceTypeEnum).optional()
@@ -26,6 +28,8 @@ export class FetchAllOccurrencesController {
   constructor(private fetchAllOccurrences: FetchAllOccurrencesUseCase) {}
 
   @Get()
+  @ApiQuery({ type: FetchAllOccurrencesQueryDto })
+  @ApiResponse({ type: FetchOccurrencesResponseDto })
   async handle(@Query(queryValidationPipe) query: QueryParams) {
     const { page, limit, studentId, type } = query
 
