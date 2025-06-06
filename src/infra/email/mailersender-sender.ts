@@ -33,7 +33,6 @@ export class MailerSender implements EmailSender {
       console.log('E-mail enviado com sucesso!')
     } catch (error) {
       console.error('Erro ao enviar e-mail:', error)
-      throw error
     }
   }
 }
