@@ -10,7 +10,7 @@ import { UserFactory } from 'test/factories/make-user'
 import { PedagogueRoleEnum } from '@/domain/occurrences/enterprise/entities/pedagogue'
 import { DomainEvents } from '@/core/events/domain-events'
 
-describe('Get Pedagogue By Id(E2E)', () => {
+describe('Get Pedagogue By Id (E2E)', () => {
   let app: INestApplication
   let pedagogueFactory: PedagogueFactory
   let jwt: JwtService

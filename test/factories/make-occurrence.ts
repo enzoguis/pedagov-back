@@ -21,6 +21,7 @@ export function makeOccurrence(
       teacherId: new UniqueEntityID(),
       type: OccurrenceTypeEnum.ABSENCES,
       title: faker.lorem.sentence(),
+      
       ...override,
     },
     id

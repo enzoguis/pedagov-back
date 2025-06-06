@@ -8,6 +8,7 @@ import { DatabaseModule } from '@/infra/database/database.module'
 import { PedagogueFactory } from 'test/factories/make-pedagogue'
 import { GroupFactory } from 'test/factories/make-group'
 import { TeacherFactory } from 'test/factories/make-teacher'
+import { E } from '@faker-js/faker/dist/airline-BUL6NtOJ'
 
 describe('Create Student (E2E)', () => {
   let app: INestApplication
@@ -83,6 +84,25 @@ describe('Create Student (E2E)', () => {
     expect(studentUserOnDatabase).toEqual(
       expect.objectContaining({
         name: 'student-1',
+      })
+    )
+
+    const groupOnDatabase = await prisma.group.findUnique({
+      where: {
+        id: studentOnDatabase?.groupId,
+      },
+      include: {
+        students: true,
+      },
+    })
+
+    expect(groupOnDatabase).toEqual(
+      expect.objectContaining({
+        students: expect.arrayContaining([
+          expect.objectContaining({
+            userId: id.value,
+          }),
+        ]),
       })
     )
   })
