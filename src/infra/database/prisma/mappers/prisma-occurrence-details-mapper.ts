@@ -12,12 +12,12 @@ import {
   PrismaStudentWithName,
 } from './prisma-student-mapper'
 import { OccurrenceTypeEnum } from '@/domain/occurrences/enterprise/entities/occurrence'
-import { PrismaOccurrenceAttendeesMapper } from './prisma-occurrence-attendee-mapper'
+import { PrismaAttendeeMapper } from './prisma-attendee-mapper'
 
 type PrismaOccurrenceDetails = PrismaOccurrence & {
   author: { user: PrismaUser }
   teacher: { user: PrismaUser }
-  attendees: (PrismaOccurrenceAttendee & { user: PrismaUser })[]
+  attendees: { user: PrismaUser }[]
   students: Array<{
     student: PrismaStudentWithName
   }>
@@ -36,7 +36,9 @@ export class PrismaOccurrenceDetailsMapper {
       students: raw.students.map((s) =>
         PrismaStudentMapper.toDomain(s.student)
       ),
-      attendees: raw.attendees.map(PrismaOccurrenceAttendeesMapper.toDomain),
+      attendees: raw.attendees.map((attendee) =>
+        PrismaAttendeeMapper.toDomain(attendee.user)
+      ),
       createdAt: raw.createdAt,
       description: raw.description,
       title: raw.title,

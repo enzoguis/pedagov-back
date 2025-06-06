@@ -2,8 +2,8 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ValueObject } from '@/core/entities/value-object'
 import { Attachment } from '../attachment'
 import { Student } from '../student'
-import { OccurrenceAttendee } from '../occurrence-attendee'
 import { OccurrenceTypeEnum } from '../occurrence'
+import { Attendee } from '../attendee'
 
 export interface OccurrenceDetailsProps {
   occurrenceId: UniqueEntityID
@@ -16,7 +16,7 @@ export interface OccurrenceDetailsProps {
   type: OccurrenceTypeEnum
   attachments: Attachment[]
   students: Student[]
-  attendees: OccurrenceAttendee[]
+  attendees: Attendee[]
   createdAt: Date
   updatedAt?: Date | null
 }

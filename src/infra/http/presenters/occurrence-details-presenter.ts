@@ -1,6 +1,7 @@
 import { OccurrenceDetails } from '@/domain/occurrences/enterprise/entities/value-objects/occurrence-details'
 import { StudentPresenter } from './student-presenter'
 import { AttachmentPresenter } from './attachment-presenter'
+import { AttendeePresenter } from './attendee-presenter'
 
 export class OccurrenceDetailsPresenter {
   static toHTTP(occurrenceDetails: OccurrenceDetails) {
@@ -14,7 +15,7 @@ export class OccurrenceDetailsPresenter {
       description: occurrenceDetails.description,
       type: occurrenceDetails.type,
       students: occurrenceDetails.students.map(StudentPresenter.toHTTP),
-      attendees: occurrenceDetails.attendees,
+      attendees: occurrenceDetails.attendees.map(AttendeePresenter.toHTTP),
       attachments: occurrenceDetails.attachments.map(
         AttachmentPresenter.toHTTP
       ),

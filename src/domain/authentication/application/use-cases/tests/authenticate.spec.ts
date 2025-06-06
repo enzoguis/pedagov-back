@@ -1,7 +1,6 @@
 import { FakeHasher } from 'test/cryptography/fake-hasher'
 import { AuthenticateUseCase } from '../authenticate'
 import { FakeEncrypter } from 'test/cryptography/fake-encrypter'
-import generatePassword from 'generate-password'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import {
   User,
@@ -27,13 +26,7 @@ describe('Authenticate Use Case', () => {
   })
 
   it('should return isFirstLogin when password is equal to temporary password', async () => {
-    const plainPassword = generatePassword.generate({
-      length: 8,
-      numbers: true,
-      symbols: true,
-    })
-
-    const password = await fakeHasher.hash(plainPassword)
+    const password = await fakeHasher.hash('12345678')
 
     const user = User.create({
       role: UserRoleEnum.ADMIN,
@@ -47,7 +40,7 @@ describe('Authenticate Use Case', () => {
 
     const result = await sut.execute({
       email: 'user@example.com',
-      password: plainPassword,
+      password: '12345678',
     })
 
     expect(result.isRight()).toBeTruthy()
@@ -73,13 +66,7 @@ describe('Authenticate Use Case', () => {
   })
 
   it('should return isFirstLogin when password is equal to temporary password', async () => {
-    const plainPassword = generatePassword.generate({
-      length: 8,
-      numbers: true,
-      symbols: true,
-    })
-
-    const password = await fakeHasher.hash(plainPassword)
+    const password = await fakeHasher.hash('12345678')
 
     const user = User.create({
       role: UserRoleEnum.COMMON,
@@ -93,7 +80,7 @@ describe('Authenticate Use Case', () => {
 
     const result = await sut.execute({
       email: 'user@example.com',
-      password: plainPassword,
+      password: '12345678',
     })
 
     expect(result.isRight).toBeTruthy()
