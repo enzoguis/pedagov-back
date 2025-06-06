@@ -36,7 +36,6 @@
     "bcryptjs": "^3.0.2",
     "brazilian-values": "^0.13.0",
     "dayjs": "^1.11.13",
-    "generate-password": "^1.7.1",
     "nodemailer": "^7.0.3",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
