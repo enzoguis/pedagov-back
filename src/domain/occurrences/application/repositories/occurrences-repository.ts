@@ -10,6 +10,8 @@ export interface FetchAllOccurrencesParams {
   limit?: number
   studentId?: string
   type?: OccurrenceTypes
+  createdAt?: Date
+  groupId?: string
 }
 
 export abstract class OccurrencesRepository {

@@ -11,6 +11,8 @@ interface FetchAllOccurrencesUseCaseRequest {
   limit?: number
   type?: OccurrenceTypes
   studentId?: string
+  createdAt?: Date
+  groupId?: string
 }
 
 type FetchAllOccurrencesUseCaseResponse = Either<
@@ -28,12 +30,16 @@ export class FetchAllOccurrencesUseCase {
     limit,
     studentId,
     type,
+    createdAt,
+    groupId,
   }: FetchAllOccurrencesUseCaseRequest): Promise<FetchAllOccurrencesUseCaseResponse> {
     const occurrences = await this.occurrencesRepository.findAll({
       page,
       limit,
       studentId,
       type,
+      createdAt,
+      groupId,
     })
 
     return right({ occurrences })

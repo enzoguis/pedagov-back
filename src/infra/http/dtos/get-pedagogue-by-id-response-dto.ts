@@ -1,16 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 export class PedagogueDto {
-  @ApiProperty({ example: 'abc123', description: 'ID do pedagogo' })
+  @ApiProperty({
+    example: '7e8b1234-5678-4d9c-a123-b456c78d90ef',
+    description: 'Pedagogue ID (UUID)',
+  })
   id!: string
 
-  @ApiProperty({ example: 'Maria Souza', description: 'Nome do pedagogo' })
+  @ApiProperty({ example: 'Maria Souza', description: 'Pedagogue name' })
   name!: string
 
-  @ApiProperty({ example: 'active', description: 'Status do pedagogo' })
+  @ApiProperty({ example: 'active', description: 'Pedagogue status' })
   status!: string
 
-  @ApiProperty({ example: 'pedagogue', description: 'Cargo do pedagogo' })
+  @ApiProperty({ example: 'pedagogue', description: 'Pedagogue role' })
   role!: string
 }
 
