@@ -1,25 +1,27 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule, ConfigService } from '@nestjs/config'
 import { MailerModule } from '@nestjs-modules/mailer'
 import { EmailSender } from '@/core/email/email-sender'
 import { MailerSender } from './mailersender-sender'
+import { EnvModule } from '../env/env.module'
+import { EnvService } from '../env/env.service'
+import { ConfigModule } from '@nestjs/config'
 
 @Module({
   imports: [
     ConfigModule,
     MailerModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (config: ConfigService) => ({
+      imports: [EnvModule],
+      inject: [EnvService],
+      useFactory: async (env: EnvService) => ({
         transport: {
           service: 'gmail',
           auth: {
-            user: config.get('GMAIL_AUTH_USER'),
-            pass: config.get('GMAIL_AUTH_PASSWORD'),
+            user: env.get('GMAIL_AUTH_USER'),
+            pass: env.get('GMAIL_AUTH_PASSWORD'),
           },
         },
         defaults: {
-          from: `"Escola" <${config.get('GMAIL_AUTH_USER')}>`,
+          from: `"Escola" <${env.get('GMAIL_AUTH_USER')}>`,
         },
       }),
     }),
