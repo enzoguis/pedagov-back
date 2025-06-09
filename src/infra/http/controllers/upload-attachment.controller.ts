@@ -52,6 +52,7 @@ export class UploadAttachmentController {
 
     return {
       attachmentId: attachment.id.toString(),
+      url: attachment.url,
     }
   }
 }
