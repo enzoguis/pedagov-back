@@ -44,9 +44,10 @@ import { FetchAllPedagoguesController } from './controllers/fetch-all-pedagogues
 import { FetchAllPedagoguesUseCase } from '@/domain/occurrences/application/use-cases/fetch-all-pedagogues'
 import { UploadAttachmentController } from './controllers/upload-attachment.controller'
 import { UploadAndCreateAttachmentUseCase } from '@/domain/occurrences/application/use-cases/upload-and-create-attachment'
+import { StorageModule } from '../storage/storage.module'
 
 @Module({
-  imports: [DatabaseModule, EmailModule, CryptographyModule],
+  imports: [DatabaseModule, EmailModule, CryptographyModule, StorageModule],
   controllers: [
     CreatePedagogueController,
     AuthenticateController,
