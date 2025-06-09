@@ -14,6 +14,7 @@ import { OccurrenceStudentFactory } from 'test/factories/make-occurrence-student
 import { GroupFactory } from 'test/factories/make-group'
 import { TeacherFactory } from 'test/factories/make-teacher'
 import { OccurrenceAttendeeFactory } from 'test/factories/make-occurrence-attendee'
+import { array } from 'zod'
 
 describe('Get Occurrence Details (E2E)', () => {
   let app: INestApplication
@@ -109,9 +110,26 @@ describe('Get Occurrence Details (E2E)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send()
 
-    console.log(response.body.result)
-    console.log(response.body.result.students)
-    console.log(response.body.result.attachments)
-    console.log(response.body.result.attendees)
+    expect(response.body.result).toEqual(
+      expect.objectContaining({
+        author: author.name,
+        title: occurrence.title,
+        students: expect.arrayContaining([
+          expect.objectContaining({
+            name: student.name,
+          }),
+        ]),
+        attendees: expect.arrayContaining([
+          expect.objectContaining({
+            name: author.name,
+          }),
+        ]),
+        attachments: expect.arrayContaining([
+          expect.objectContaining({
+            url: attachment.url,
+          }),
+        ]),
+      })
+    )
   })
 })
