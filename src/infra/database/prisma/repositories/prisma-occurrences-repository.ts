@@ -39,6 +39,7 @@ export class PrismaOccurrencesRepository implements OccurrencesRepository {
       occurrence.attendees.getItems()
     )
   }
+  
   async save(occurrence: Occurrence): Promise<void> {
     const data = PrismaOccurrenceMapper.toPrisma(occurrence)
 
@@ -139,8 +140,8 @@ export class PrismaOccurrencesRepository implements OccurrencesRepository {
       orderBy: {
         createdAt: 'asc',
       },
-      skip: perPage,
-      take: (page - 1) * perPage,
+      skip: (page - 1) * perPage,
+      take: perPage,
     })
 
     return occurrences.map(PrismaOccurrenceMapper.toDomain)

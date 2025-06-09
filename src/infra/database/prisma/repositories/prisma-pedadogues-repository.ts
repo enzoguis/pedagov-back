@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common'
 import { PrismaPedagogueMapper } from '../mappers/prisma-pedagogue-mapper'
 import { PrismaService } from '../prisma.service'
 import { DomainEvents } from '@/core/events/domain-events'
+import { PaginationParams } from '@/core/repositories/pagination-params'
 
 @Injectable()
 export class PrismaPedagoguesRepository implements PedagoguesRepository {
@@ -80,11 +81,15 @@ export class PrismaPedagoguesRepository implements PedagoguesRepository {
     return PrismaPedagogueMapper.toDomain(pedagogue)
   }
 
-  async findAll(): Promise<Pedagogue[]> {
+  async findAll({ page, limit }: PaginationParams): Promise<Pedagogue[]> {
+    const perPage = limit ?? 10
+
     const pedagogues = await this.prisma.pedagogue.findMany({
       include: {
         user: true,
       },
+      skip: (page - 1) * perPage,
+      take: perPage,
     })
 
     return pedagogues.map(PrismaPedagogueMapper.toDomain)
