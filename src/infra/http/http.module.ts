@@ -42,9 +42,12 @@ import { GetOccurrenceDetailsController } from './controllers/get-occurrence-det
 import { GetOccurrenceDetailsUseCase } from '@/domain/occurrences/application/use-cases/get-occurrence-details'
 import { FetchAllPedagoguesController } from './controllers/fetch-all-pedagogues.controller'
 import { FetchAllPedagoguesUseCase } from '@/domain/occurrences/application/use-cases/fetch-all-pedagogues'
+import { UploadAttachmentController } from './controllers/upload-attachment.controller'
+import { UploadAndCreateAttachmentUseCase } from '@/domain/occurrences/application/use-cases/upload-and-create-attachment'
+import { StorageModule } from '../storage/storage.module'
 
 @Module({
-  imports: [DatabaseModule, EmailModule, CryptographyModule],
+  imports: [DatabaseModule, EmailModule, CryptographyModule, StorageModule],
   controllers: [
     CreatePedagogueController,
     AuthenticateController,
@@ -66,6 +69,7 @@ import { FetchAllPedagoguesUseCase } from '@/domain/occurrences/application/use-
     FetchAllOccurrencesController,
     GetOccurrenceDetailsController,
     FetchAllPedagoguesController,
+    UploadAttachmentController,
   ],
   providers: [
     CreateOccurrenceUseCase,
@@ -88,6 +92,7 @@ import { FetchAllPedagoguesUseCase } from '@/domain/occurrences/application/use-
     FetchAllOccurrencesUseCase,
     GetOccurrenceDetailsUseCase,
     FetchAllPedagoguesUseCase,
+    UploadAndCreateAttachmentUseCase,
   ],
 })
 export class HttpModule {}

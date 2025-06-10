@@ -18,6 +18,7 @@ export function makeUser(
     {
       role: UserRoleEnum.COMMON,
       status: UserStatusEnum.ACTIVE,
+      avatar: faker.image.avatarGitHub(),
       email: faker.internet.email(),
       password: faker.internet.password(),
       temporaryPassword: faker.internet.password(),

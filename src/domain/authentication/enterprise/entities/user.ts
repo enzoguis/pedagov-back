@@ -6,18 +6,18 @@ export enum UserStatusEnum {
   INACTIVE = 'INACTIVE',
 }
 
-export type UserStatusType = keyof typeof UserStatusEnum
-
 export enum UserRoleEnum {
   ADMIN = 'ADMIN',
   COMMON = 'COMMON',
 }
 
+export type UserStatusType = keyof typeof UserStatusEnum
 export type UserRoleEnumType = keyof typeof UserRoleEnum
 
 export interface UserProps {
   role: UserRoleEnum
   status: UserStatusEnum
+  avatar?: string | null
   email?: string | null
   password?: string | null
   temporaryPassword?: string | null
@@ -30,6 +30,10 @@ export class User extends Entity<UserProps> {
 
   get status() {
     return this.props.status
+  }
+
+  get avatar() {
+    return this.props.avatar
   }
 
   get email() {
@@ -50,6 +54,10 @@ export class User extends Entity<UserProps> {
 
   set role(role: UserRoleEnum) {
     this.props.role = role
+  }
+
+  set avatar(avatar: string | null | undefined) {
+    this.props.avatar = avatar
   }
 
   set temporaryPassword(newPassword: string | null | undefined) {
