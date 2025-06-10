@@ -86,7 +86,7 @@ describe('Get Student With Occurrences (E2E)', () => {
 
     expect(response.body).toEqual({
       result: {
-        studentId: { value: student.id.toString() },
+        studentId: student.id.toString(),
         student: student.name,
         groupId: group.id.toString(),
         group: group.name,

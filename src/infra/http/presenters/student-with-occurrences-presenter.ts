@@ -4,9 +4,9 @@ import { OccurrencePresenter } from './occurrence-presenter'
 export class StudentWithOccurrencePresenter {
   static toHTTP(student: StudentWithOccurrences) {
     return {
-      studentId: student.studentId,
+      studentId: student.studentId.value,
       student: student.student,
-      groupId: student.groupId.toString(),
+      groupId: student.groupId.value,
       group: student.group,
       cpf: student.cpf.value,
       responsibleEmail: student.responsibleEmail,

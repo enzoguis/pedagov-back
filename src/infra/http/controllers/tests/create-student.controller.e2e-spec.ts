@@ -64,11 +64,12 @@ describe('Create Student (E2E)', () => {
 
     expect(response.statusCode).toBe(201)
 
+
     const { id } = response.body.result
 
     const studentOnDatabase = await prisma.student.findUnique({
       where: {
-        userId: id.value,
+        userId: id,
       },
     })
 
@@ -76,7 +77,7 @@ describe('Create Student (E2E)', () => {
 
     const studentUserOnDatabase = await prisma.user.findUnique({
       where: {
-        id: id.value,
+        id: id,
       },
     })
 
@@ -100,7 +101,7 @@ describe('Create Student (E2E)', () => {
       expect.objectContaining({
         students: expect.arrayContaining([
           expect.objectContaining({
-            userId: id.value,
+            userId: id,
           }),
         ]),
       })
