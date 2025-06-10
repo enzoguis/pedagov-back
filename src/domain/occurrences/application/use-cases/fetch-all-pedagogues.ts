@@ -3,7 +3,10 @@ import { PedagoguesRepository } from '../repositories/pedagogues-repository'
 import { Pedagogue } from '@/domain/occurrences/enterprise/entities/pedagogue'
 import { Injectable } from '@nestjs/common'
 
-interface FetchAllPedagoguesUseCaseRequest {}
+interface FetchAllPedagoguesUseCaseRequest {
+  page: number
+  limit?: number
+}
 
 type FetchAllPedagoguesUseCaseResponse = Either<
   null,
@@ -15,8 +18,14 @@ type FetchAllPedagoguesUseCaseResponse = Either<
 @Injectable()
 export class FetchAllPedagoguesUseCase {
   constructor(private pedagoguesRepository: PedagoguesRepository) {}
-  async execute({}: FetchAllPedagoguesUseCaseRequest): Promise<FetchAllPedagoguesUseCaseResponse> {
-    const pedagogues = await this.pedagoguesRepository.findAll()
+  async execute({
+    page,
+    limit,
+  }: FetchAllPedagoguesUseCaseRequest): Promise<FetchAllPedagoguesUseCaseResponse> {
+    const pedagogues = await this.pedagoguesRepository.findAll({
+      page,
+      limit,
+    })
 
     return right({ pedagogues })
   }

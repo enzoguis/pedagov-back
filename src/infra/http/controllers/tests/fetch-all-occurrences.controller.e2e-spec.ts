@@ -47,7 +47,6 @@ describe('Fetch All Occurrences(E2E)', () => {
 
     jwt = moduleRef.get(JwtService)
 
-
     await app.init()
   })
 
@@ -69,6 +68,13 @@ describe('Fetch All Occurrences(E2E)', () => {
     const occurrence = await occurrenceFactory.makePrismaOccurrence({
       teacherId: teacher.id,
       authorId: author.id,
+      createdAt: new Date(2024, 0, 2),
+    })
+
+    await occurrenceFactory.makePrismaOccurrence({
+      teacherId: teacher.id,
+      authorId: author.id,
+      createdAt: new Date(2024, 0, 1),
     })
 
     await occurrenceStudentFactory.makePrismaOccurrenceStudent({
@@ -86,10 +92,13 @@ describe('Fetch All Occurrences(E2E)', () => {
       .query({
         page: 1,
         student: student.id.toString(),
+        createdAt: new Date(2024, 0, 2).toISOString(),
+        groupId: group.id.toString(),
       })
       .set('Authorization', `Bearer ${accessToken}`)
       .send()
 
+    console.log(response.body.result)
     expect(response.body).toEqual({
       result: expect.arrayContaining([
         expect.objectContaining({

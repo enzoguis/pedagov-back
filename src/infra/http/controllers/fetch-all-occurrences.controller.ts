@@ -16,6 +16,12 @@ const queryParamsSchema = z.object({
     z.nativeEnum(OccurrenceTypeEnum).optional()
   ),
   studentId: z.string().uuid().optional(),
+  groupId: z.string().uuid().optional(),
+  createdAt: z
+    .string()
+    .datetime({ offset: true })
+    .transform((str) => new Date(str))
+    .optional(),
 })
 
 type QueryParams = z.infer<typeof queryParamsSchema>
@@ -31,13 +37,15 @@ export class FetchAllOccurrencesController {
   @ApiQuery({ type: FetchAllOccurrencesQueryDto })
   @ApiResponse({ type: FetchOccurrencesResponseDto })
   async handle(@Query(queryValidationPipe) query: QueryParams) {
-    const { page, limit, studentId, type } = query
+    const { page, limit, studentId, type, createdAt, groupId } = query
 
     const result = await this.fetchAllOccurrences.execute({
       page,
       limit,
       studentId,
       type,
+      createdAt,
+      groupId,
     })
 
     if (result.isLeft()) {

@@ -4,38 +4,38 @@ import { OccurrenceTypeEnum } from '@/domain/occurrences/enterprise/entities/occ
 export class FetchOccurrencesItemDto {
   @ApiProperty({
     example: '3f29e8e0-9f84-4d53-9a45-5f3b4c6a1a0d',
-    description: 'ID da ocorrência',
+    description: 'Occurrence ID',
   })
   id!: string
 
   @ApiProperty({
     example: 'a8c88d62-1785-47db-a6bc-b7c5e58c2820',
-    description: 'ID do autor da ocorrência',
+    description: 'Author ID of the occurrence',
   })
   authorId!: string
 
   @ApiProperty({
     example: 'Meeting with parents',
-    description: 'Título da ocorrência',
+    description: 'Title of the occurrence',
   })
   title!: string
 
   @ApiProperty({
     example: 'Discuss student progress',
-    description: 'Descrição da ocorrência',
+    description: 'Description of the occurrence',
   })
   description!: string
 
   @ApiProperty({
     enum: OccurrenceTypeEnum,
     example: OccurrenceTypeEnum.ABSENCES,
-    description: 'Tipo da ocorrência',
+    description: 'Type of the occurrence',
   })
   type!: OccurrenceTypeEnum
 
   @ApiProperty({
     example: '2025-06-05T10:20:30Z',
-    description: 'Data de criação da ocorrência',
+    description: 'Creation date of the occurrence in ISO format',
   })
   createdAt!: string
 }

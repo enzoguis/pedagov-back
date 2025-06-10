@@ -7,8 +7,9 @@ import {
   NotFoundException,
   Param,
 } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiResponse, ApiTags } from '@nestjs/swagger'
 import { OccurrenceDetailsPresenter } from '../presenters/occurrence-details-presenter'
+import { OccurrenceDetailsResponseDto } from '../dtos/occurrence-details-response-dto'
 
 @Controller('/occurrences/:id')
 @ApiTags('Occurrences')
@@ -16,6 +17,7 @@ export class GetOccurrenceDetailsController {
   constructor(private getOccurrenceDetails: GetOccurrenceDetailsUseCase) {}
 
   @Get()
+  @ApiResponse({ type: OccurrenceDetailsResponseDto })
   async handle(@Param('id') occurrenceId: string) {
     const result = await this.getOccurrenceDetails.execute({
       occurrenceId,
