@@ -98,7 +98,6 @@ describe('Fetch All Occurrences(E2E)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send()
 
-    console.log(response.body.result)
     expect(response.body).toEqual({
       result: expect.arrayContaining([
         expect.objectContaining({

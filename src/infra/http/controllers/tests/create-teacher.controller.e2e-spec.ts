@@ -52,7 +52,7 @@ describe('Create Teacher (E2E)', () => {
 
     const teacherOnDatabase = await prisma.teacher.findUnique({
       where: {
-        userId: id.value,
+        userId: id,
       },
     })
 
@@ -60,7 +60,7 @@ describe('Create Teacher (E2E)', () => {
 
     const teacherUserOnDatabase = await prisma.user.findUnique({
       where: {
-        id: id.value,
+        id: id,
       },
     })
 
