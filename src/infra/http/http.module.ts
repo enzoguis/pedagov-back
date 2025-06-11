@@ -45,6 +45,12 @@ import { FetchAllPedagoguesUseCase } from '@/domain/occurrences/application/use-
 import { UploadAttachmentController } from './controllers/upload-attachment.controller'
 import { UploadAndCreateAttachmentUseCase } from '@/domain/occurrences/application/use-cases/upload-and-create-attachment'
 import { StorageModule } from '../storage/storage.module'
+import { FetchAllTeachersController } from './controllers/fetch-all-teachers.controller'
+import { FetchAllTeachersUseCase } from '@/domain/occurrences/application/use-cases/fetch-all-teachers'
+import { GetTeacherByIdController } from './controllers/get-teacher-by-id.controller'
+import { GetTeacherByIdUseCase } from '@/domain/occurrences/application/use-cases/get-teacher-by-id'
+import { EditTeacherController } from './controllers/edit-teacher.controller'
+import { EditTeacherUseCase } from '@/domain/occurrences/application/use-cases/edit-teacher'
 
 @Module({
   imports: [DatabaseModule, EmailModule, CryptographyModule, StorageModule],
@@ -70,6 +76,9 @@ import { StorageModule } from '../storage/storage.module'
     GetOccurrenceDetailsController,
     FetchAllPedagoguesController,
     UploadAttachmentController,
+    FetchAllTeachersController,
+    GetTeacherByIdController,
+    EditTeacherController,
   ],
   providers: [
     CreateOccurrenceUseCase,
@@ -93,6 +102,9 @@ import { StorageModule } from '../storage/storage.module'
     GetOccurrenceDetailsUseCase,
     FetchAllPedagoguesUseCase,
     UploadAndCreateAttachmentUseCase,
+    FetchAllTeachersUseCase,
+    GetTeacherByIdUseCase,
+    EditTeacherUseCase,
   ],
 })
 export class HttpModule {}
