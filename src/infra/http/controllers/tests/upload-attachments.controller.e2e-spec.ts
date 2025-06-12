@@ -38,6 +38,7 @@ describe('Upload attachment (E2E)', () => {
     expect(response.statusCode).toBe(201)
     expect(response.body).toEqual({
       attachmentId: expect.any(String),
+      url: expect.any(String),
     })
   })
 })

@@ -3,50 +3,54 @@ import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { INestApplication } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
+import { TeacherFactory } from 'test/factories/make-teacher'
 import request from 'supertest'
 import { DatabaseModule } from '@/infra/database/database.module'
-import { PedagogueFactory } from 'test/factories/make-pedagogue'
-import { TeacherFactory } from 'test/factories/make-teacher'
+import { UserFactory } from 'test/factories/make-user'
+import { DomainEvents } from '@/core/events/domain-events'
 
-describe('Create Teacher (E2E)', () => {
+describe('Edit Teacher (E2E)', () => {
   let app: INestApplication
   let prisma: PrismaService
-  let pedagogueFactory: PedagogueFactory
+  let teacherFactory: TeacherFactory
   let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [TeacherFactory, PedagogueFactory],
+      providers: [TeacherFactory, UserFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
 
     prisma = moduleRef.get(PrismaService)
 
-    pedagogueFactory = moduleRef.get(PedagogueFactory)
+    teacherFactory = moduleRef.get(TeacherFactory)
 
     jwt = moduleRef.get(JwtService)
+
+    DomainEvents.shouldRun = true
 
     await app.init()
   })
 
-  test('[POST] /accounts/teacher', async () => {
-    const author = await pedagogueFactory.makePrismaPedagogue()
+  test('[PUT] /teachers/:id', async () => {
+    const teacher = await teacherFactory.makePrismaTeacher()
 
     const accessToken = jwt.sign({
-      sub: author.id.toString(),
+      sub: teacher.id.toString(),
+      roles: ['COMMON'],
     })
 
     const response = await request(app.getHttpServer())
-      .post('/accounts/teacher')
+      .put(`/teachers/${teacher.id.toString()}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         name: 'teacher-1',
         status: 'active',
       })
 
-    expect(response.statusCode).toBe(201)
+    expect(response.statusCode).toBe(200)
 
     const { id } = response.body.result
 
@@ -58,17 +62,12 @@ describe('Create Teacher (E2E)', () => {
 
     expect(teacherOnDatabase).toBeTruthy()
 
-    const teacherUserOnDatabase = await prisma.user.findUnique({
+    const teacherUserOnDatabase = await prisma.user.findFirst({
       where: {
-        id: id,
+        name: 'teacher-1',
       },
     })
 
-    expect(teacherOnDatabase).toBeTruthy()
-    expect(teacherUserOnDatabase).toEqual(
-      expect.objectContaining({
-        name: 'teacher-1',
-      })
-    )
+    expect(teacherUserOnDatabase).toBeTruthy()
   })
 })

@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common'
 import { PrismaTeacherMapper } from '../mappers/prisma-teacher-mapper'
 import { PrismaService } from '../prisma.service'
 import { UserRoleEnum } from '@/domain/authentication/enterprise/entities/user'
+import { PaginationParams } from '@/core/repositories/pagination-params'
 
 @Injectable()
 export class PrismaTeachersRepository implements TeachersRepository {
@@ -25,8 +26,39 @@ export class PrismaTeachersRepository implements TeachersRepository {
     ])
   }
 
+  async findAll({ page, limit }: PaginationParams): Promise<Teacher[]> {
+    const perPage = limit ?? 10
+
+    const teachers = await this.prisma.teacher.findMany({
+      include: {
+        user: true,
+      },
+      skip: (page - 1) * perPage,
+      take: perPage,
+    })
+
+    return teachers.map(PrismaTeacherMapper.toDomain)
+  }
+
   async save(teacher: Teacher): Promise<void> {
-    throw new Error('Method not implemented.')
+    const userUpdate = this.prisma.user.update({
+      where: {
+        id: teacher.id.toString(),
+      },
+      data: {
+        name: teacher.name,
+        status: teacher.status,
+      },
+    })
+
+    const teacherUpdate = this.prisma.teacher.update({
+      where: {
+        userId: teacher.id.toString(),
+      },
+      data: PrismaTeacherMapper.toPrisma(teacher),
+    })
+
+    await this.prisma.$transaction([userUpdate, teacherUpdate])
   }
 
   async findById(id: string): Promise<Teacher | null> {

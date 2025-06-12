@@ -1,10 +1,9 @@
+import { FetchAllPossiblesAttendeesUseCase } from '@/domain/occurrences/application/use-cases/fetch-all-possibles-attendees'
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
-import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
-import { PedagoguePresenter } from '../presenters/pedagogue-presenter'
-import { FetchAllPedagoguesUseCase } from '@/domain/occurrences/application/use-cases/fetch-all-pedagogues'
-import { PedagogueDto } from '../dtos/get-pedagogue-by-id-response-dto'
+import { AttendeePresenter } from '../presenters/attendee-presenter'
+import { ApiQuery, ApiTags } from '@nestjs/swagger'
 import { QueryPaginationParamsDto } from '../dtos/query-pagination-params-dto'
 
 const queryParamsSchema = z.object({
@@ -16,18 +15,19 @@ type QueryParams = z.infer<typeof queryParamsSchema>
 
 const queryValidationPipe = new ZodValidationPipe(queryParamsSchema)
 
-@Controller('/pedagogues')
-@ApiTags('Pedagogues')
+@Controller('/attendees')
+@ApiTags('Attendees')
 @ApiQuery({ type: QueryPaginationParamsDto })
-export class FetchAllPedagoguesController {
-  constructor(private fetchAllPedagogues: FetchAllPedagoguesUseCase) {}
+export class FetchAllPossiblesAttendeesController {
+  constructor(
+    private fetchAllPossiblesAttendees: FetchAllPossiblesAttendeesUseCase
+  ) {}
 
   @Get()
-  @ApiResponse({ type: [PedagogueDto] })
   async handle(@Query(queryValidationPipe) query: QueryParams) {
     const { page, limit } = query
 
-    const result = await this.fetchAllPedagogues.execute({
+    const result = await this.fetchAllPossiblesAttendees.execute({
       page,
       limit,
     })
@@ -36,10 +36,8 @@ export class FetchAllPedagoguesController {
       throw new BadRequestException()
     }
 
-    const { pedagogues } = result.value
+    const { attendees } = result.value
 
-    return {
-      result: pedagogues.map(PedagoguePresenter.toHTTP),
-    }
+    return { result: attendees.map(AttendeePresenter.toHTTP) }
   }
 }
