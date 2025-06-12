@@ -1,10 +1,11 @@
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
-import { ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { PedagoguePresenter } from '../presenters/pedagogue-presenter'
 import { FetchAllPedagoguesUseCase } from '@/domain/occurrences/application/use-cases/fetch-all-pedagogues'
 import { PedagogueDto } from '../dtos/get-pedagogue-by-id-response-dto'
+import { QueryPaginationParamsDto } from '../dtos/query-pagination-params-dto'
 
 const queryParamsSchema = z.object({
   page: z.coerce.number(),
@@ -17,6 +18,7 @@ const queryValidationPipe = new ZodValidationPipe(queryParamsSchema)
 
 @Controller('/pedagogues')
 @ApiTags('Pedagogues')
+@ApiQuery({ type: QueryPaginationParamsDto })
 export class FetchAllPedagoguesController {
   constructor(private fetchAllPedagogues: FetchAllPedagoguesUseCase) {}
 

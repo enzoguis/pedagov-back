@@ -3,6 +3,8 @@ import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { AttendeePresenter } from '../presenters/attendee-presenter'
+import { ApiQuery, ApiTags } from '@nestjs/swagger'
+import { QueryPaginationParamsDto } from '../dtos/query-pagination-params-dto'
 
 const queryParamsSchema = z.object({
   page: z.coerce.number(),
@@ -14,6 +16,8 @@ type QueryParams = z.infer<typeof queryParamsSchema>
 const queryValidationPipe = new ZodValidationPipe(queryParamsSchema)
 
 @Controller('/attendees')
+@ApiTags('Attendees')
+@ApiQuery({ type: QueryPaginationParamsDto })
 export class FetchAllPossiblesAttendeesController {
   constructor(
     private fetchAllPossiblesAttendees: FetchAllPossiblesAttendeesUseCase
