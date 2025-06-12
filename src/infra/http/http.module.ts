@@ -51,6 +51,8 @@ import { GetTeacherByIdController } from './controllers/get-teacher-by-id.contro
 import { GetTeacherByIdUseCase } from '@/domain/occurrences/application/use-cases/get-teacher-by-id'
 import { EditTeacherController } from './controllers/edit-teacher.controller'
 import { EditTeacherUseCase } from '@/domain/occurrences/application/use-cases/edit-teacher'
+import { FetchAllPossiblesAttendeesController } from './controllers/fetch-all-possibles-attendees.controller'
+import { FetchAllPossiblesAttendeesUseCase } from '@/domain/occurrences/application/use-cases/fetch-all-possibles-attendees'
 
 @Module({
   imports: [DatabaseModule, EmailModule, CryptographyModule, StorageModule],
@@ -79,6 +81,7 @@ import { EditTeacherUseCase } from '@/domain/occurrences/application/use-cases/e
     FetchAllTeachersController,
     GetTeacherByIdController,
     EditTeacherController,
+    FetchAllPossiblesAttendeesController,
   ],
   providers: [
     CreateOccurrenceUseCase,
@@ -105,6 +108,7 @@ import { EditTeacherUseCase } from '@/domain/occurrences/application/use-cases/e
     FetchAllTeachersUseCase,
     GetTeacherByIdUseCase,
     EditTeacherUseCase,
+    FetchAllPossiblesAttendeesUseCase,
   ],
 })
 export class HttpModule {}
