@@ -20,6 +20,7 @@ enum UserStatus {
 model User {
   id                String     @id @default(uuid())
   name              String
+  avatar            String?
   role              UserRole
   status            UserStatus
   email             String?    @unique

@@ -53,6 +53,8 @@ import { EditTeacherController } from './controllers/edit-teacher.controller'
 import { EditTeacherUseCase } from '@/domain/occurrences/application/use-cases/edit-teacher'
 import { FetchAllPossiblesAttendeesController } from './controllers/fetch-all-possibles-attendees.controller'
 import { FetchAllPossiblesAttendeesUseCase } from '@/domain/occurrences/application/use-cases/fetch-all-possibles-attendees'
+import { UpdateUserAvatarController } from './controllers/update-user-avatar.controller'
+import { UploadAvatarUseCase } from '@/domain/authentication/application/use-cases/upload-avatar'
 
 @Module({
   imports: [DatabaseModule, EmailModule, CryptographyModule, StorageModule],
@@ -82,6 +84,7 @@ import { FetchAllPossiblesAttendeesUseCase } from '@/domain/occurrences/applicat
     GetTeacherByIdController,
     EditTeacherController,
     FetchAllPossiblesAttendeesController,
+    UpdateUserAvatarController,
   ],
   providers: [
     CreateOccurrenceUseCase,
@@ -109,6 +112,7 @@ import { FetchAllPossiblesAttendeesUseCase } from '@/domain/occurrences/applicat
     GetTeacherByIdUseCase,
     EditTeacherUseCase,
     FetchAllPossiblesAttendeesUseCase,
+    UploadAvatarUseCase,
   ],
 })
 export class HttpModule {}

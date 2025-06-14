@@ -11,6 +11,7 @@ export class PrismaUserMapper {
   static toDomain(raw: PrismaUser): User {
     return User.create(
       {
+        avatar: raw.avatar,
         role: UserRoleEnum[raw.role],
         status: UserStatusEnum[raw.status],
         email: raw.email,
@@ -26,6 +27,7 @@ export class PrismaUserMapper {
   ): Optional<Prisma.UserUncheckedCreateInput, 'name'> {
     return {
       id: user.id.toString(),
+      avatar: user.avatar,
       role: user.role,
       status: user.status,
       email: user.email,

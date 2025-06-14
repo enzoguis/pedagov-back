@@ -3,11 +3,16 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { UserStatusEnum } from '@/domain/authentication/enterprise/entities/user'
 
 export interface TeacherProps {
+  avatar?: string
   name: string
   status: UserStatusEnum
 }
 
 export class Teacher extends Entity<TeacherProps> {
+  get avatar() {
+    return this.props.avatar
+  }
+
   get name() {
     return this.props.name
   }

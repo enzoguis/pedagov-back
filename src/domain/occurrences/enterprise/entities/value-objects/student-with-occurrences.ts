@@ -5,6 +5,7 @@ import { CPF } from './cpf'
 import { Occurrence } from '../occurrence'
 
 export interface StudentWithOccurrencesProps {
+  avatar?: string | null
   studentId: UniqueEntityID
   student: string
   cpf: CPF
@@ -17,6 +18,10 @@ export interface StudentWithOccurrencesProps {
 }
 
 export class StudentWithOccurrences extends ValueObject<StudentWithOccurrencesProps> {
+  get avatar() {
+    return this.props.avatar
+  }
+
   get studentId() {
     return this.props.studentId
   }

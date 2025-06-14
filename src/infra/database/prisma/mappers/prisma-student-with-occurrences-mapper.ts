@@ -21,6 +21,7 @@ type PrismaStudentWithOccurrences = PrismaStudent & {
 export class PrismaStudentWithOccurrencesMapper {
   static toDomain(raw: PrismaStudentWithOccurrences): StudentWithOccurrences {
     return StudentWithOccurrences.create({
+      avatar: raw.user.avatar,
       studentId: new UniqueEntityID(raw.userId),
       student: raw.user.name,
       cpf: CPF.create(raw.cpf),

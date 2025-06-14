@@ -16,6 +16,7 @@ export class PrismaStudentMapper {
   static toDomain(raw: PrismaStudentWithName): Student {
     return Student.create(
       {
+        avatar: raw.user.avatar,
         groupId: new UniqueEntityID(raw.groupId),
         status: UserStatusEnum[raw.user.status],
         name: raw.user.name,

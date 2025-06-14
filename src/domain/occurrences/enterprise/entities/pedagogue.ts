@@ -11,12 +11,17 @@ export enum PedagogueRoleEnum {
 export type PedagogueRoleType = keyof typeof PedagogueRoleEnum
 
 export interface PedagogueProps {
+  avatar?: string
   name: string
   status: UserStatusEnum
   role: PedagogueRoleEnum
 }
 
 export class Pedagogue extends AggregateRoot<PedagogueProps> {
+  get avatar() {
+    return this.props.avatar
+  }
+
   get name() {
     return this.props.name
   }

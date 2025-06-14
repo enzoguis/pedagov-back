@@ -4,6 +4,7 @@ import { CPF } from './value-objects/cpf'
 import { UserStatusEnum } from '@/domain/authentication/enterprise/entities/user'
 
 export interface StudentProps {
+  avatar?: string | null
   name: string
   status: UserStatusEnum
   groupId: UniqueEntityID
@@ -13,6 +14,10 @@ export interface StudentProps {
 }
 
 export class Student extends Entity<StudentProps> {
+  get avatar() {
+    return this.props.avatar
+  }
+
   get name() {
     return this.props.name
   }
