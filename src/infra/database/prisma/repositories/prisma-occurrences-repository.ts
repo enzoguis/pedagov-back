@@ -12,6 +12,8 @@ import { OccurrenceStudentsRepository } from '@/domain/occurrences/application/r
 import { OccurrenceAttendeesRepository } from '@/domain/occurrences/application/repositories/occurrence-attendees-repository'
 import { OccurrenceDetails } from '@/domain/occurrences/enterprise/entities/value-objects/occurrence-details'
 import { PrismaOccurrenceDetailsMapper } from '../mappers/prisma-occurrence-details-mapper'
+import { OccurrenceWithStudentName } from '@/domain/occurrences/enterprise/entities/value-objects/occurrence-with-student-name'
+import { PrismaOccurrenceWithStudentNameMapper } from '../mappers/prisma-occurrence-with-student-name-mapper'
 
 @Injectable()
 export class PrismaOccurrencesRepository implements OccurrencesRepository {
@@ -128,6 +130,44 @@ export class PrismaOccurrencesRepository implements OccurrencesRepository {
     }
 
     return PrismaOccurrenceDetailsMapper.toDomain(occurrence)
+  }
+
+  async findManyForEachStudent({
+    page,
+    limit,
+  }: PaginationParams): Promise<OccurrenceWithStudentName[]> {
+    const perPage = limit ?? 10
+
+    const occurrencesPerStudent = await this.prisma.occurrenceStudents.findMany(
+      {
+        select: {
+          occurrence: {
+            select: {
+              id: true,
+              title: true,
+              type: true,
+              createdAt: true,
+            },
+          },
+          student: {
+            select: {
+              userId: true,
+              user: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+        skip: (page - 1) * perPage,
+        take: perPage,
+      }
+    )
+
+    return occurrencesPerStudent.map((item) =>
+      PrismaOccurrenceWithStudentNameMapper.toDomain(item)
+    )
   }
 
   async findManyRecents({
