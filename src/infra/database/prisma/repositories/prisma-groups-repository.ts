@@ -1,5 +1,8 @@
 import { PaginationParams } from '@/core/repositories/pagination-params'
-import { GroupsRepository } from '@/domain/occurrences/application/repositories/groups-repository'
+import {
+  FetchAllGroupsParams,
+  GroupsRepository,
+} from '@/domain/occurrences/application/repositories/groups-repository'
 import { Group } from '@/domain/occurrences/enterprise/entities/group'
 import { Injectable } from '@nestjs/common'
 import { PrismaGroupMapper } from '../mappers/prisma-group-mapper'
@@ -61,10 +64,13 @@ export class PrismaGroupsRepository implements GroupsRepository {
     return groups.map(PrismaGroupMapper.toDomain)
   }
 
-  async findAll({ page, limit }: PaginationParams) {
+  async findAll({ page, limit, shift }: FetchAllGroupsParams) {
     const perPage = limit ?? 10
 
     const groups = await this.prisma.group.findMany({
+      where: {
+        ...(shift && { shift }),
+      },
       take: perPage,
       skip: (page - 1) * perPage,
     })
