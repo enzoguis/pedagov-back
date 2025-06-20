@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Body,
+  ConflictException,
   Controller,
   Post,
   UsePipes,
@@ -12,6 +13,7 @@ import { StudentPresenter } from '../presenters/student-presenter'
 import { ApiBody, ApiTags } from '@nestjs/swagger'
 import { CreateStudentDto } from '../dtos/create-student-dto'
 import { UserStatusEnum } from '@/domain/authentication/enterprise/entities/user'
+import { StudentAlreadyExistsError } from '@/domain/occurrences/application/use-cases/errors/student-already-exists-error'
 
 const createStudentBodySchema = z.object({
   name: z.string(),
@@ -51,7 +53,12 @@ export class CreateStudentController {
     if (result.isLeft()) {
       const error = result.value
 
-      throw new BadRequestException(error.message)
+      switch (error.constructor) {
+        case StudentAlreadyExistsError:
+          throw new ConflictException(error.message)
+        default:
+          throw new BadRequestException(error.message)
+      }
     }
 
     const { student } = result.value
