@@ -26,7 +26,7 @@ export class MailerSender implements EmailSender {
 
     try {
       await this.mailerService.sendMail({
-        to: 'enzog0315@gmail.com',
+        to: message.recipientEmail,
         subject: selectedTemplate.subject,
         text: selectedTemplate.text,
       })

@@ -21,7 +21,9 @@ import { ConfigModule } from '@nestjs/config'
           },
         },
         defaults: {
-          from: `"Escola" <${env.get('GMAIL_AUTH_USER')}>`,
+          from: `"Escola ${env.get('GMAIL_AUTH_USER')}" <${env.get(
+            'GMAIL_AUTH_USER'
+          )}>`,
         },
       }),
     }),

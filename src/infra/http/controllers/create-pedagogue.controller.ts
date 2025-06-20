@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Body,
+  ConflictException,
   Controller,
   Post,
   UseGuards,
@@ -17,6 +18,7 @@ import { PedagoguePresenter } from '../presenters/pedagogue-presenter'
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CreatePedagogueDto } from '../dtos/create-pedagogue-dto'
 import { UserStatusEnum } from '@/domain/authentication/enterprise/entities/user'
+import { PedagogueAlreadyExistsError } from '@/domain/occurrences/application/use-cases/errors/pedagogue-already-exists-error'
 
 const createPedagogueBodySchema = z.object({
   name: z.string(),
@@ -57,6 +59,14 @@ export class CreatePedagogueController {
     })
 
     if (result.isLeft()) {
+      const error = result.value
+
+      switch (error.constructor) {
+        case PedagogueAlreadyExistsError:
+          throw new ConflictException(error.message)
+        default:
+          throw new BadRequestException(error.message)
+      }
       throw new BadRequestException()
     }
 
