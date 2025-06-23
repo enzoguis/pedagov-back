@@ -9,10 +9,7 @@ import { Injectable } from '@nestjs/common'
 interface FetchAllOccurrencesUseCaseRequest {
   page: number
   limit?: number
-  type?: OccurrenceTypes
-  studentId?: string
-  createdAt?: Date
-  groupId?: string
+  searchTerm?: string
 }
 
 type FetchAllOccurrencesUseCaseResponse = Either<
@@ -28,18 +25,12 @@ export class FetchAllOccurrencesUseCase {
   async execute({
     page,
     limit,
-    studentId,
-    type,
-    createdAt,
-    groupId,
+    searchTerm,
   }: FetchAllOccurrencesUseCaseRequest): Promise<FetchAllOccurrencesUseCaseResponse> {
     const occurrences = await this.occurrencesRepository.findAll({
       page,
       limit,
-      studentId,
-      type,
-      createdAt,
-      groupId,
+      searchTerm,
     })
 
     return right({ occurrences })

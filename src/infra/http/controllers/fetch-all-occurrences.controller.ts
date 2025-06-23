@@ -11,17 +11,7 @@ import { FetchOccurrencesResponseDto } from '../dtos/fetch-occurrences-response-
 const queryParamsSchema = z.object({
   page: z.coerce.number(),
   limit: z.coerce.number().optional(),
-  type: z.preprocess(
-    (val) => (typeof val === 'string' ? val.toUpperCase() : val),
-    z.nativeEnum(OccurrenceTypeEnum).optional()
-  ),
-  studentId: z.string().uuid().optional(),
-  groupId: z.string().uuid().optional(),
-  createdAt: z
-    .string()
-    .datetime({ offset: true })
-    .transform((str) => new Date(str))
-    .optional(),
+  searchTerm: z.string().optional(),
 })
 
 type QueryParams = z.infer<typeof queryParamsSchema>
@@ -37,15 +27,12 @@ export class FetchAllOccurrencesController {
   @ApiQuery({ type: FetchAllOccurrencesQueryDto })
   @ApiResponse({ type: FetchOccurrencesResponseDto })
   async handle(@Query(queryValidationPipe) query: QueryParams) {
-    const { page, limit, studentId, type, createdAt, groupId } = query
+    const { page, limit, searchTerm } = query
 
     const result = await this.fetchAllOccurrences.execute({
       page,
       limit,
-      studentId,
-      type,
-      createdAt,
-      groupId,
+      searchTerm,
     })
 
     if (result.isLeft()) {

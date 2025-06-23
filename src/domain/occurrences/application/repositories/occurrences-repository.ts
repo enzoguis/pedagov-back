@@ -9,10 +9,7 @@ import { OccurrenceWithStudentName } from '../../enterprise/entities/value-objec
 export interface FetchAllOccurrencesParams {
   page: number
   limit?: number
-  studentId?: string
-  type?: OccurrenceTypes
-  createdAt?: Date
-  groupId?: string
+  searchTerm?: string
 }
 
 export abstract class OccurrencesRepository {
