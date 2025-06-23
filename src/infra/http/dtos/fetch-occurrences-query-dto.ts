@@ -15,27 +15,13 @@ export class FetchAllOccurrencesQueryDto {
   limit?: number
 
   @ApiPropertyOptional({
-    enum: OccurrenceTypeEnum,
-    example: OccurrenceTypeEnum.ABSENCES,
-    description: 'Filter by occurrence type',
+    example: 'absence',
+    description: `Search term that can be:
+    - A general text to search in title, description, author, teacher or student names
+    - A date in "YYYY-MM-DD" format to filter occurrences created on that date
+    - An occurrence type, e.g., ${Object.values(OccurrenceTypeEnum).join(
+      ', '
+    )}`,
   })
-  type?: OccurrenceTypeEnum
-
-  @ApiPropertyOptional({
-    example: '7e8b1234-5678-4d9c-a123-b456c78d90ef',
-    description: 'Filter by student ID (UUID)',
-  })
-  studentId?: string
-
-  @ApiPropertyOptional({
-    example: '5a6f7890-1234-4d56-a789-0b1c2d3e4f5a',
-    description: 'Filter by group ID (UUID)',
-  })
-  groupId?: string
-
-  @ApiPropertyOptional({
-    example: '2024-01-01T00:00:00.000Z',
-    description: 'Filter by creation date in ISO 8601 format',
-  })
-  createdAt?: string
+  searchTerm?: string
 }

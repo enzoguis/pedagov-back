@@ -91,12 +91,12 @@ describe('Fetch All Occurrences(E2E)', () => {
       .get(`/occurrences`)
       .query({
         page: 1,
-        student: student.id.toString(),
-        createdAt: new Date(2024, 0, 2).toISOString(),
-        groupId: group.id.toString(),
+        searchTerm: '2024-01-02',
       })
       .set('Authorization', `Bearer ${accessToken}`)
       .send()
+
+    console.log(response.body)
 
     expect(response.body).toEqual({
       result: expect.arrayContaining([

@@ -30,8 +30,7 @@ describe('Fetch All Occurrences Use Case', () => {
     inMemoryOccurrencesRepository = new InMemoryOccurrencesRepository(
       inMemoryOccurrenceStudentRepository,
       inMemoryOccurrenceAttendeesRepository,
-      inMemoryOccurrenceAttachmentsRepository,
-      inMemoryOccurrenceHistoriesRepository
+      inMemoryOccurrenceAttachmentsRepository
     )
     sut = new FetchAllOccurrencesUseCase(inMemoryOccurrencesRepository)
   })
@@ -71,7 +70,6 @@ describe('Fetch All Occurrences Use Case', () => {
 
     const result = await sut.execute({
       page: 1,
-      type: 'TARDINESS',
     })
 
     expect(result.isRight()).toBeTruthy()

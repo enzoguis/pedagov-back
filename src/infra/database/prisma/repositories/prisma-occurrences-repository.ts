@@ -3,7 +3,10 @@ import {
   FetchAllOccurrencesParams,
   OccurrencesRepository,
 } from '@/domain/occurrences/application/repositories/occurrences-repository'
-import { Occurrence } from '@/domain/occurrences/enterprise/entities/occurrence'
+import {
+  Occurrence,
+  OccurrenceTypeEnum,
+} from '@/domain/occurrences/enterprise/entities/occurrence'
 import { PrismaService } from '../prisma.service'
 import { Injectable } from '@nestjs/common'
 import { PrismaOccurrenceMapper } from '../mappers/prisma-occurrence-mapper'
@@ -190,33 +193,68 @@ export class PrismaOccurrencesRepository implements OccurrencesRepository {
   async findAll({
     page,
     limit,
-    studentId,
-    type,
-    createdAt,
-    groupId,
+    searchTerm,
   }: FetchAllOccurrencesParams): Promise<Occurrence[]> {
     const perPage = limit ?? 10
 
+    const isOccurrenceType = Object.values(OccurrenceTypeEnum).includes(
+      searchTerm as OccurrenceTypeEnum
+    )
+
+    let dateFilter = {}
+    let isDate = false
+
+    if (searchTerm) {
+      isDate = !isNaN(Date.parse(searchTerm))
+
+      if (isDate) {
+        const searchDate = new Date(searchTerm)
+        const nextDate = new Date(searchDate)
+        nextDate.setDate(nextDate.getDate() + 1)
+
+        dateFilter = { createdAt: { gte: searchDate, lt: nextDate } }
+      }
+    }
+
     const occurrences = await this.prisma.occurrence.findMany({
       where: {
-        ...(studentId && {
-          students: {
-            some: {
-              studentId,
+        OR: [
+          {
+            author: {
+              user: { name: { contains: searchTerm, mode: 'insensitive' } },
             },
           },
-        }),
-        ...(type && { type }),
-        ...(groupId && {
-          students: {
-            some: {
-              student: {
-                groupId,
+          {
+            attendees: {
+              some: {
+                user: { name: { contains: searchTerm, mode: 'insensitive' } },
               },
             },
           },
-        }),
-        ...(createdAt && { createdAt }),
+          {
+            students: {
+              some: {
+                student: {
+                  user: {
+                    name: { contains: searchTerm, mode: 'insensitive' },
+                  },
+                },
+              },
+            },
+          },
+          {
+            teacher: {
+              user: { name: { contains: searchTerm, mode: 'insensitive' } },
+            },
+          },
+          { title: { contains: searchTerm, mode: 'insensitive' } },
+          { description: { contains: searchTerm, mode: 'insensitive' } },
+          { id: { contains: searchTerm, mode: 'insensitive' } },
+          ...(isOccurrenceType
+            ? [{ type: { equals: searchTerm as OccurrenceTypeEnum } }]
+            : []),
+          ...(isDate ? [dateFilter] : []),
+        ],
       },
       orderBy: {
         createdAt: 'asc',

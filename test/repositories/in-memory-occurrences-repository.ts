@@ -16,8 +16,7 @@ export class InMemoryOccurrencesRepository implements OccurrencesRepository {
   constructor(
     private occurrenceStudents: InMemoryOccurrenceStudentsRepository,
     private occurrenceAttendees: InMemoryOccurrenceAttendeesRepository,
-    private occurrenceAttachments: InMemoryOccurrenceAttachmentsRepository,
-    private occurrenceHistoryRepository: InMemoryOccurrenceHistoriesRepository
+    private occurrenceAttachments: InMemoryOccurrenceAttachmentsRepository
   ) {}
   public items: Occurrence[] = []
 
@@ -31,23 +30,31 @@ export class InMemoryOccurrencesRepository implements OccurrencesRepository {
     return occurrences
   }
 
-  async findAll({ page, limit, studentId, type }: FetchAllOccurrencesParams) {
+  async findAll({
+    page,
+    limit,
+
+    searchTerm,
+  }: FetchAllOccurrencesParams) {
     let occurrences = [...this.items]
 
     const perPage = limit ?? 20
 
-    if (type) {
-      occurrences = occurrences.filter(
-        (item) => item.type === OccurrenceTypeEnum[type]
-      )
-    }
+    if (searchTerm) {
+      const lowerSearch = searchTerm.toLowerCase()
 
-    if (studentId) {
-      occurrences = occurrences.filter((item) =>
-        item.students
-          .getItems()
-          .some((student) => student.studentId.toString() === studentId)
-      )
+      occurrences = occurrences.filter((item) => {
+        const fieldsToSearch = [
+          item.title,
+          item.description,
+          item.type,
+          item.createdAt?.toString(),
+        ]
+
+        return fieldsToSearch.some((field) =>
+          field?.toString().toLowerCase().includes(lowerSearch)
+        )
+      })
     }
 
     const paginated = occurrences.slice((page - 1) * perPage, page * perPage)
