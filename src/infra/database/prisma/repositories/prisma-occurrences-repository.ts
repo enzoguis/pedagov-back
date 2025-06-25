@@ -17,6 +17,13 @@ import { OccurrenceDetails } from '@/domain/occurrences/enterprise/entities/valu
 import { PrismaOccurrenceDetailsMapper } from '../mappers/prisma-occurrence-details-mapper'
 import { OccurrenceWithStudentName } from '@/domain/occurrences/enterprise/entities/value-objects/occurrence-with-student-name'
 import { PrismaOccurrenceWithStudentNameMapper } from '../mappers/prisma-occurrence-with-student-name-mapper'
+import {
+  OccurrenceProps,
+  OccurrencesWithPagination,
+} from '@/domain/occurrences/enterprise/entities/value-objects/occurrences-with-pagination'
+import { createPaginator } from 'prisma-pagination'
+import { Prisma, Occurrence as PrismaOccurrence } from '@prisma/client'
+import { PrismaOccurrencesWithPaginationMapper } from '../mappers/prisma-occurrences-with-pagination-mapper'
 
 @Injectable()
 export class PrismaOccurrencesRepository implements OccurrencesRepository {
@@ -192,42 +199,48 @@ export class PrismaOccurrencesRepository implements OccurrencesRepository {
 
   async findAll({
     page,
-    limit,
-    searchTerm,
-  }: FetchAllOccurrencesParams): Promise<Occurrence[]> {
-    const perPage = limit ?? 10
+    limit = 10,
+    search,
+    order = 'desc',
+    sort = 'createdAt',
+  }: PaginationParams<
+    keyof OccurrenceProps
+  >): Promise<OccurrencesWithPagination> {
+    const paginate = createPaginator({ page, perPage: limit })
 
     const isOccurrenceType = Object.values(OccurrenceTypeEnum).includes(
-      searchTerm as OccurrenceTypeEnum
+      search as OccurrenceTypeEnum
     )
 
     let dateFilter = {}
     let isDate = false
 
-    if (searchTerm) {
-      isDate = !isNaN(Date.parse(searchTerm))
+    if (search) {
+      isDate = !isNaN(Date.parse(search))
 
       if (isDate) {
-        const searchDate = new Date(searchTerm)
+        const searchDate = new Date(search)
         const nextDate = new Date(searchDate)
         nextDate.setDate(nextDate.getDate() + 1)
 
         dateFilter = { createdAt: { gte: searchDate, lt: nextDate } }
       }
     }
-
-    const occurrences = await this.prisma.occurrence.findMany({
+    const occurrencesWithPagination = await paginate<
+      PrismaOccurrence,
+      Prisma.OccurrenceFindManyArgs
+    >(this.prisma.occurrence, {
       where: {
         OR: [
           {
             author: {
-              user: { name: { contains: searchTerm, mode: 'insensitive' } },
+              user: { name: { contains: search, mode: 'insensitive' } },
             },
           },
           {
             attendees: {
               some: {
-                user: { name: { contains: searchTerm, mode: 'insensitive' } },
+                user: { name: { contains: search, mode: 'insensitive' } },
               },
             },
           },
@@ -236,7 +249,7 @@ export class PrismaOccurrencesRepository implements OccurrencesRepository {
               some: {
                 student: {
                   user: {
-                    name: { contains: searchTerm, mode: 'insensitive' },
+                    name: { contains: search, mode: 'insensitive' },
                   },
                 },
               },
@@ -244,26 +257,26 @@ export class PrismaOccurrencesRepository implements OccurrencesRepository {
           },
           {
             teacher: {
-              user: { name: { contains: searchTerm, mode: 'insensitive' } },
+              user: { name: { contains: search, mode: 'insensitive' } },
             },
           },
-          { title: { contains: searchTerm, mode: 'insensitive' } },
-          { description: { contains: searchTerm, mode: 'insensitive' } },
-          { id: { contains: searchTerm, mode: 'insensitive' } },
+          { title: { contains: search, mode: 'insensitive' } },
+          { description: { contains: search, mode: 'insensitive' } },
+          { id: { contains: search, mode: 'insensitive' } },
           ...(isOccurrenceType
-            ? [{ type: { equals: searchTerm as OccurrenceTypeEnum } }]
+            ? [{ type: { equals: search as OccurrenceTypeEnum } }]
             : []),
           ...(isDate ? [dateFilter] : []),
         ],
       },
       orderBy: {
-        createdAt: 'asc',
+        [sort]: order,
       },
-      skip: (page - 1) * perPage,
-      take: perPage,
     })
 
-    return occurrences.map(PrismaOccurrenceMapper.toDomain)
+    return PrismaOccurrencesWithPaginationMapper.toDomain(
+      occurrencesWithPagination
+    )
   }
 
   async delete(occurrence: Occurrence): Promise<void> {

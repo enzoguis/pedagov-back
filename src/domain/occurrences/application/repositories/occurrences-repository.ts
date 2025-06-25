@@ -5,6 +5,10 @@ import {
 } from '@/domain/occurrences/enterprise/entities/occurrence'
 import { OccurrenceDetails } from '../../enterprise/entities/value-objects/occurrence-details'
 import { OccurrenceWithStudentName } from '../../enterprise/entities/value-objects/occurrence-with-student-name'
+import {
+  OccurrenceProps,
+  OccurrencesWithPagination,
+} from '../../enterprise/entities/value-objects/occurrences-with-pagination'
 
 export interface FetchAllOccurrencesParams {
   page: number
@@ -21,6 +25,8 @@ export abstract class OccurrencesRepository {
   ): Promise<OccurrenceWithStudentName[]>
   abstract findWithDetails(id: string): Promise<OccurrenceDetails | null>
   abstract findManyRecents(params: PaginationParams): Promise<Occurrence[]>
-  abstract findAll(params: FetchAllOccurrencesParams): Promise<Occurrence[]>
+  abstract findAll(
+    params: PaginationParams<keyof OccurrenceProps>
+  ): Promise<OccurrencesWithPagination>
   abstract delete(occurrence: Occurrence): Promise<void>
 }

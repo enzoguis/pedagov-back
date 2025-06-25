@@ -7,9 +7,15 @@ import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { OccurrencePresenter } from '../presenters/occurrence-presenter'
 import { FetchAllOccurrencesQueryDto } from '../dtos/fetch-occurrences-query-dto'
 import { FetchOccurrencesResponseDto } from '../dtos/fetch-occurrences-response-dto'
+import { OccurrencesWithPaginationPresenter } from '../presenters/occurrences-with-pagination-presenter'
 
 const queryParamsSchema = z.object({
-  page: z.coerce.number(),
+  page: z
+    .string()
+    .optional()
+    .default('1')
+    .transform(Number)
+    .pipe(z.number().min(1)),
   limit: z.coerce.number().optional(),
   searchTerm: z.string().optional(),
 })
@@ -39,10 +45,12 @@ export class FetchAllOccurrencesController {
       throw new BadRequestException()
     }
 
-    const { occurrences } = result.value
+    const { occurrencesWithPaginaton } = result.value
 
     return {
-      result: occurrences.map(OccurrencePresenter.toHTTP),
+      result: OccurrencesWithPaginationPresenter.toHTTP(
+        occurrencesWithPaginaton
+      ),
     }
   }
 }
