@@ -46,7 +46,7 @@ export class FetchAllPossiblesAttendeesUseCase {
         {
           name: pedagogue.name,
         },
-        pedagogue.id
+        pedagogue.pedagogueId
       )
     })
 

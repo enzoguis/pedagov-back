@@ -65,13 +65,15 @@ describe('Fetch All Occurrences(E2E)', () => {
       groupId: group.id,
     })
 
-    const occurrence = await occurrenceFactory.makePrismaOccurrence({
-      teacherId: teacher.id,
-      authorId: author.id,
-      createdAt: new Date(2024, 0, 2),
-    })
+    for (let i = 0; i < 22; i++) {
+      await occurrenceFactory.makePrismaOccurrence({
+        teacherId: teacher.id,
+        authorId: author.id,
+        createdAt: new Date(2024, 0, 2),
+      })
+    }
 
-    await occurrenceFactory.makePrismaOccurrence({
+    const occurrence = await occurrenceFactory.makePrismaOccurrence({
       teacherId: teacher.id,
       authorId: author.id,
       createdAt: new Date(2024, 0, 1),
@@ -90,20 +92,30 @@ describe('Fetch All Occurrences(E2E)', () => {
     const response = await request(app.getHttpServer())
       .get(`/occurrences`)
       .query({
-        page: 1,
-        searchTerm: '2024-01-02',
+        page: 3,
       })
       .set('Authorization', `Bearer ${accessToken}`)
       .send()
 
-    console.log(response.body)
-
-    expect(response.body).toEqual({
-      result: expect.arrayContaining([
+    expect(response.body.result).toEqual({
+      occurrences: expect.arrayContaining([
         expect.objectContaining({
-          id: occurrence.id.toString(),
+          authorId: author.id.value,
+        }),
+        expect.objectContaining({
+          authorId: author.id.value,
+        }),
+        expect.objectContaining({
+          authorId: author.id.value,
         }),
       ]),
+      page: expect.objectContaining({
+        total: 23,
+        lastPage: 3,
+        currentPage: 3,
+        prev: 2,
+        next: null,
+      }),
     })
   })
 })

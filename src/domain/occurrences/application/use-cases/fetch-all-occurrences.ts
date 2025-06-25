@@ -5,6 +5,7 @@ import {
 } from '@/domain/occurrences/enterprise/entities/occurrence'
 import { OccurrencesRepository } from '../repositories/occurrences-repository'
 import { Injectable } from '@nestjs/common'
+import { OccurrencesWithPagination } from '../../enterprise/entities/value-objects/occurrences-with-pagination'
 
 interface FetchAllOccurrencesUseCaseRequest {
   page: number
@@ -15,7 +16,7 @@ interface FetchAllOccurrencesUseCaseRequest {
 type FetchAllOccurrencesUseCaseResponse = Either<
   null,
   {
-    occurrences: Occurrence[]
+    occurrencesWithPaginaton: OccurrencesWithPagination
   }
 >
 
@@ -30,9 +31,9 @@ export class FetchAllOccurrencesUseCase {
     const occurrences = await this.occurrencesRepository.findAll({
       page,
       limit,
-      searchTerm,
+      search: searchTerm,
     })
 
-    return right({ occurrences })
+    return right({ occurrencesWithPaginaton: occurrences })
   }
 }

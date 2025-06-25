@@ -1,7 +1,7 @@
 import { Either, right } from '@/core/either'
 import { PedagoguesRepository } from '../repositories/pedagogues-repository'
-import { Pedagogue } from '@/domain/occurrences/enterprise/entities/pedagogue'
 import { Injectable } from '@nestjs/common'
+import { PedagogueWithEmail } from '../../enterprise/entities/value-objects/pedagogue-with-email'
 
 interface FetchAllPedagoguesUseCaseRequest {
   page: number
@@ -11,7 +11,7 @@ interface FetchAllPedagoguesUseCaseRequest {
 type FetchAllPedagoguesUseCaseResponse = Either<
   null,
   {
-    pedagogues: Pedagogue[]
+    pedagogues: PedagogueWithEmail[]
   }
 >
 
