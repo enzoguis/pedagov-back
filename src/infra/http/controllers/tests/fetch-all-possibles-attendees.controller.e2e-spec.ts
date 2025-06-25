@@ -34,8 +34,14 @@ describe('Fetch All Possibles Attendees (E2E)', () => {
     const teacher1 = await teacherFactory.makePrismaTeacher()
     const teacher2 = await teacherFactory.makePrismaTeacher()
 
-    const pedagogue1 = await pedagogueFactory.makePrismaPedagogue()
-    const pedagogue2 = await pedagogueFactory.makePrismaPedagogue()
+    const pedagogue1 = await pedagogueFactory.makePrismaPedagogue(
+      {},
+      'johndoe@example.com'
+    )
+    const pedagogue2 = await pedagogueFactory.makePrismaPedagogue(
+      {},
+      'pedagogue@example.com'
+    )
 
     const accessToken = jwt.sign({
       sub: teacher1.id.toString(),

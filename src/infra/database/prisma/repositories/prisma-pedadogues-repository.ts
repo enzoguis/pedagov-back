@@ -5,6 +5,7 @@ import { PrismaPedagogueMapper } from '../mappers/prisma-pedagogue-mapper'
 import { PrismaService } from '../prisma.service'
 import { DomainEvents } from '@/core/events/domain-events'
 import { PaginationParams } from '@/core/repositories/pagination-params'
+import { PrismaPedagogueWithEmailMapper } from '../mappers/prisma-pedagogue-with-email-mapper'
 
 @Injectable()
 export class PrismaPedagoguesRepository implements PedagoguesRepository {
@@ -81,7 +82,7 @@ export class PrismaPedagoguesRepository implements PedagoguesRepository {
     return PrismaPedagogueMapper.toDomain(pedagogue)
   }
 
-  async findAll({ page, limit }: PaginationParams): Promise<Pedagogue[]> {
+  async findAll({ page, limit }: PaginationParams) {
     const perPage = limit ?? 10
 
     const pedagogues = await this.prisma.pedagogue.findMany({
@@ -92,7 +93,8 @@ export class PrismaPedagoguesRepository implements PedagoguesRepository {
       take: perPage,
     })
 
-    return pedagogues.map(PrismaPedagogueMapper.toDomain)
+
+    return pedagogues.map(PrismaPedagogueWithEmailMapper.toDomain)
   }
 
   async findById(id: string): Promise<Pedagogue | null> {

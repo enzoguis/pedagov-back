@@ -29,12 +29,21 @@ describe('Fetch All Pedagogue (E2E)', () => {
   })
 
   test('[GET] /pedagogues', async () => {
-    const author = await pedagogueFactory.makePrismaPedagogue({
-      role: PedagogueRoleEnum.COMMON,
-    })
+    const author = await pedagogueFactory.makePrismaPedagogue(
+      {
+        role: PedagogueRoleEnum.COMMON,
+      },
+      'johndoe@example.com'
+    )
 
-    const pedagogue1 = await pedagogueFactory.makePrismaPedagogue()
-    const pedagogue2 = await pedagogueFactory.makePrismaPedagogue()
+    const pedagogue1 = await pedagogueFactory.makePrismaPedagogue(
+      {},
+      'johndoe2@example.com'
+    )
+    const pedagogue2 = await pedagogueFactory.makePrismaPedagogue(
+      {},
+      'johndoe3@example.com'
+    )
 
     const accessToken = jwt.sign({
       sub: author.id.toString(),
@@ -54,6 +63,7 @@ describe('Fetch All Pedagogue (E2E)', () => {
         expect.objectContaining({
           id: author.id.toString(),
           name: author.name,
+          email: 'johndoe@example.com',
           role: author.role,
         }),
         expect.objectContaining({
