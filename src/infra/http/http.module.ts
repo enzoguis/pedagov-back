@@ -57,6 +57,8 @@ import { FetchOccurrencesPerStudentController } from './controllers/fetch-occurr
 import { FetchOccurrencesPerStudentUseCase } from '@/domain/occurrences/application/use-cases/fetch-occurrences-per-student'
 import { FetchAllGroupsController } from './controllers/fetch-all-groups.controller'
 import { FetchAllGroupsUseCase } from '@/domain/occurrences/application/use-cases/fetch-all-groups'
+import { FetchAllStudentsController } from './controllers/fetch-all-students.controller'
+import { FetchAllStudentsUseCase } from '@/domain/occurrences/application/use-cases/fetch-all-students'
 
 @Module({
   imports: [DatabaseModule, EmailModule, CryptographyModule, StorageModule],
@@ -88,6 +90,7 @@ import { FetchAllGroupsUseCase } from '@/domain/occurrences/application/use-case
     FetchAllPossiblesAttendeesController,
     FetchOccurrencesPerStudentController,
     FetchAllGroupsController,
+    FetchAllStudentsController,
   ],
   providers: [
     CreateOccurrenceUseCase,
@@ -117,6 +120,7 @@ import { FetchAllGroupsUseCase } from '@/domain/occurrences/application/use-case
     FetchAllPossiblesAttendeesUseCase,
     FetchOccurrencesPerStudentUseCase,
     FetchAllGroupsUseCase,
+    FetchAllStudentsUseCase,
   ],
 })
 export class HttpModule {}

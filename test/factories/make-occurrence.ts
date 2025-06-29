@@ -6,7 +6,6 @@ import {
 } from '@/domain/occurrences/enterprise/entities/occurrence'
 import { PrismaOccurrenceMapper } from '@/infra/database/prisma/mappers/prisma-occurrence-mapper'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
-
 import { faker } from '@faker-js/faker'
 import { Injectable } from '@nestjs/common'
 
@@ -21,7 +20,6 @@ export function makeOccurrence(
       teacherId: new UniqueEntityID(),
       type: OccurrenceTypeEnum.ABSENCES,
       title: faker.lorem.sentence(),
-      
       ...override,
     },
     id

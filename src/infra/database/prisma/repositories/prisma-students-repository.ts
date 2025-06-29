@@ -6,10 +6,20 @@ import { Injectable } from '@nestjs/common'
 import { UserRoleEnum } from '@/domain/authentication/enterprise/entities/user'
 import { StudentWithOccurrences } from '@/domain/occurrences/enterprise/entities/value-objects/student-with-occurrences'
 import { PrismaStudentWithOccurrencesMapper } from '../mappers/prisma-student-with-occurrences-mapper'
+import { PaginationParams } from '@/core/repositories/pagination-params'
 
 @Injectable()
 export class PrismaStudentsRepository implements StudentsRepository {
   constructor(private prisma: PrismaService) {}
+  async findAll(): Promise<Student[]> {
+    const students = await this.prisma.student.findMany({
+      include: {
+        user: true,
+      },
+    })
+
+    return students.map(PrismaStudentMapper.toDomain)
+  }
 
   async create(student: Student): Promise<void> {
     const userData = {
