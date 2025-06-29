@@ -12,6 +12,21 @@ import { PrismaStudentMapper } from '@/infra/database/prisma/mappers/prisma-stud
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { faker } from '@faker-js/faker'
 import { Injectable } from '@nestjs/common'
+import { isCPF } from 'brazilian-values'
+
+const generatedCpfs = new Set<string>()
+
+function generateUniqueValidCpf() {
+  let cpf: string
+
+  do {
+    cpf = faker.string.numeric(11)
+  } while (generatedCpfs.has(cpf) || !isCPF(cpf))
+
+  generatedCpfs.add(cpf)
+
+  return cpf
+}
 
 export function makeStudent(
   override: Partial<StudentProps> = {},
@@ -21,7 +36,7 @@ export function makeStudent(
     {
       name: faker.person.fullName(),
       status: UserStatusEnum.ACTIVE,
-      cpf: CPF.create('11505628032'),
+      cpf: CPF.create(generateUniqueValidCpf()),
       groupId: new UniqueEntityID(faker.string.uuid()),
       responsibleEmail: faker.internet.email(),
       responsiblePhone: faker.phone.number(),
