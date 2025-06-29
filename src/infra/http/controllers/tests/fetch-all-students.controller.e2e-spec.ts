@@ -63,19 +63,27 @@ describe('Fetch All Student (E2E)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send()
 
+    console.log(response.body.result)
+
     expect(response.body.result).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          id: author.id.toString(),
-          name: author.name,
+          studentId: author.id.toString(),
+          student: author.name,
+          group: group.name,
+          cpf: author.cpf.value,
         }),
         expect.objectContaining({
-          id: student1.id.toString(),
-          name: student1.name,
+          studentId: student1.id.toString(),
+          student: student1.name,
+          group: group.name,
+          cpf: student1.cpf.value,
         }),
         expect.objectContaining({
-          id: student2.id.toString(),
-          name: student2.name,
+          studentId: student2.id.toString(),
+          student: student2.name,
+          group: group.name,
+          cpf: student2.cpf.value,
         }),
       ])
     )

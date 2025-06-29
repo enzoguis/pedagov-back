@@ -1,8 +1,8 @@
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
 import { ApiResponse, ApiTags } from '@nestjs/swagger'
-import { StudentPresenter } from '../presenters/student-presenter'
-import { StudentDto } from '../dtos/fetch-students-dto'
+import { StudentWithGroupDto } from '../dtos/fetch-students-dto'
 import { FetchAllStudentsUseCase } from '@/domain/occurrences/application/use-cases/fetch-all-students'
+import { StudentWithGroupPresenter } from '../presenters/student-with-group-presenter'
 
 @Controller('/students')
 @ApiTags('Students')
@@ -10,7 +10,7 @@ export class FetchAllStudentsController {
   constructor(private fetchAllStudents: FetchAllStudentsUseCase) {}
 
   @Get()
-  @ApiResponse({ type: [StudentDto] })
+  @ApiResponse({ type: [StudentWithGroupDto] })
   async handle() {
     const result = await this.fetchAllStudents.execute({})
 
@@ -21,7 +21,7 @@ export class FetchAllStudentsController {
     const { students } = result.value
 
     return {
-      result: students.map(StudentPresenter.toHTTP),
+      result: students.map(StudentWithGroupPresenter.toHTTP),
     }
   }
 }
